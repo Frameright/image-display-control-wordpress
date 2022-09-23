@@ -28,3 +28,7 @@ https://www.gnu.org/licenses/gpl-3.0.en.html
  * Requires PHP:      5.6
  * Requires at least: 5.1
  */
+
+if (is_admin()) {
+    require_once __DIR__ . '/admin/frameright-admin.php';
+}
