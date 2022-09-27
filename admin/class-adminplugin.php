@@ -17,6 +17,6 @@ class AdminPlugin {
      * Constructor.
      */
     public function __construct() {
-        Debug\log_all_fired_actions();
+        Debug\log_all_fired_hooks();
     }
 };

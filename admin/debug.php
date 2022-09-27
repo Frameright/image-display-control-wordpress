@@ -19,17 +19,13 @@ function log( $text ) {
 }
 
 /**
- * Log all action names.
+ * Log all hook names.
  */
-function log_all_fired_actions() {
-
-    /**
-     * Log the current action name.
-     */
-    $log_action = function() {
-        log( 'Running action ' . current_action() );
-    };
-
-    add_action( 'all', $log_action );
-
+function log_all_fired_hooks() {
+    add_action(
+        'all',
+        function() {
+            log( 'Running hook ' . current_action() );
+        }
+    );
 }
