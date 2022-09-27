@@ -17,6 +17,16 @@ class AdminPlugin {
      * Constructor.
      */
     public function __construct() {
-        Debug\log_all_fired_hooks();
+        add_filter( 'wp_handle_upload', [ $this, 'handle_upload' ] );
+    }
+
+    /**
+     * Filter called when an image gets uploaded to the media library.
+     *
+     * @param array $data Filter input.
+     */
+    public function handle_upload( $data ) {
+        Debug\log( 'An image got uploaded: ' . print_r( $data, true ) );
+        return $data;
     }
 };
