@@ -16,6 +16,7 @@
         <exclude name="Generic.Arrays.DisallowShortArraySyntax.Found" />
         <exclude name="Generic.WhiteSpace.DisallowSpaceIndent" />
         <exclude name="Squiz.Commenting.FileComment.Missing" />
+        <exclude name="WordPress.Files.FileName.InvalidClassFileName" />
         <exclude name="WordPress.PHP.DevelopmentFunctions.error_log_error_log" />
         <exclude name="WordPress.PHP.DevelopmentFunctions.error_log_print_r" />
     </rule>
