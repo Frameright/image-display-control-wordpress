@@ -33,5 +33,6 @@
 namespace Frameright;
 
 if ( is_admin() ) {
-    require_once __DIR__ . '/admin/admin.php';
+    require_once __DIR__ . '/admin/class-adminplugin.php';
+    new Admin\AdminPlugin();
 }
