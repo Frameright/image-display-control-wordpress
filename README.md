@@ -5,13 +5,22 @@ pictures!
 
 ## Contributing
 
+### Formatting the code
+
+Pull and run [prettier](https://github.com/prettier/plugin-php) with:
+
+```bash
+$ yarn install
+$ yarn run prettier --write .
+```
+
 ### Validating against WordPress coding standards
 
 #### Setting up PHP_CodeSniffer
 
-To validate your changes against the
-[WordPress coding standards](https://github.com/WordPress/WordPress-Coding-Standards),
-first pull them in to `wpcs/` by running:
+First pull the
+[WordPress coding standards](https://github.com/WordPress/WordPress-Coding-Standards)
+in to `wpcs/` by running:
 
 ```bash
 $ docker run --rm -it --volume $PWD:/app -u `id -u`:`id -g` \
@@ -39,7 +48,7 @@ $ ./wpcs/vendor/bin/phpcs -i
 The installed coding standards are MySource, PEAR, PSR1, PSR2, PSR12, Squiz, Zend, WordPress, WordPress-Core, WordPress-Docs and WordPress-Extra
 ```
 
-Pull also the
+Finally pull the
 [rulesets for PHP cross-version compatibility](https://github.com/PHPCompatibility/PHPCompatibilityWP)
 with:
 

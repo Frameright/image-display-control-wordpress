@@ -12,9 +12,9 @@ namespace Frameright\Admin\Debug;
  *
  * @param string $text Text to be logged.
  */
-function log( $text ) {
-    if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-        error_log( '[frameright] ' . $text );
+function log($text) {
+    if (defined('WP_DEBUG') && WP_DEBUG) {
+        error_log('[frameright] ' . $text);
     }
 }
 
@@ -22,12 +22,9 @@ function log( $text ) {
  * Log all hook names.
  */
 function log_all_fired_hooks() {
-    add_action(
-        'all',
-        function() {
-            log( 'Running hook ' . current_action() );
-        }
-    );
+    add_action('all', function () {
+        log('Running hook ' . current_action());
+    });
 }
 
 /**
@@ -36,11 +33,12 @@ function log_all_fired_hooks() {
  * @param bool   $condition Condition to be asserted.
  * @param string $description Human-readable description of the expectation.
  */
-function assert_( $condition, $description ) {
-    if ( ! $condition ) {
+function assert_($condition, $description) {
+    if (!$condition) {
         log(
-            "Assertion failed: $description" . PHP_EOL
-            . ( new AssertionError() )->getTraceAsString()
+            "Assertion failed: $description" .
+                PHP_EOL .
+                (new AssertionError())->getTraceAsString()
         );
     }
 }
@@ -48,4 +46,5 @@ function assert_( $condition, $description ) {
 /**
  * AssertionError exists already in PHP 7 but not in PHP 5.
  */
-class AssertionError extends \Exception {};
+class AssertionError extends \Exception {
+}
