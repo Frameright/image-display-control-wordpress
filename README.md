@@ -5,13 +5,32 @@ pictures!
 
 ## Contributing
 
+### Running the unit tests
+
+#### Setting up Codeception
+
+Install [Codeception](https://github.com/Codeception/Codeception) with:
+
+```bash
+$ sudo apt install composer php-curl
+$ composer install
+```
+
+#### Running Codeception
+
+Run the unit tests with:
+
+```bash
+$ composer test
+```
+
 ### Formatting the code
 
 Pull and run [prettier](https://github.com/prettier/plugin-php) with:
 
 ```bash
-$ yarn install
-$ yarn run prettier --write .
+$ yarn install     # pull
+$ composer format  # run
 ```
 
 ### Validating against WordPress coding standards
@@ -64,5 +83,5 @@ $ popd
 Run PHP_CodeSniffer with:
 
 ```bash
-$ ./wpcs/vendor/bin/phpcs -s
+$ composer lint
 ```

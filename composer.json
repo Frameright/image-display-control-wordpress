@@ -1,0 +1,12 @@
+{
+  "require-dev": {
+    "codeception/codeception": "^5.0.2",
+    "codeception/module-phpbrowser": "*",
+    "codeception/module-asserts": "*"
+  },
+  "scripts": {
+    "format": "yarn run prettier --write . || yarnpkg run prettier --write .",
+    "lint": "./wpcs/vendor/bin/phpcs -s",
+    "test": "vendor/bin/codecept run"
+  }
+}
