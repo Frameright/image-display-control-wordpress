@@ -5,13 +5,33 @@ pictures!
 
 ## Contributing
 
+### Running the unit tests
+
+#### Setting up PHPUnit
+
+Install [PHPUnit](https://phpunit.readthedocs.io/en/9.5/installation.html)
+with:
+
+```bash
+$ sudo apt install composer
+$ composer install
+```
+
+#### Running PHPUnit
+
+Run the unit tests with:
+
+```bash
+$ composer test
+```
+
 ### Formatting the code
 
 Pull and run [prettier](https://github.com/prettier/plugin-php) with:
 
 ```bash
-$ yarn install
-$ yarn run prettier --write .
+$ yarn install     # pull
+$ composer format  # run
 ```
 
 ### Validating against WordPress coding standards
@@ -64,5 +84,5 @@ $ popd
 Run PHP_CodeSniffer with:
 
 ```bash
-$ ./wpcs/vendor/bin/phpcs -s
+$ composer lint
 ```

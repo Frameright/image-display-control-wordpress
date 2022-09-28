@@ -8,6 +8,7 @@
     <file>.</file>
     <include-pattern>*\.php$</include-pattern>
     <exclude-pattern>/node_modules/</exclude-pattern>
+    <exclude-pattern>/vendor/</exclude-pattern>
     <exclude-pattern>/wpcs/</exclude-pattern>
 
     <config name="testVersion" value="5.6-" />
