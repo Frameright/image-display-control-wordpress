@@ -1,13 +1,14 @@
 <?php
 /**
  * Imported only when browsing admin panel.
-
+ *
  * @package Frameright\Admin
  */
 
 namespace Frameright\Admin;
 
 require_once __DIR__ . '/debug.php';
+require_once __DIR__ . '/global-functions.php';
 
 /**
  * Implementation of the plugin when inside the admin panel.
@@ -15,9 +16,19 @@ require_once __DIR__ . '/debug.php';
 class AdminPlugin {
     /**
      * Constructor.
+     *
+     * @param GlobalFunctions $global_functions Mockable wrapper for calling
+     *                                          global functions.
      */
-    public function __construct() {
-        add_filter('wp_handle_upload', [$this, 'handle_upload']);
+    public function __construct($global_functions = null) {
+        $this->global_functions = $global_functions
+            ? $global_functions
+            : new GlobalFunctions();
+
+        $this->global_functions->add_filter('wp_handle_upload', [
+            $this,
+            'handle_upload',
+        ]);
     }
 
     /**
@@ -39,10 +50,10 @@ class AdminPlugin {
      *
      * @param string $source_path Absolute path of the source file.
      * @return array Supported keys:
-     *               * 'path':      '/absolute/path/to/img.jpg'
-     *               * 'basename':  'img.jpg'
+     *               * 'path':      '/absolute/path/to/img-frameright.jpg'
+     *               * 'basename':  'img-frameright.jpg'
      *               * 'dirname':   '/absolute/path/to'
-     *               * 'name':      'img'
+     *               * 'name':      'img-frameright'
      *               * 'extension': 'jpg'
      */
     private static function unique_target_file($source_path) {
@@ -92,4 +103,11 @@ class AdminPlugin {
         $target_image_file = self::unique_target_file($source_image_path);
         Debug\log('Target file: ' . print_r($target_image_file, true));
     }
+
+    /**
+     * Mockable wrapper for calling global functions.
+     *
+     * @var GlobalFunctions
+     */
+    private $global_functions;
 }
