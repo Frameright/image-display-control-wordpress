@@ -4,7 +4,7 @@
   },
   "scripts": {
     "format": "yarn run prettier --write . || yarnpkg run prettier --write .",
-    "lint": "./wpcs/vendor/bin/phpcs -s",
+    "lint": "./wpcs/vendor/bin/phpcs",
     "test": "./vendor/bin/phpunit"
   }
 }

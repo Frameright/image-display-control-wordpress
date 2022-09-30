@@ -6,31 +6,35 @@
          name="PHP_CodeSniffer" xsi:noNamespaceSchemaLocation="phpcs.xsd">
 
     <file>.</file>
-    <include-pattern>*\.php$</include-pattern>
     <exclude-pattern>/node_modules/</exclude-pattern>
     <exclude-pattern>/vendor/</exclude-pattern>
     <exclude-pattern>/wpcs/</exclude-pattern>
+
+    <arg name="colors" />
+    <arg value="s" /><!-- Show sniff codes in all reports -->
 
     <config name="testVersion" value="5.6-" />
     <rule ref="PHPCompatibilityWP" />
 
     <rule ref="WordPress">
+        <properties>
+            <property name="allowMultipleArguments" value="true" />
+            <property name="requiredSpacesAfterOpen" value="0" />
+            <property name="requiredSpacesBeforeClose" value="0" />
+            <property name="strict_class_file_names" value="false" />
+        </properties>
         <exclude name="Generic.Arrays.DisallowShortArraySyntax.Found" />
         <exclude name="Generic.Formatting.MultipleStatementAlignment.NotSameWarning" />
         <exclude name="Generic.WhiteSpace.ArbitraryParenthesesSpacing.SpaceAfterOpen" />
         <exclude name="Generic.WhiteSpace.ArbitraryParenthesesSpacing.SpaceBeforeClose" />
         <exclude name="Generic.WhiteSpace.DisallowSpaceIndent" />
-        <exclude name="Squiz.Commenting.FileComment.Missing" />
-        <exclude name="Squiz.Functions.FunctionDeclarationArgumentSpacing.SpacingAfterOpen" />
         <exclude name="PEAR.Functions.FunctionCallSignature.CloseBracketLine" />
         <exclude name="PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket" />
-        <exclude name="PEAR.Functions.FunctionCallSignature.MultipleArguments" />
         <exclude name="PEAR.Functions.FunctionCallSignature.SpaceAfterOpenBracket" />
         <exclude name="PEAR.Functions.FunctionCallSignature.SpaceBeforeCloseBracket" />
         <exclude name="WordPress.Arrays.ArrayDeclarationSpacing.NoSpaceAfterArrayOpener" />
         <exclude name="WordPress.Arrays.ArrayDeclarationSpacing.NoSpaceBeforeArrayCloser" />
         <exclude name="WordPress.Arrays.MultipleStatementAlignment.DoubleArrowNotAligned" />
-        <exclude name="WordPress.Files.FileName.InvalidClassFileName" />
         <exclude name="WordPress.PHP.DevelopmentFunctions.error_log_error_log" />
         <exclude name="WordPress.PHP.DevelopmentFunctions.error_log_print_r" />
         <exclude name="WordPress.WhiteSpace.ControlStructureSpacing.NoSpaceAfterOpenParenthesis" />
