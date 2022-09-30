@@ -5,6 +5,16 @@
          colors="true" cacheResult="false" convertErrorsToExceptions="true"
          convertNoticesToExceptions="true" convertWarningsToExceptions="true">
 
+  <coverage includeUncoveredFiles="true" processUncoveredFiles="true"
+            pathCoverage="true">
+    <include>
+      <directory suffix=".php">src</directory>
+    </include>
+    <report>
+      <text outputFile="coverage.txt" />
+    </report>
+  </coverage>
+
   <testsuites>
     <testsuite name="tests">
       <directory>tests</directory>
