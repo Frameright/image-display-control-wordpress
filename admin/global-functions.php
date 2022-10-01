@@ -21,6 +21,6 @@ class GlobalFunctions {
      */
     public function __call($method_name, $arguments) {
         // Call the global function having the same name:
-        call_user_func_array($method_name, $arguments);
+        return call_user_func_array($method_name, $arguments);
     }
 }

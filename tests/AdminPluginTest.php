@@ -69,7 +69,8 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
         $this->global_functions_mock
             ->expects($this->once())
             ->method('wp_unique_filename')
-            ->with('/absolute/path/to', 'img-frameright.jpg');
+            ->with('/absolute/path/to', 'img-frameright.jpg')
+            ->willReturn('img-frameright.jpg');
 
         $method = new ReflectionMethod(
             'Frameright\Admin\AdminPlugin',

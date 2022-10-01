@@ -105,15 +105,10 @@ class AdminPlugin {
 
         // In case this file already exists, ask WordPress to find a new
         // filename in that same folder that doesn't exist yet.
-        // Note: will be empty if $target_basename was already unique, see
-        // https://developer.wordpress.org/reference/functions/wp_unique_filename/
-        $target_basename_unique = $this->global_functions->wp_unique_filename(
+        $target_basename = $this->global_functions->wp_unique_filename(
             $source_dirname,
             $target_basename
         );
-        $target_basename = $target_basename_unique
-            ? $target_basename_unique
-            : $target_basename;
         $target_name = self::basename_to_name_and_extension(
             $target_basename
         )[0];
