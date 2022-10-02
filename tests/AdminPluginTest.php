@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for Frameright\Admin .
+ * Tests for Frameright\Admin 's AdminPlugin class.
  *
  * @package Frameright\Tests\Admin
  */
@@ -8,7 +8,7 @@
 require_once __DIR__ . '/../admin/admin-plugin.php';
 
 /**
- * Tests for Frameright\Admin\AdminPlugin .
+ * Tests for AdminPlugin.
  */
 final class AdminPluginTest extends PHPUnit\Framework\TestCase {
     // phpcs:disable PHPCompatibility.FunctionDeclarations.NewReturnTypeDeclarations.voidFound
@@ -17,7 +17,10 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
      */
     protected function setUp(): void {
         $this->global_functions_mock = $this->getMockBuilder(stdClass::class)
-            ->addMethods(['add_filter', 'wp_unique_filename'])
+            ->addMethods(['add_filter'])
+            ->getMock();
+        $this->filesystem_mock = $this->getMockBuilder(stdClass::class)
+            ->addMethods(['unique_target_file'])
             ->getMock();
     }
     // phpcs:enable
@@ -31,58 +34,35 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
             ->method('add_filter')
             ->with('wp_handle_upload');
 
-        new Frameright\Admin\AdminPlugin($this->global_functions_mock);
-    }
-
-    /**
-     * Test basename_to_name_and_extension().
-     */
-    public function test_basename_to_name_and_extension() {
-        $input_basename = 'my.great.file.jpg';
-
-        $expected_result = ['my.great.file', 'jpg'];
-
-        $method = new ReflectionMethod(
-            'Frameright\Admin\AdminPlugin',
-            'basename_to_name_and_extension'
+        new Frameright\Admin\AdminPlugin(
+            $this->global_functions_mock,
+            $this->filesystem_mock
         );
-        $method->setAccessible(true);
-        $actual_result = $method->invoke(null, $input_basename);
-
-        $this->assertSame($expected_result, $actual_result);
     }
 
     /**
-     * Test unique_target_file().
+     * Test create_hardcrops().
      */
-    public function test_unique_target_file() {
+    public function test_create_hardcrops() {
         $input_source_path = '/absolute/path/to/img.jpg';
 
-        $expected_result = [
-            'path' => '/absolute/path/to/img-frameright.jpg',
-            'basename' => 'img-frameright.jpg',
-            'dirname' => '/absolute/path/to',
-            'name' => 'img-frameright',
-            'extension' => 'jpg',
-        ];
-
-        $this->global_functions_mock
+        $this->filesystem_mock
             ->expects($this->once())
-            ->method('wp_unique_filename')
-            ->with('/absolute/path/to', 'img-frameright.jpg')
-            ->willReturn('img-frameright.jpg');
+            ->method('unique_target_file')
+            ->with('/absolute/path/to/img.jpg');
 
         $method = new ReflectionMethod(
             'Frameright\Admin\AdminPlugin',
-            'unique_target_file'
+            'create_hardcrops'
         );
         $method->setAccessible(true);
-        $actual_result = $method->invoke(
-            new Frameright\Admin\AdminPlugin($this->global_functions_mock),
+        $method->invoke(
+            new Frameright\Admin\AdminPlugin(
+                $this->global_functions_mock,
+                $this->filesystem_mock
+            ),
             $input_source_path
         );
-
-        $this->assertSame($expected_result, $actual_result);
     }
 
     /**
@@ -91,4 +71,11 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
      * @var Mock_stdClass
      */
     private $global_functions_mock;
+
+    /**
+     * Filesystem mock.
+     *
+     * @var Mock_stdClass
+     */
+    private $filesystem_mock;
 }
