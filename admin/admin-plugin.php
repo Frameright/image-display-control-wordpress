@@ -18,17 +18,20 @@ class AdminPlugin {
     /**
      * Constructor.
      *
-     * @param GlobalFunctions $global_functions Mockable wrapper for calling
-     *                                          global functions.
-     * @param Filesystem      $filesystem Mockable collection of file-related
-     *                                    functions.
+     * @param Mock_stdClass $global_functions_mock Mock of GlobalFunctions if
+     *                                             running tests.
+     * @param Mock_stdClass $filesystem_mock Mock of Filesystem if running
+     *                                       tests.
      */
-    public function __construct($global_functions = null, $filesystem = null) {
-        $this->global_functions = $global_functions
-            ? $global_functions
+    public function __construct(
+        $global_functions_mock = null,
+        $filesystem_mock = null
+    ) {
+        $this->global_functions = $global_functions_mock
+            ? $global_functions_mock
             : new GlobalFunctions();
-        $this->filesystem = $filesystem
-            ? $filesystem
+        $this->filesystem = $filesystem_mock
+            ? $filesystem_mock
             : new Filesystem($this->global_functions);
 
         $this->global_functions->add_filter('wp_handle_upload', [
