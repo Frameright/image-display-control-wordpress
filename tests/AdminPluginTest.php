@@ -17,7 +17,13 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
      */
     protected function setUp(): void {
         $this->global_functions_mock = $this->getMockBuilder(stdClass::class)
-            ->addMethods(['add_filter'])
+            ->addMethods([
+                'add_action',
+                'add_filter',
+                'is_wp_error',
+                'wp_get_image_editor',
+                'wp_insert_attachment',
+            ])
             ->getMock();
         $this->filesystem_mock = $this->getMockBuilder(stdClass::class)
             ->addMethods(['unique_target_file'])
@@ -46,10 +52,39 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
     public function test_create_hardcrops() {
         $input_source_path = '/absolute/path/to/img.jpg';
 
+        $image_editor_mock = $this->getMockBuilder(stdClass::class)
+            ->addMethods(['save'])
+            ->getMock();
+        $this->global_functions_mock
+            ->expects($this->once())
+            ->method('wp_get_image_editor')
+            ->with('/absolute/path/to/img.jpg')
+            ->willReturn($image_editor_mock);
+
         $this->filesystem_mock
             ->expects($this->once())
             ->method('unique_target_file')
-            ->with('/absolute/path/to/img.jpg');
+            ->with('/absolute/path/to/img.jpg')
+            ->willReturn([
+                'path' => '/absolute/path/to/img-frameright.jpg',
+                'basename' => 'img-frameright.jpg',
+                'dirname' => '/absolute/path/to',
+                'name' => 'img-frameright',
+                'extension' => 'jpg',
+            ]);
+
+        $image_editor_mock
+            ->expects($this->once())
+            ->method('save')
+            ->with('/absolute/path/to/img-frameright.jpg')
+            ->willReturn([
+                'path' => '/absolute/path/to/img-frameright.jpg',
+                'file' => 'img-frameright.jpg',
+                'width' => 2395,
+                'height' => 1807,
+                'mime-type' => 'image/jpeg',
+                'filesize' => 622369,
+            ]);
 
         $method = new ReflectionMethod(
             'Frameright\Admin\AdminPlugin',
