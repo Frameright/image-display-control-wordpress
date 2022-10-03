@@ -7,7 +7,6 @@
 
 namespace Frameright\Admin;
 
-require_once __DIR__ . '/debug.php';
 require_once __DIR__ . '/global-functions.php';
 
 /**
@@ -35,17 +34,27 @@ class Filesystem {
      */
     private static function basename_to_name_and_extension($basename) {
         $basename_items = explode(self::EXTENSION_SEPARATOR, $basename);
-        Debug\assert_(
-            count($basename_items) >= 2,
-            "'$basename' should contain at least one '" .
-                self::EXTENSION_SEPARATOR .
-                "'"
-        );
 
-        $extension = array_pop($basename_items);
+        $extension =
+            count($basename_items) >= 2 ? array_pop($basename_items) : '';
         $name = implode(self::EXTENSION_SEPARATOR, $basename_items);
 
         return [$name, $extension];
+    }
+
+    /**
+     * Joins file name and extension into a basename.
+     *
+     * @param string $name      File name, e.g. 'myfile'.
+     * @param string $extension File extension, e.g. 'jpg'.
+     * @return string 'myfile.jpg'.
+     */
+    private static function name_and_extension_to_basename($name, $extension) {
+        $basename = $name;
+        if (!empty($extension)) {
+            $basename .= self::EXTENSION_SEPARATOR . $extension;
+        }
+        return $basename;
     }
 
     /**
@@ -71,8 +80,10 @@ class Filesystem {
         $source_extension = $source_basename_items[1];
 
         $target_name = $source_name . '-frameright';
-        $target_basename =
-            $target_name . self::EXTENSION_SEPARATOR . $source_extension;
+        $target_basename = self::name_and_extension_to_basename(
+            $target_name,
+            $source_extension
+        );
 
         // In case this file already exists, ask WordPress to find a new
         // filename in that same folder that doesn't exist yet.

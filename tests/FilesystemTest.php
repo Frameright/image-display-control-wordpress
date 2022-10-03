@@ -26,17 +26,43 @@ final class FilesystemTest extends PHPUnit\Framework\TestCase {
      * Test basename_to_name_and_extension().
      */
     public function test_basename_to_name_and_extension() {
-        $input_basename = 'my.great.file.jpg';
-
-        $expected_result = ['my.great.file', 'jpg'];
-
         $method = new ReflectionMethod(
             'Frameright\Admin\Filesystem',
             'basename_to_name_and_extension'
         );
         $method->setAccessible(true);
-        $actual_result = $method->invoke(null, $input_basename);
 
+        $input_basename = 'my.great.file.jpg';
+        $expected_result = ['my.great.file', 'jpg'];
+        $actual_result = $method->invoke(null, $input_basename);
+        $this->assertSame($expected_result, $actual_result);
+
+        $input_basename = 'myfile';
+        $expected_result = ['myfile', ''];
+        $actual_result = $method->invoke(null, $input_basename);
+        $this->assertSame($expected_result, $actual_result);
+    }
+
+    /**
+     * Test name_and_extension_to_basename().
+     */
+    public function test_name_and_extension_to_basename() {
+        $method = new ReflectionMethod(
+            'Frameright\Admin\Filesystem',
+            'name_and_extension_to_basename'
+        );
+        $method->setAccessible(true);
+
+        $input_name = 'my.great.file';
+        $input_extension = 'jpg';
+        $expected_result = 'my.great.file.jpg';
+        $actual_result = $method->invoke(null, $input_name, $input_extension);
+        $this->assertSame($expected_result, $actual_result);
+
+        $input_name = 'myfile';
+        $input_extension = '';
+        $expected_result = 'myfile';
+        $actual_result = $method->invoke(null, $input_name, $input_extension);
         $this->assertSame($expected_result, $actual_result);
     }
 
