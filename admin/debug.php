@@ -28,18 +28,28 @@ function log_all_fired_hooks() {
 }
 
 /**
- * Log error if $condition isn't truthy. Doesn't interrupt execution.
+ * Log error if $condition isn't truthy. Doesn't interrupt execution on
+ * WordPress. Fails unit tests.
  *
  * @param bool   $condition Condition to be asserted.
- * @param string $description Human-readable description of the expectation.
+ * @param string $description Human-readable description of the failed
+ *                            expectation.
+ * @throws AssertionError If $condition is falsy during unit test execution.
  */
 function assert_($condition, $description) {
     if (!$condition) {
+        $exception = new AssertionError($description);
         log(
             "Assertion failed: $description" .
                 PHP_EOL .
-                (new AssertionError())->getTraceAsString()
+                $exception->getTraceAsString()
         );
+
+        if (!defined('WP_HOME')) {
+            // We're not being run on WordPress. We're probably being run by
+            // PHPUnit.
+            throw $exception;
+        }
     }
 }
 
