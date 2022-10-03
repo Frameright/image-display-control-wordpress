@@ -24,39 +24,6 @@ class Filesystem {
         $this->global_functions = $global_functions;
     }
 
-    const EXTENSION_SEPARATOR = '.';
-
-    /**
-     * Split name and extension from a file name.
-     *
-     * @param string $basename File name, e.g. 'my.great.file.jpg'.
-     * @return array ['my.great.file', 'jpg'] .
-     */
-    private static function basename_to_name_and_extension($basename) {
-        $basename_items = explode(self::EXTENSION_SEPARATOR, $basename);
-
-        $extension =
-            count($basename_items) >= 2 ? array_pop($basename_items) : '';
-        $name = implode(self::EXTENSION_SEPARATOR, $basename_items);
-
-        return [$name, $extension];
-    }
-
-    /**
-     * Joins file name and extension into a basename.
-     *
-     * @param string $name      File name, e.g. 'myfile'.
-     * @param string $extension File extension, e.g. 'jpg'.
-     * @return string 'myfile.jpg'.
-     */
-    private static function name_and_extension_to_basename($name, $extension) {
-        $basename = $name;
-        if (!empty($extension)) {
-            $basename .= self::EXTENSION_SEPARATOR . $extension;
-        }
-        return $basename;
-    }
-
     /**
      * Generate a non-existing file name/path for creating a copy/variant of a
      * given source file.
@@ -69,7 +36,7 @@ class Filesystem {
      *               * 'name':      'img-frameright'
      *               * 'extension': 'jpg'
      */
-    private function unique_target_file($source_path) {
+    public function unique_target_file($source_path) {
         $source_basename = basename($source_path);
         $source_dirname = dirname($source_path);
 
@@ -106,6 +73,39 @@ class Filesystem {
         ];
 
         return $result;
+    }
+
+    const EXTENSION_SEPARATOR = '.';
+
+    /**
+     * Split name and extension from a file name.
+     *
+     * @param string $basename File name, e.g. 'my.great.file.jpg'.
+     * @return array ['my.great.file', 'jpg'] .
+     */
+    private static function basename_to_name_and_extension($basename) {
+        $basename_items = explode(self::EXTENSION_SEPARATOR, $basename);
+
+        $extension =
+            count($basename_items) >= 2 ? array_pop($basename_items) : '';
+        $name = implode(self::EXTENSION_SEPARATOR, $basename_items);
+
+        return [$name, $extension];
+    }
+
+    /**
+     * Joins file name and extension into a basename.
+     *
+     * @param string $name      File name, e.g. 'myfile'.
+     * @param string $extension File extension, e.g. 'jpg'.
+     * @return string 'myfile.jpg'.
+     */
+    private static function name_and_extension_to_basename($name, $extension) {
+        $basename = $name;
+        if (!empty($extension)) {
+            $basename .= self::EXTENSION_SEPARATOR . $extension;
+        }
+        return $basename;
     }
 
     /**
