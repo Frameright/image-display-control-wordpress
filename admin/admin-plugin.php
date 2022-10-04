@@ -89,7 +89,10 @@ class AdminPlugin {
         );
 
         $target_attachment_id = $this->global_functions->wp_insert_attachment(
-            [], // details
+            [
+                'post_mime_type' => $saved_file['mime-type'],
+                'post_title' => $target_image_file['name'],
+            ],
             $saved_file['path'],
             0, // no parent post
             true // report errors
@@ -97,6 +100,42 @@ class AdminPlugin {
         Debug\assert_(
             !$this->global_functions->is_wp_error($target_attachment_id),
             'Could not insert attachment'
+        );
+
+        $source_basename = basename($source_image_path);
+        $attachment_meta_to_be_set = [
+            // Mark the attachment as created/owned by us:
+            'frameright' => true,
+        ];
+        foreach ($attachment_meta_to_be_set as $key => $value) {
+            $meta_id = $this->global_functions->add_post_meta(
+                $target_attachment_id,
+                $key,
+                $value,
+                true // unique key
+            );
+            Debug\assert_(
+                false !== $meta_id,
+                "Could not add attachment meta ($key => $value)"
+            );
+        }
+
+        /** This will:
+         *   * create myimage-frameright-scaled.jpg
+         *   * create myimage-frameright-1980x1219.jpg for every container size
+         *     defined in the current WordPress template
+         *   * create a special `_wp_attachment_metadata` attachment meta
+         *     containing:
+         *       * info about all the generated scaled images
+         *       * some of the metadata extracted from the original image
+         */
+        $attachment_metadata = $this->global_functions->wp_generate_attachment_metadata(
+            $target_attachment_id,
+            $saved_file['path']
+        );
+        Debug\log(
+            'Generated WordPress metadata for attached image: ' .
+                print_r($attachment_metadata, true)
         );
     }
 
