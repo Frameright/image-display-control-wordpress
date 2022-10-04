@@ -1,4 +1,5 @@
 /node_modules/
-/vendor/
 /wpcs/
-/*.lock
+
+vendor/
+*.lock

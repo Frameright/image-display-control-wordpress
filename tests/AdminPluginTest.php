@@ -5,7 +5,8 @@
  * @package Frameright\Tests\Admin
  */
 
-require_once __DIR__ . '/../admin/admin-plugin.php';
+require_once __DIR__ . '/../src/admin/admin-plugin.php';
+require_once __DIR__ . '/../src/vendor/autoload.php';
 
 /**
  * Tests for AdminPlugin.
@@ -30,6 +31,9 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
         $this->filesystem_mock = $this->getMockBuilder(stdClass::class)
             ->addMethods(['unique_target_file'])
             ->getMock();
+        $this->xmp_mock = $this->getMockBuilder(stdClass::class)
+            ->addMethods(['read_rectangle_cropping_metadata'])
+            ->getMock();
     }
     // phpcs:enable
 
@@ -38,14 +42,79 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
      */
     public function test_constructor() {
         $this->global_functions_mock
-            ->expects($this->once())
+            ->expects($this->exactly(2))
             ->method('add_filter')
-            ->with('wp_handle_upload');
+            ->withConsecutive(['wp_handle_upload'], ['wp_read_image_metadata']);
 
         new Frameright\Admin\AdminPlugin(
             $this->global_functions_mock,
-            $this->filesystem_mock
+            $this->filesystem_mock,
+            $this->xmp_mock
         );
+    }
+
+    /**
+     * Test populate_image_metadata().
+     */
+    public function test_populate_image_metadata() {
+        $input_meta = [
+            'aperture' => 0,
+            'camera' => 'Canon EOS 5D Mark III',
+            'created_timestamp' => 1510309891,
+            'focal_length' => 39,
+            'iso' => 800,
+            'shutter_speed' => 0.016666666666667,
+            'orientation' => 1,
+        ];
+        $input_file = '/absolute/path/to/img.jpg';
+
+        $input_xmp_regions = [
+            $this->create_mock_image_region(
+                'region42',
+                ['Region 42'],
+                'rectangle',
+                'relative',
+                0.31,
+                0.18,
+                0.385,
+                0.127
+            ),
+        ];
+        $this->xmp_mock
+            ->expects($this->once())
+            ->method('read_rectangle_cropping_metadata')
+            ->with($input_file)
+            ->willReturn($input_xmp_regions);
+
+        $expected_meta = [
+            'aperture' => 0,
+            'camera' => 'Canon EOS 5D Mark III',
+            'created_timestamp' => 1510309891,
+            'focal_length' => 39,
+            'iso' => 800,
+            'shutter_speed' => 0.016666666666667,
+            'orientation' => 1,
+            'image_regions' => [
+                [
+                    'id' => 'region42',
+                    'names' => ['Region 42'],
+                    'shape' => 'rectangle',
+                    'unit' => 'relative',
+                    'x' => 0.31,
+                    'y' => 0.18,
+                    'height' => 0.385,
+                    'width' => 0.127,
+                ],
+            ],
+        ];
+
+        $actual_meta = (new Frameright\Admin\AdminPlugin(
+            $this->global_functions_mock,
+            $this->filesystem_mock,
+            $this->xmp_mock
+        ))->populate_image_metadata($input_meta, $input_file, null, null, null);
+
+        $this->assertSame($expected_meta, $actual_meta);
     }
 
     /**
@@ -125,10 +194,99 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
         $method->invoke(
             new Frameright\Admin\AdminPlugin(
                 $this->global_functions_mock,
-                $this->filesystem_mock
+                $this->filesystem_mock,
+                $this->xmp_mock
             ),
             $input_source_path
         );
+    }
+
+    /**
+     * Test read_rectangle_cropping_metadata().
+     */
+    public function test_read_rectangle_cropping_metadata() {
+        $input_path = '/absolute/path/to/img.jpg';
+
+        $input_xmp_regions = [
+            $this->create_mock_image_region(
+                'region42',
+                ['Region 42'],
+                'rectangle',
+                'relative',
+                0.31,
+                0.18,
+                0.385,
+                0.127
+            ),
+        ];
+        $this->xmp_mock
+            ->expects($this->once())
+            ->method('read_rectangle_cropping_metadata')
+            ->with($input_path)
+            ->willReturn($input_xmp_regions);
+
+        $expected_result = [
+            [
+                'id' => 'region42',
+                'names' => ['Region 42'],
+                'shape' => 'rectangle',
+                'unit' => 'relative',
+                'x' => 0.31,
+                'y' => 0.18,
+                'height' => 0.385,
+                'width' => 0.127,
+            ],
+        ];
+
+        $method = new ReflectionMethod(
+            'Frameright\Admin\AdminPlugin',
+            'read_rectangle_cropping_metadata'
+        );
+        $method->setAccessible(true);
+        $actual_result = $method->invoke(
+            new Frameright\Admin\AdminPlugin(
+                $this->global_functions_mock,
+                $this->filesystem_mock,
+                $this->xmp_mock
+            ),
+            $input_path
+        );
+
+        $this->assertSame($expected_result, $actual_result);
+    }
+
+    /**
+     * Forges an instance of ImageRegion.
+     *
+     * @param string $id Region ID.
+     * @param array  $names Region names in different languages.
+     * @param string $shape 'rectangle'.
+     * @param string $unit E.g. 'relative'.
+     * @param string $x Region coordinate.
+     * @param string $y Region coordinate.
+     * @param string $height Region height.
+     * @param string $width Region width.
+     * @return \CSD\Image\Metadata\Xmp\ImageRegion Mock.
+     */
+    private function create_mock_image_region(
+        $id,
+        $names,
+        $shape,
+        $unit,
+        $x,
+        $y,
+        $height,
+        $width
+    ) {
+        $result = new \CSD\Image\Metadata\Xmp\ImageRegion();
+        $result->id = $id;
+        $result->names = $names;
+        $result->rbShape = $shape;
+        $result->rbUnit = $unit;
+        $result->rbXY = new \CSD\Image\Metadata\Xmp\Point($x, $y);
+        $result->rbH = $height;
+        $result->rbW = $width;
+        return $result;
     }
 
     /**
@@ -144,4 +302,11 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
      * @var Mock_stdClass
      */
     private $filesystem_mock;
+
+    /**
+     * Xmp mock.
+     *
+     * @var Mock_stdClass
+     */
+    private $xmp_mock;
 }

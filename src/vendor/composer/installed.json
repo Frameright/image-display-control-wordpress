@@ -1,0 +1,72 @@
+{
+    "packages": [
+        {
+            "name": "dchesterton/image",
+            "version": "dev-master",
+            "version_normalized": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/AurelienLourot/image.git",
+                "reference": "558a08e5ad4c5e6d3511b65104c797b9b71e5bdd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/AurelienLourot/image/zipball/558a08e5ad4c5e6d3511b65104c797b9b71e5bdd",
+                "reference": "558a08e5ad4c5e6d3511b65104c797b9b71e5bdd",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5"
+            },
+            "require-dev": {
+                "mockery/mockery": "~0.9",
+                "phpcompatibility/php-compatibility": "^9.3.5",
+                "phpunit/phpunit": "^9.5.25"
+            },
+            "time": "2022-10-15T21:57:26+00:00",
+            "default-branch": true,
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "CSD\\Image\\": "src/"
+                }
+            },
+            "scripts": {
+                "lint": [
+                    "./vendor/bin/phpcs"
+                ],
+                "test": [
+                    "./vendor/bin/phpunit"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Daniel Chesterton",
+                    "email": "daniel@chestertondevelopment.com",
+                    "homepage": "http://www.chestertondevelopment.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Image metadata library",
+            "keywords": [
+                "Exif",
+                "IPTC",
+                "Image",
+                "Metadata",
+                "Photo",
+                "XMP"
+            ],
+            "support": {
+                "source": "https://github.com/AurelienLourot/image/tree/master",
+                "issues": "https://github.com/AurelienLourot/image/issues"
+            },
+            "install-path": "../dchesterton/image"
+        }
+    ],
+    "dev": true,
+    "dev-package-names": []
+}

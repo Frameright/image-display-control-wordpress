@@ -5,7 +5,7 @@
  * @package Frameright\Tests\Admin
  */
 
-require_once __DIR__ . '/../admin/filesystem.php';
+require_once __DIR__ . '/../src/admin/filesystem.php';
 
 /**
  * Tests for Filesystem.

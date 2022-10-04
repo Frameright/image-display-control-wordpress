@@ -10,6 +10,7 @@ namespace Frameright\Admin;
 require_once __DIR__ . '/debug.php';
 require_once __DIR__ . '/filesystem.php';
 require_once __DIR__ . '/global-functions.php';
+require_once __DIR__ . '/xmp.php';
 
 /**
  * Implementation of the plugin when inside the admin panel.
@@ -22,10 +23,12 @@ class AdminPlugin {
      *                                             running tests.
      * @param Mock_stdClass $filesystem_mock Mock of Filesystem if running
      *                                       tests.
+     * @param Mock_stdClass $xmp_mock Mock of Xmp if running tests.
      */
     public function __construct(
         $global_functions_mock = null,
-        $filesystem_mock = null
+        $filesystem_mock = null,
+        $xmp_mock = null
     ) {
         $this->global_functions = $global_functions_mock
             ? $global_functions_mock
@@ -33,17 +36,29 @@ class AdminPlugin {
         $this->filesystem = $filesystem_mock
             ? $filesystem_mock
             : new Filesystem($this->global_functions);
+        $this->xmp = $xmp_mock ? $xmp_mock : new Xmp();
 
         $this->global_functions->add_filter('wp_handle_upload', [
             $this,
             'handle_image_upload',
         ]);
+
+        $this->global_functions->add_filter(
+            'wp_read_image_metadata',
+            [$this, 'populate_image_metadata'],
+            10, // default priority
+            5 // number of arguments
+        );
     }
 
     /**
      * Filter called when an image gets uploaded to the media library.
      *
-     * @param array $data Filter input.
+     * @param array $data Filter input/output with the following keys:
+     *                    * 'file': '/absolute/path/to/img.jpg'
+     *                    * 'url': 'https://mywordpress.com/wp-content/uploads/2022/10/img.jpg'
+     *                    * 'type': 'image/jpeg'.
+     * @return array Unmodified filter input/output.
      */
     public function handle_image_upload($data) {
         Debug\log('An image got uploaded: ' . print_r($data, true));
@@ -52,9 +67,46 @@ class AdminPlugin {
     }
 
     /**
+     * Filter called when the IPTC/EXIF/XMP metadata of an image needs to be
+     * read.
+     *
+     * @param array  $meta Filter input/output already populated by
+     *                     wp_read_image_metadata() using iptcparse() and
+     *                     exif_read_data().
+     * @param string $file Absolute path to the image.
+     * @param int    $image_type Type of image, one of the `IMAGETYPE_XXX`
+     *                           constants.
+     * @param array  $iptc Output of `iptcparse($info['APP13'])`.
+     * @param array  $exif Output of `exif_read_data($file)`.
+     * @return array Filter input/output extended with relevant XMP Image
+     *                      Region metadata. See
+     *                      https://iptc.org/std/photometadata/specification/IPTC-PhotoMetadata#image-region
+     */
+    public function populate_image_metadata(
+        $meta,
+        $file,
+        $image_type,
+        $iptc,
+        $exif
+    ) {
+        Debug\log("Populating WordPress metadata for $file ...");
+
+        if (array_key_exists('image_regions', $meta)) {
+            Debug\log('Already populated.');
+        } else {
+            $meta['image_regions'] = $this->read_rectangle_cropping_metadata(
+                $file
+            );
+        }
+
+        Debug\log('Resulting metadata: ' . print_r($meta, true));
+        return $meta;
+    }
+
+    /**
      * Create hardcropped versions of a given source image.
      *
-     * @param string $source_image_path Absolute path of the source image.
+     * @param string $source_image_path Absolute path to the source image.
      */
     private function create_hardcrops($source_image_path) {
         Debug\log("Creating hardcrops of $source_image_path ...");
@@ -140,6 +192,38 @@ class AdminPlugin {
     }
 
     /**
+     * Reads the rectangle cropping XMP Image Region metadata from a given
+     * file. See
+     * https://iptc.org/std/photometadata/specification/IPTC-PhotoMetadata#image-region
+     *
+     * @param string $path Absolute path to the image.
+     * @return array XMP Image Region metadata structured in a way that can
+     *               directly be used as WordPress metadata.
+     */
+    private function read_rectangle_cropping_metadata($path) {
+        $wordpress_metadata = [];
+
+        $regions = $this->xmp->read_rectangle_cropping_metadata($path);
+        Debug\log('Found relevant image regions: ' . print_r($regions, true));
+
+        foreach ($regions as $region) {
+            $wordpress_metadata_region = [
+                'id' => $region->id,
+                'names' => $region->names,
+                'shape' => $region->rbShape,
+                'unit' => $region->rbUnit,
+                'x' => $region->rbXY->rbX,
+                'y' => $region->rbXY->rbY,
+                'height' => $region->rbH,
+                'width' => $region->rbW,
+            ];
+            array_push($wordpress_metadata, $wordpress_metadata_region);
+        }
+
+        return $wordpress_metadata;
+    }
+
+    /**
      * Mockable wrapper for calling global functions.
      *
      * @var GlobalFunctions
@@ -152,4 +236,11 @@ class AdminPlugin {
      * @var Filesystem
      */
     private $filesystem;
+
+    /**
+     * Collection of XMP-related helper functions.
+     *
+     * @var Xmp
+     */
+    private $xmp;
 }
