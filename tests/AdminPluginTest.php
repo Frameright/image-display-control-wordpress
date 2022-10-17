@@ -126,6 +126,24 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
         $input_source_path =
             $input_source_dirname . '/' . $input_source_basename;
 
+        $input_xmp_regions = [
+            $this->create_mock_image_region(
+                'region42',
+                ['Region 42'],
+                'rectangle',
+                'relative',
+                0.31,
+                0.18,
+                0.385,
+                0.127
+            ),
+        ];
+        $this->xmp_mock
+            ->expects($this->once())
+            ->method('read_rectangle_cropping_metadata')
+            ->with($input_source_path)
+            ->willReturn($input_xmp_regions);
+
         $image_editor_mock = $this->getMockBuilder(stdClass::class)
             ->addMethods(['save'])
             ->getMock();
@@ -135,14 +153,14 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
             ->with($input_source_path)
             ->willReturn($image_editor_mock);
 
-        $expected_target_name = 'img-frameright';
+        $expected_target_name = 'img-frameright-region42';
         $expected_target_basename = $expected_target_name . '.jpg';
         $expected_target_path =
             $input_source_dirname . '/' . $expected_target_basename;
         $this->filesystem_mock
             ->expects($this->once())
             ->method('unique_target_file')
-            ->with($input_source_path)
+            ->with($input_source_path, '-frameright-region42')
             ->willReturn([
                 'path' => $expected_target_path,
                 'basename' => $expected_target_basename,

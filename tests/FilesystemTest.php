@@ -93,7 +93,8 @@ final class FilesystemTest extends PHPUnit\Framework\TestCase {
         $method->setAccessible(true);
         $actual_result = $method->invoke(
             new Frameright\Admin\Filesystem($this->global_functions_mock),
-            $input_source_path
+            $input_source_path,
+            '-frameright'
         );
 
         $this->assertSame($expected_result, $actual_result);

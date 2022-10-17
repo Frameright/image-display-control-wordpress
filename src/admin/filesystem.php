@@ -28,7 +28,10 @@ class Filesystem {
      * Generate a non-existing file name/path for creating a copy/variant of a
      * given source file.
      *
-     * @param string $source_path Absolute path of the source file.
+     * @param string $source_path Absolute path of the source file, e.g.
+     *                            '/absolute/path/to/img.jpg'.
+     * @param string $basename_suffix Suffix to be appended to the original
+     *                                basename, e.g. '-frameright'.
      * @return array Supported keys:
      *               * 'path':      '/absolute/path/to/img-frameright.jpg'
      *               * 'basename':  'img-frameright.jpg'
@@ -36,7 +39,7 @@ class Filesystem {
      *               * 'name':      'img-frameright'
      *               * 'extension': 'jpg'
      */
-    public function unique_target_file($source_path) {
+    public function unique_target_file($source_path, $basename_suffix) {
         $source_basename = basename($source_path);
         $source_dirname = dirname($source_path);
 
@@ -46,7 +49,7 @@ class Filesystem {
         $source_name = $source_basename_items[0];
         $source_extension = $source_basename_items[1];
 
-        $target_name = $source_name . '-frameright';
+        $target_name = $source_name . $basename_suffix;
         $target_basename = self::name_and_extension_to_basename(
             $target_name,
             $source_extension

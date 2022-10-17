@@ -94,6 +94,10 @@ class AdminPlugin {
         if (array_key_exists('image_regions', $meta)) {
             Debug\log('Already populated.');
         } else {
+            // FIXME do not to that for generated hardcrops, only for the
+            // original image. Unfortunately $iptc, $exif and $meta can't be
+            // used to differenciate the original image and the hardcrops as
+            // they are identical.
             $meta['image_regions'] = $this->read_rectangle_cropping_metadata(
                 $file
             );
@@ -111,6 +115,24 @@ class AdminPlugin {
     private function create_hardcrops($source_image_path) {
         Debug\log("Creating hardcrops of $source_image_path ...");
 
+        $image_regions = $this->read_rectangle_cropping_metadata(
+            $source_image_path
+        );
+        Debug\log(
+            'Found ' . count($image_regions) . ' rectangle cropping region(s)'
+        );
+        foreach ($image_regions as $image_region) {
+            $this->create_hardcrop($source_image_path, $image_region);
+        }
+    }
+
+    /**
+     * Create hardcropped version of a given source image.
+     *
+     * @param string $source_image_path Absolute path to the source image.
+     * @param array  $image_region Cropping details.
+     */
+    private function create_hardcrop($source_image_path, $image_region) {
         // Object for making changes to an image and saving these changes
         // somewhere else:
         $image_editor = $this->global_functions->wp_get_image_editor(
@@ -121,8 +143,10 @@ class AdminPlugin {
             'Could not create image editor'
         );
 
+        Debug\assert_($image_region['id'], 'Image region has no ID');
         $target_image_file = $this->filesystem->unique_target_file(
-            $source_image_path
+            $source_image_path,
+            '-frameright-' . $image_region['id']
         );
         Debug\log('Saving to: ' . print_r($target_image_file, true));
         $saved_file = $image_editor->save($target_image_file['path']);
@@ -155,6 +179,7 @@ class AdminPlugin {
         );
 
         $source_basename = basename($source_image_path);
+        // TODO necessary?
         $attachment_meta_to_be_set = [
             // Mark the attachment as created/owned by us:
             'frameright' => true,
@@ -181,6 +206,7 @@ class AdminPlugin {
          *       * info about all the generated scaled images
          *       * some of the metadata extracted from the original image
          */
+        // TODO necessary?
         $attachment_metadata = $this->global_functions->wp_generate_attachment_metadata(
             $target_attachment_id,
             $saved_file['path']
