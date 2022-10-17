@@ -2,10 +2,10 @@
 /**
  * Mockable wrapper of all global functions.
  *
- * @package Frameright\Admin
+ * @package Frameright
  */
 
-namespace Frameright\Admin;
+namespace Frameright;
 
 /**
  * Wrap here any global function (e.g. the ones provided by WordPress) called

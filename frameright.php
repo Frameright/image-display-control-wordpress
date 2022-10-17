@@ -35,4 +35,23 @@ namespace Frameright;
 if (is_admin()) {
     require_once __DIR__ . '/src/admin/admin-plugin.php';
     new Admin\AdminPlugin();
+} else {
+    /**
+     * FIXME we will also enter here if we're in the Gutenberg editor. One way
+     * to check that in WordPress >= 5 according to
+     * https://wordpress.stackexchange.com/questions/321368/how-to-check-if-current-admin-page-is-gutenberg-editor
+     * is to do
+     *
+     *     if (!function_exists('get_current_screen')) {
+     *         require_once ABSPATH . 'wp-admin/includes/screen.php';
+     *     }
+     *     $current_screen = get_current_screen();
+     *     return $current_screen->is_block_editor();
+     *
+     * Unfortunately it seems like it's too early here: get_current_screen()
+     * still returns null at this point.
+     */
+
+    require_once __DIR__ . '/src/website/website-plugin.php';
+    new Website\WebsitePlugin();
 }

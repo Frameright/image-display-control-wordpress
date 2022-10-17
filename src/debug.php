@@ -2,10 +2,10 @@
 /**
  * Debugging utils.
  *
- * @package Frameright\Admin\Debug
+ * @package Frameright\Debug
  */
 
-namespace Frameright\Admin\Debug;
+namespace Frameright\Debug;
 
 /**
  * Log $text to debug.log if WP_DEBUG is true.

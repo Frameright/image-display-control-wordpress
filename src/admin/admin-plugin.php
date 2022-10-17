@@ -7,10 +7,13 @@
 
 namespace Frameright\Admin;
 
-require_once __DIR__ . '/debug.php';
 require_once __DIR__ . '/filesystem.php';
-require_once __DIR__ . '/global-functions.php';
 require_once __DIR__ . '/xmp.php';
+
+require_once __DIR__ . '/../debug.php';
+use Frameright\Debug;
+require_once __DIR__ . '/../global-functions.php';
+use Frameright\GlobalFunctions;
 
 /**
  * Implementation of the plugin when inside the admin panel.

@@ -27,6 +27,7 @@
             <property name="strict_class_file_names" value="false" />
         </properties>
         <exclude name="Generic.Arrays.DisallowShortArraySyntax.Found" />
+        <exclude name="Generic.Commenting.DocComment.LongNotCapital" />
         <exclude name="Generic.Formatting.MultipleStatementAlignment.NotSameWarning" />
         <exclude name="Generic.WhiteSpace.ArbitraryParenthesesSpacing.SpaceAfterOpen" />
         <exclude name="Generic.WhiteSpace.ArbitraryParenthesesSpacing.SpaceBeforeClose" />

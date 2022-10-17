@@ -7,8 +7,6 @@
 
 namespace Frameright\Admin;
 
-require_once __DIR__ . '/global-functions.php';
-
 /**
  * Collection of file-related helper functions. This class has conceptually no
  * state, so all methods can be understood as static.
