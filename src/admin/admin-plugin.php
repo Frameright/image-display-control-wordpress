@@ -143,10 +143,13 @@ class AdminPlugin {
             'Could not create image editor'
         );
 
-        Debug\assert_($image_region['id'], 'Image region has no ID');
+        $target_basename_suffix = '-frameright';
+        if ($image_region['id']) {
+            $target_basename_suffix .= '-' . $image_region['id'];
+        }
         $target_image_file = $this->filesystem->unique_target_file(
             $source_image_path,
-            '-frameright-' . $image_region['id']
+            $target_basename_suffix
         );
         Debug\log('Saving to: ' . print_r($target_image_file, true));
         $saved_file = $image_editor->save($target_image_file['path']);
@@ -164,10 +167,17 @@ class AdminPlugin {
             $target_image_file['basename'] . ' !== ' . $saved_file['file']
         );
 
+        $target_image_title =
+            '[frameright:hardcrop] ' .
+            $this->filesystem->image_title($source_image_path);
+        if ($image_region['id']) {
+            $target_image_title .= ' - ' . $image_region['id'];
+        }
+
         $target_attachment_id = $this->global_functions->wp_insert_attachment(
             [
                 'post_mime_type' => $saved_file['mime-type'],
-                'post_title' => $target_image_file['name'],
+                'post_title' => $target_image_title,
             ],
             $saved_file['path'],
             0, // no parent post

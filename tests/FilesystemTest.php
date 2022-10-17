@@ -17,7 +17,7 @@ final class FilesystemTest extends PHPUnit\Framework\TestCase {
      */
     protected function setUp(): void {
         $this->global_functions_mock = $this->getMockBuilder(stdClass::class)
-            ->addMethods(['wp_unique_filename'])
+            ->addMethods(['wp_read_image_metadata', 'wp_unique_filename'])
             ->getMock();
     }
     // phpcs:enable
@@ -86,16 +86,55 @@ final class FilesystemTest extends PHPUnit\Framework\TestCase {
             ->with('/absolute/path/to', 'img-frameright.jpg')
             ->willReturn('img-frameright.jpg');
 
-        $method = new ReflectionMethod(
-            'Frameright\Admin\Filesystem',
-            'unique_target_file'
-        );
-        $method->setAccessible(true);
-        $actual_result = $method->invoke(
-            new Frameright\Admin\Filesystem($this->global_functions_mock),
-            $input_source_path,
-            '-frameright'
-        );
+        $actual_result = (new Frameright\Admin\Filesystem(
+            $this->global_functions_mock
+        ))->unique_target_file($input_source_path, '-frameright');
+
+        $this->assertSame($expected_result, $actual_result);
+    }
+
+    /**
+     * Test image_title() with metadata.
+     */
+    public function test_image_title_with_metadata() {
+        $input_path = '/absolute/path/to/img.jpg';
+
+        $expected_result = 'My title';
+
+        $this->global_functions_mock
+            ->expects($this->once())
+            ->method('wp_read_image_metadata')
+            ->with($input_path)
+            ->willReturn([
+                'title' => $expected_result,
+            ]);
+
+        $actual_result = (new Frameright\Admin\Filesystem(
+            $this->global_functions_mock
+        ))->image_title($input_path);
+
+        $this->assertSame($expected_result, $actual_result);
+    }
+
+    /**
+     * Test image_title() without metadata.
+     */
+    public function test_image_title_without_metadata() {
+        $input_path = '/absolute/path/to/img.jpg';
+
+        $expected_result = 'img';
+
+        $this->global_functions_mock
+            ->expects($this->once())
+            ->method('wp_read_image_metadata')
+            ->with($input_path)
+            ->willReturn([
+                'title' => '',
+            ]);
+
+        $actual_result = (new Frameright\Admin\Filesystem(
+            $this->global_functions_mock
+        ))->image_title($input_path);
 
         $this->assertSame($expected_result, $actual_result);
     }

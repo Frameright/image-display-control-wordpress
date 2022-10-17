@@ -78,6 +78,25 @@ class Filesystem {
         return $result;
     }
 
+    /**
+     * Returns the title of an image based on its metadata.
+     *
+     * @param string $path Absolute path of the image file, e.g.
+     *                     '/absolute/path/to/img.jpg'.
+     * @return string The name of the image ('img') if no title could be found
+     *                in the metadata.
+     */
+    public function image_title($path) {
+        $title = $this->global_functions->wp_read_image_metadata($path)[
+            'title'
+        ];
+        if ($title) {
+            return $title;
+        }
+
+        return self::basename_to_name_and_extension(basename($path))[0];
+    }
+
     const EXTENSION_SEPARATOR = '.';
 
     /**

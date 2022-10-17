@@ -29,7 +29,7 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
             ])
             ->getMock();
         $this->filesystem_mock = $this->getMockBuilder(stdClass::class)
-            ->addMethods(['unique_target_file'])
+            ->addMethods(['image_title', 'unique_target_file'])
             ->getMock();
         $this->xmp_mock = $this->getMockBuilder(stdClass::class)
             ->addMethods(['read_rectangle_cropping_metadata'])
@@ -169,6 +169,12 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
                 'extension' => 'jpg',
             ]);
 
+        $this->filesystem_mock
+            ->expects($this->once())
+            ->method('image_title')
+            ->with($input_source_path)
+            ->willReturn('My title');
+
         $image_editor_mock
             ->expects($this->once())
             ->method('save')
@@ -188,7 +194,7 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
             ->with(
                 [
                     'post_mime_type' => 'image/jpeg',
-                    'post_title' => $expected_target_name,
+                    'post_title' => '[frameright:hardcrop] My title - region42',
                 ],
                 $expected_target_path
             )
