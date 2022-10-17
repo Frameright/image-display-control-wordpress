@@ -99,7 +99,7 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
                     'id' => 'region42',
                     'names' => ['Region 42'],
                     'shape' => 'rectangle',
-                    'unit' => 'relative',
+                    'absolute' => false,
                     'x' => 0.31,
                     'y' => 0.18,
                     'height' => 0.385,
@@ -145,7 +145,7 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
             ->willReturn($input_xmp_regions);
 
         $image_editor_mock = $this->getMockBuilder(stdClass::class)
-            ->addMethods(['save'])
+            ->addMethods(['crop', 'get_size', 'save'])
             ->getMock();
         $this->global_functions_mock
             ->expects($this->once())
@@ -177,15 +177,29 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
 
         $image_editor_mock
             ->expects($this->once())
+            ->method('get_size')
+            ->willReturn([
+                'width' => 507,
+                'height' => 407,
+            ]);
+
+        $image_editor_mock
+            ->expects($this->once())
+            ->method('crop')
+            ->with(157, 73, 64, 157)
+            ->willReturn(true);
+
+        $image_editor_mock
+            ->expects($this->once())
             ->method('save')
             ->with($expected_target_path)
             ->willReturn([
                 'path' => $expected_target_path,
                 'file' => $expected_target_basename,
-                'width' => 2395,
-                'height' => 1807,
+                'width' => 64,
+                'height' => 157,
                 'mime-type' => 'image/jpeg',
-                'filesize' => 622369,
+                'filesize' => 4242,
             ]);
 
         $this->global_functions_mock
@@ -254,7 +268,7 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
                 'id' => 'region42',
                 'names' => ['Region 42'],
                 'shape' => 'rectangle',
-                'unit' => 'relative',
+                'absolute' => false,
                 'x' => 0.31,
                 'y' => 0.18,
                 'height' => 0.385,
@@ -280,12 +294,59 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
     }
 
     /**
+     * Test absolute()..
+     */
+    public function test_absolute() {
+        $input_region = [
+            'id' => 'region42',
+            'names' => ['Region 42'],
+            'shape' => 'rectangle',
+            'absolute' => false,
+            'x' => 0.31,
+            'y' => 0.18,
+            'height' => 0.385,
+            'width' => 0.127,
+        ];
+        $input_source_image_width = 507;
+        $input_source_image_height = 407;
+
+        $expected_result = [
+            'id' => 'region42',
+            'names' => ['Region 42'],
+            'shape' => 'rectangle',
+            'absolute' => true,
+            'x' => 157,
+            'y' => 73,
+            'height' => 157,
+            'width' => 64,
+        ];
+
+        $method = new ReflectionMethod(
+            'Frameright\Admin\AdminPlugin',
+            'absolute'
+        );
+        $method->setAccessible(true);
+        $actual_result = $method->invoke(
+            new Frameright\Admin\AdminPlugin(
+                $this->global_functions_mock,
+                $this->filesystem_mock,
+                $this->xmp_mock
+            ),
+            $input_region,
+            $input_source_image_width,
+            $input_source_image_height
+        );
+
+        $this->assertSame($expected_result, $actual_result);
+    }
+
+    /**
      * Forges an instance of ImageRegion.
      *
      * @param string $id Region ID.
      * @param array  $names Region names in different languages.
      * @param string $shape 'rectangle'.
-     * @param string $unit E.g. 'relative'.
+     * @param string $unit 'pixel' or 'relative'.
      * @param string $x Region coordinate.
      * @param string $y Region coordinate.
      * @param string $height Region height.

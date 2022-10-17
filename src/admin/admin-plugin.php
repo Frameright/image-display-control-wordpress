@@ -143,6 +143,23 @@ class AdminPlugin {
             'Could not create image editor'
         );
 
+        $source_image_size = $image_editor->get_size();
+        $absolute_image_region = $this->absolute(
+            $image_region,
+            $source_image_size['width'],
+            $source_image_size['height']
+        );
+        $crop_result = $image_editor->crop(
+            $absolute_image_region['x'],
+            $absolute_image_region['y'],
+            $absolute_image_region['width'],
+            $absolute_image_region['height']
+        );
+        Debug\assert_(
+            !$this->global_functions->is_wp_error($crop_result),
+            'Could not crop image'
+        );
+
         $target_basename_suffix = '-frameright';
         if ($image_region['id']) {
             $target_basename_suffix .= '-' . $image_region['id'];
@@ -247,7 +264,11 @@ class AdminPlugin {
                 'id' => $region->id,
                 'names' => $region->names,
                 'shape' => $region->rbShape,
-                'unit' => $region->rbUnit,
+
+                // Otherwise relative, see
+                // https://iptc.org/std/photometadata/specification/IPTC-PhotoMetadata#boundary-measuring-unit
+                'absolute' => strtolower($region->rbUnit) === 'pixel',
+
                 'x' => $region->rbXY->rbX,
                 'y' => $region->rbXY->rbY,
                 'height' => $region->rbH,
@@ -257,6 +278,53 @@ class AdminPlugin {
         }
 
         return $wordpress_metadata;
+    }
+
+    /**
+     * Make sure the coordinate of an Image Region are absolute and not
+     * relative to the source image.
+     *
+     * @param array $wordpress_metadata_region Output of
+     *                                         read_rectangle_cropping_metadata().
+     * @param int   $source_image_width Conversion factor in pixels.
+     * @param int   $source_image_height Conversion factor in pixels.
+     * @return array Modified $wordpress_metadata_region .
+     */
+    private function absolute(
+        $wordpress_metadata_region,
+        $source_image_width,
+        $source_image_height
+    ) {
+        if (!$wordpress_metadata_region['absolute']) {
+            $wordpress_metadata_region['x'] = (int) round(
+                $wordpress_metadata_region['x'] * $source_image_width
+            );
+            $wordpress_metadata_region['width'] = (int) round(
+                $wordpress_metadata_region['width'] * $source_image_width
+            );
+            $wordpress_metadata_region['y'] = (int) round(
+                $wordpress_metadata_region['y'] * $source_image_height
+            );
+            $wordpress_metadata_region['height'] = (int) round(
+                $wordpress_metadata_region['height'] * $source_image_height
+            );
+            $wordpress_metadata_region['absolute'] = true;
+        }
+
+        Debug\assert_(
+            $wordpress_metadata_region['x'] +
+                $wordpress_metadata_region['width'] <=
+                $source_image_width,
+            'Cropping width overflow'
+        );
+        Debug\assert_(
+            $wordpress_metadata_region['y'] +
+                $wordpress_metadata_region['height'] <=
+                $source_image_width,
+            'Cropping height overflow'
+        );
+
+        return $wordpress_metadata_region;
     }
 
     /**
