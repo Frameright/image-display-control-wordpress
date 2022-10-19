@@ -139,8 +139,8 @@ class AdminPlugin {
      * @param array  $iptc Output of `iptcparse($info['APP13'])`.
      * @param array  $exif Output of `exif_read_data($file)`.
      * @return array Filter input/output extended with relevant XMP Image
-     *                      Region metadata. See
-     *                      https://iptc.org/std/photometadata/specification/IPTC-PhotoMetadata#image-region
+     *               Region metadata. See
+     *               https://iptc.org/std/photometadata/specification/IPTC-PhotoMetadata#image-region
      */
     public function populate_image_metadata(
         $meta,
@@ -154,7 +154,7 @@ class AdminPlugin {
         if (array_key_exists('image_regions', $meta)) {
             Debug\log('Already populated.');
         } else {
-            // FIXME do not to that for generated hardcrops, only for the
+            // FIXME do not do that for generated hardcrops, only for the
             // original image. Unfortunately $iptc, $exif and $meta can't be
             // used to differenciate the original image and the hardcrops as
             // they are identical.

@@ -27,7 +27,218 @@ class WebsitePlugin {
             ? $global_functions_mock
             : new GlobalFunctions();
 
-        Debug\log_all_fired_hooks();
+        /**
+         * When rendering an image, the most important filters involved are
+         * the following ones, in this order:
+         *   * render_block_data
+         *   * wp_img_tag_add_width_and_height_attr
+         *   * wp_get_attachment_metadata
+         *   * wp_image_src_get_dimensions
+         *   * wp_calculate_image_srcset_meta
+         *   * wp_calculate_image_srcset
+         *   * wp_calculate_image_sizes
+         *   * wp_content_img_tag
+         *
+         * The goal of this class is to replace
+         *
+         *   <img src='<orig_url>'
+         *        srcset="<orig_url> 1024w,
+         *                <orig_url> 300w,
+         *        [...]
+         *
+         * with
+         *
+         *   <img src='<best_crop_url>'
+         *        srcset="<best_crop_url> 1024w,
+         *                <best_crop_url> 300w,
+         *        [...]
+         *
+         * After having played around with all filters mentioned above, it
+         * appears that:
+         *   * wp_calculate_image_srcset is the best filter for replacing all
+         *     srcset attributes.
+         *   * wp_content_img_tag would be the best filter for replacing the
+         *     src attribute, however it seems like leaving it unchanged still
+         *     provides good results.
+         */
+        $this->global_functions->add_filter(
+            'wp_calculate_image_srcset',
+            [$this, 'replace_srcsets'],
+            10, // default priority
+            5 // number of arguments
+        );
+    }
+
+    /**
+     * Filter called when rendering images, giving the opportunity to the
+     * plugin to tweak srcset HTML attributes.
+     *
+     * If the image being rendered is an original image containing XMP Image
+     * Regions, we go through all the corresponding hardcrops and replace the
+     * srcset attributes by the best hardcrop.
+     *
+     * @param array  $sources Filter input/output already populated by
+     *                        srcset-related data.
+     * @param array  $size_array An array of requested width and height values.
+     * @param string $image_src Value for the src attribute of the <img> HTML
+     *                          element being rendered.
+     * @param array  $image_meta The original image metadata as returned by
+     *                           `wp_get_attachment_metadata()`.
+     * @param int    $attachment_id Attachment ID of the original image.
+     * @return array Filter input/output in which image URLs may have been
+     *               replaced by those of a better hardcrop.
+     */
+    public function replace_srcsets(
+        $sources,
+        $size_array,
+        $image_src,
+        $image_meta,
+        $attachment_id
+    ) {
+        Debug\log("Replacing srcsets for attachment $attachment_id");
+
+        $hardcrop_attachment_ids = $this->global_functions->get_post_meta(
+            $attachment_id,
+            'frameright_has_hardcrops',
+            true
+        );
+
+        if (!$hardcrop_attachment_ids) {
+            Debug\log('No hardcrop found, skipping');
+            return $sources;
+        }
+        Debug\log(
+            'Attached hardcrops found: ' .
+                print_r($hardcrop_attachment_ids, true)
+        );
+
+        $container_ratio = self::image_ratio($size_array[0], $size_array[1]);
+        Debug\log("Container ratio: $container_ratio");
+
+        $original_image_ratio = self::image_ratio(
+            $image_meta['width'],
+            $image_meta['height']
+        );
+        Debug\log("Original image ratio: $original_image_ratio");
+
+        $smallest_ratio_diff = abs($container_ratio - $original_image_ratio);
+        if ($smallest_ratio_diff < 0.1) {
+            Debug\log('Original image has the same ratio has the container');
+            return $sources;
+        }
+
+        $hardcrop_attachment_id_with_closest_ratio = null;
+        foreach ($hardcrop_attachment_ids as $hardcrop_attachment_id) {
+            $hardcrop_metadata = $this->global_functions->wp_get_attachment_metadata(
+                $hardcrop_attachment_id
+            );
+            $hardcrop_ratio = self::image_ratio(
+                $hardcrop_metadata['width'],
+                $hardcrop_metadata['height']
+            );
+            Debug\log(
+                "Hardcrop $hardcrop_attachment_id has ratio " . $hardcrop_ratio
+            );
+            $ratio_diff = abs($container_ratio - $hardcrop_ratio);
+            if ($ratio_diff < $smallest_ratio_diff) {
+                $smallest_ratio_diff = $ratio_diff;
+                $hardcrop_attachment_id_with_closest_ratio = $hardcrop_attachment_id;
+                $hardcrop_metadata_with_closest_ratio = $hardcrop_metadata;
+                $hardcrop_closest_ratio = $hardcrop_ratio;
+            }
+        }
+
+        if (!$hardcrop_attachment_id_with_closest_ratio) {
+            Debug\log('Original image has the best ratio');
+            return $sources;
+        }
+
+        Debug\log(
+            "Hardcrop $hardcrop_attachment_id_with_closest_ratio has " .
+                'the closest ratio. Metadata: ' .
+                print_r($hardcrop_metadata_with_closest_ratio, true)
+        );
+
+        $hardcrop_main_url = $this->global_functions->wp_get_attachment_url(
+            $hardcrop_attachment_id_with_closest_ratio
+        );
+        Debug\assert_(
+            $hardcrop_main_url,
+            'Could not determine URL of hardcrop'
+        );
+
+        // This transforms
+        // 'https://mywordpress.com/wp-content/uploads/2022/10/img.jpg'
+        // into
+        // 'https://mywordpress.com/wp-content/uploads/2022/10/'
+        $hardcrop_url_beginning =
+            substr($hardcrop_main_url, 0, strrpos($hardcrop_main_url, '/')) .
+            '/';
+
+        // Let's create a new set of srcset attributes that point to the best
+        // hardcrop.
+        $hardcrop_sources = [];
+
+        /**
+         * We need one item for each container size declared in the template,
+         * otherwise WordPress won't accept it. The goal is to produce an array
+         * that looks like
+         *
+         *   [
+         *    '300' => [
+         *      'url' => 'https://mywordpress.com/wp-content/uploads/2022/10/img-frameright-region-198x300.jpg',
+         *      'descriptor' => 'w',
+         *      'value' => 300,
+         *    ],
+         *    '1024' => [
+         *      'url' => 'https://mywordpress.com/wp-content/uploads/2022/10/img-frameright-region.jpg',
+         *      'descriptor' => 'w',
+         *      'value' => 1024,
+         *     ],
+         *     [...]
+         *   ]
+         */
+        $container_sizes = $this->global_functions->wp_get_registered_image_subsizes();
+        foreach ($container_sizes as $container_size_name => $container_size) {
+            if ($container_size['crop']) {
+                // Skip containers that aren't going to respect the ratio, e.g.
+                // 'thumbnail' which is usually 150x150:
+                continue;
+            }
+
+            $hardcrop_sources[$container_size['width']] = [
+                'url' => $hardcrop_main_url,
+                'descriptor' => 'w',
+                'value' => $container_size['width'],
+            ];
+
+            if (
+                array_key_exists(
+                    $container_size_name,
+                    $hardcrop_metadata_with_closest_ratio['sizes']
+                )
+            ) {
+                $hardcrop_sources[$container_size['width']]['url'] =
+                    $hardcrop_url_beginning .
+                    $hardcrop_metadata_with_closest_ratio['sizes'][
+                        $container_size_name
+                    ]['file'];
+            }
+        }
+
+        Debug\log('New sources: ' . print_r($hardcrop_sources, true));
+        return $hardcrop_sources;
+    }
+
+    /**
+     * Calculates image ratio safely, i.e. by avoiding divisions by 0.
+     *
+     * @param int $width Image width in pixels.
+     * @param int $height Image height in pixels.
+     * @return float Image ratio.
+     */
+    private static function image_ratio($width, $height) {
+        return $width / max($height, 1);
     }
 
     /**

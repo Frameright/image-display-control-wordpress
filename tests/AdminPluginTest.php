@@ -233,7 +233,9 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
         $this->global_functions_mock
             ->expects($this->once())
             ->method('add_post_meta')
-            ->with($input_source_attachment_id, 'frameright_has_hardcrops', [42])
+            ->with($input_source_attachment_id, 'frameright_has_hardcrops', [
+                42,
+            ])
             ->willReturn(83);
 
         $create_hardcrops_method = new ReflectionMethod(
