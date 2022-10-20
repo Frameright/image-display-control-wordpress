@@ -132,6 +132,161 @@ class AdminPlugin {
         $image_regions = $this->xmp->read_rectangle_cropping_metadata(
             $source_image_path
         );
+
+        // LA_TEMP
+        if (false !== strpos($source_image_path, '/skater.')) {
+            array_push($image_regions, [
+                'id' => 'horizontalbanner',
+                'names' => ['Horizontal banner'],
+                'shape' => 'rectangle',
+                'unit' => 'pixel',
+                'imageWidth' => 5760,
+                'imageHeight' => 3840,
+                'x' => 2343,
+                'y' => 858,
+                'width' => 3417,
+                'height' => 1281,
+            ]);
+            array_push($image_regions, [
+                'id' => 'square',
+                'names' => ['Square'],
+                'shape' => 'rectangle',
+                'unit' => 'pixel',
+                'imageWidth' => 5760,
+                'imageHeight' => 3840,
+                'x' => 2462,
+                'y' => 1097,
+                'width' => 782,
+                'height' => 782,
+            ]);
+            array_push($image_regions, [
+                'id' => 'tallportrait',
+                'names' => ['Tall portrait'],
+                'shape' => 'rectangle',
+                'unit' => 'pixel',
+                'imageWidth' => 5760,
+                'imageHeight' => 3840,
+                'x' => 2345,
+                'y' => 850,
+                'width' => 1122,
+                'height' => 2990,
+            ]);
+        }
+        if (false !== strpos($source_image_path, '/car.')) {
+            array_push($image_regions, [
+                'id' => 'horizontalbanner',
+                'names' => ['Horizontal banner'],
+                'shape' => 'rectangle',
+                'unit' => 'pixel',
+                'imageWidth' => 4933,
+                'imageHeight' => 3289,
+                'x' => 520,
+                'y' => 1026,
+                'width' => 3695,
+                'height' => 1385,
+            ]);
+            array_push($image_regions, [
+                'id' => 'square',
+                'names' => ['Square'],
+                'shape' => 'rectangle',
+                'unit' => 'pixel',
+                'imageWidth' => 4933,
+                'imageHeight' => 3289,
+                'x' => 804,
+                'y' => 807,
+                'width' => 1647,
+                'height' => 1647,
+            ]);
+            array_push($image_regions, [
+                'id' => 'tallportrait',
+                'names' => ['Tall portrait'],
+                'shape' => 'rectangle',
+                'unit' => 'pixel',
+                'imageWidth' => 4933,
+                'imageHeight' => 3289,
+                'x' => 730,
+                'y' => 79,
+                'width' => 1204,
+                'height' => 3210,
+            ]);
+        }
+        if (false !== strpos($source_image_path, '/surfer.')) {
+            array_push($image_regions, [
+                'id' => 'horizontalbanner',
+                'names' => ['Horizontal banner'],
+                'shape' => 'rectangle',
+                'unit' => 'pixel',
+                'imageWidth' => 2905,
+                'imageHeight' => 1937,
+                'x' => 0,
+                'y' => 426,
+                'width' => 2905,
+                'height' => 1089,
+            ]);
+            array_push($image_regions, [
+                'id' => 'square',
+                'names' => ['Square'],
+                'shape' => 'rectangle',
+                'unit' => 'pixel',
+                'imageWidth' => 2905,
+                'imageHeight' => 1937,
+                'x' => 795,
+                'y' => 0,
+                'width' => 1937,
+                'height' => 1937,
+            ]);
+            array_push($image_regions, [
+                'id' => 'tallportrait',
+                'names' => ['Tall portrait'],
+                'shape' => 'rectangle',
+                'unit' => 'pixel',
+                'imageWidth' => 2905,
+                'imageHeight' => 1937,
+                'x' => 2035,
+                'y' => 0,
+                'width' => 726,
+                'height' => 1937,
+            ]);
+        }
+        if (false !== strpos($source_image_path, '/birds.')) {
+            array_push($image_regions, [
+                'id' => 'horizontalbanner',
+                'names' => ['Horizontal banner'],
+                'shape' => 'rectangle',
+                'unit' => 'pixel',
+                'imageWidth' => 5391,
+                'imageHeight' => 3633,
+                'x' => 553,
+                'y' => 2392,
+                'width' => 3301,
+                'height' => 1238,
+            ]);
+            array_push($image_regions, [
+                'id' => 'square',
+                'names' => ['Square'],
+                'shape' => 'rectangle',
+                'unit' => 'pixel',
+                'imageWidth' => 5391,
+                'imageHeight' => 3633,
+                'x' => 668,
+                'y' => 915,
+                'width' => 2660,
+                'height' => 2660,
+            ]);
+            array_push($image_regions, [
+                'id' => 'tallportrait',
+                'names' => ['Tall portrait'],
+                'shape' => 'rectangle',
+                'unit' => 'pixel',
+                'imageWidth' => 5391,
+                'imageHeight' => 3633,
+                'x' => 876,
+                'y' => 0,
+                'width' => 1362,
+                'height' => 3633,
+            ]);
+        }
+
         Debug\log(
             'Found ' . count($image_regions) . ' rectangle cropping region(s)'
         );
