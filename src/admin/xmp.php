@@ -50,7 +50,7 @@ class Xmp {
 
             $result = $xmp_metadata->getImageRegions(
                 \CSD\Image\Metadata\Xmp\ShapeFilter::RECTANGLE,
-                \CSD\Image\Metadata\Xmp\RoleFilter::CROP
+                \CSD\Image\Metadata\Xmp\RoleFilter::ANY // LA_TODO CROP
             );
         } catch (\Exception $e) {
             Debug\log($e->getMessage());

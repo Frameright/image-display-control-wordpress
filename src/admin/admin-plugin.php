@@ -139,6 +139,13 @@ class AdminPlugin {
             return;
         }
 
+        // LA_TEMP:
+        $forged_crop = $image_regions[0];
+        $forged_crop['id'] = 'forged';
+        $forged_crop['x'] = 0;
+        $forged_crop['width'] = 1;
+        array_push($image_regions, $forged_crop);
+
         $hardcrop_attachment_ids = [];
         foreach ($image_regions as $image_region) {
             array_push(
