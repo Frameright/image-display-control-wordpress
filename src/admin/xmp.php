@@ -46,8 +46,8 @@ class Xmp {
             $xmp_metadata = \CSD\Image\Image::fromFile($path)->getXmp();
 
             $result = $xmp_metadata->getImageRegions(
-                \CSD\Image\Metadata\Xmp\ShapeFilter::RECTANGLE
-                // TODO , \CSD\Image\Metadata\Xmp\RoleFilter::CROP
+                \CSD\Image\Metadata\Xmp\ShapeFilter::RECTANGLE,
+                \CSD\Image\Metadata\Xmp\RoleFilter::CROP
             );
         } catch (\Exception $e) {
             Debug\log($e->getMessage());
