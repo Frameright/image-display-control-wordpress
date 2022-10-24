@@ -41,9 +41,16 @@ class AdminPlugin {
             : new Filesystem($this->global_functions);
         $this->xmp = $xmp_mock ? $xmp_mock : new Xmp();
 
+        $this->pending_attachment_meta_to_be_set = [];
+
         $this->global_functions->add_filter('wp_handle_upload', [
             $this,
             'handle_image_upload',
+        ]);
+
+        $this->global_functions->add_action('add_attachment', [
+            $this,
+            'set_attachment_meta',
         ]);
 
         $this->global_functions->add_filter(
@@ -65,8 +72,58 @@ class AdminPlugin {
      */
     public function handle_image_upload($data) {
         Debug\log('An image got uploaded: ' . print_r($data, true));
-        $this->create_hardcrops($data['file']);
+        $this->create_hardcrops($data['file'], $data['url']);
         return $data;
+    }
+
+    /**
+     * Action called once an attachment has been added. If any attachment meta
+     * for this new attachment is found in
+     * $this->pending_attachment_meta_to_be_set , set it.
+     *
+     * @param int $post_ID Attachment ID.
+     */
+    public function set_attachment_meta($post_ID) {
+        Debug\log("Attachment $post_ID has just been added");
+        $attachment_url = $this->global_functions->wp_get_attachment_url(
+            $post_ID
+        );
+        Debug\assert_(
+            $attachment_url,
+            "Could not determine URL of attachment $post_ID"
+        );
+
+        if (
+            array_key_exists(
+                $attachment_url,
+                $this->pending_attachment_meta_to_be_set
+            )
+        ) {
+            $attachment_meta_to_be_set =
+                $this->pending_attachment_meta_to_be_set[$attachment_url];
+            Debug\log(
+                'Attachment meta to be set: ' .
+                    print_r($attachment_meta_to_be_set, true)
+            );
+
+            foreach ($attachment_meta_to_be_set as $key => $value) {
+                $meta_id = $this->global_functions->add_post_meta(
+                    $post_ID,
+                    $key,
+                    $value,
+                    true // unique key
+                );
+                Debug\assert_(
+                    false !== $meta_id,
+                    "Could not add attachment meta ($key => " .
+                        print_r($value, true)
+                );
+            }
+
+            unset($this->pending_attachment_meta_to_be_set[$attachment_url]);
+        } else {
+            Debug\log('No pending attachment meta found.');
+        }
     }
 
     /**
@@ -114,8 +171,9 @@ class AdminPlugin {
      * Create hardcropped versions of a given source image.
      *
      * @param string $source_image_path Absolute path to the source image.
+     * @param string $source_image_url URL of the source image.
      */
-    private function create_hardcrops($source_image_path) {
+    private function create_hardcrops($source_image_path, $source_image_url) {
         Debug\log("Creating hardcrops of $source_image_path ...");
 
         $image_regions = $this->read_rectangle_cropping_metadata(
@@ -124,9 +182,25 @@ class AdminPlugin {
         Debug\log(
             'Found ' . count($image_regions) . ' rectangle cropping region(s)'
         );
-        foreach ($image_regions as $image_region) {
-            $this->create_hardcrop($source_image_path, $image_region);
+
+        if (!count($image_regions)) {
+            return;
         }
+
+        $hardcrop_attachment_ids = [];
+        foreach ($image_regions as $image_region) {
+            array_push(
+                $hardcrop_attachment_ids,
+                $this->create_hardcrop($source_image_path, $image_region)
+            );
+        }
+
+        // The goal here is to set as attachment meta on the original image the
+        // list of created hardcrops. However this is not possible yet in this
+        // hook to set attachment meta. So we store it for a later hook.
+        $this->pending_attachment_meta_to_be_set[$source_image_url] = [
+            'frameright_has_hardcrops' => $hardcrop_attachment_ids,
+        ];
     }
 
     /**
@@ -134,6 +208,7 @@ class AdminPlugin {
      *
      * @param string $source_image_path Absolute path to the source image.
      * @param array  $image_region Cropping details.
+     * @return int Created WordPress attachment ID.
      */
     private function create_hardcrop($source_image_path, $image_region) {
         // Object for making changes to an image and saving these changes
@@ -208,25 +283,6 @@ class AdminPlugin {
             'Could not insert attachment'
         );
 
-        $source_basename = basename($source_image_path);
-        // TODO necessary?
-        $attachment_meta_to_be_set = [
-            // Mark the attachment as created/owned by us:
-            'frameright' => true,
-        ];
-        foreach ($attachment_meta_to_be_set as $key => $value) {
-            $meta_id = $this->global_functions->add_post_meta(
-                $target_attachment_id,
-                $key,
-                $value,
-                true // unique key
-            );
-            Debug\assert_(
-                false !== $meta_id,
-                "Could not add attachment meta ($key => $value)"
-            );
-        }
-
         /** This will:
          *   * create myimage-frameright-scaled.jpg
          *   * create myimage-frameright-1980x1219.jpg for every container size
@@ -236,7 +292,6 @@ class AdminPlugin {
          *       * info about all the generated scaled images
          *       * some of the metadata extracted from the original image
          */
-        // TODO necessary?
         $attachment_metadata = $this->global_functions->wp_generate_attachment_metadata(
             $target_attachment_id,
             $saved_file['path']
@@ -245,6 +300,8 @@ class AdminPlugin {
             'Generated WordPress metadata for attached image: ' .
                 print_r($attachment_metadata, true)
         );
+
+        return $target_attachment_id;
     }
 
     /**
@@ -350,4 +407,17 @@ class AdminPlugin {
      * @var Xmp
      */
     private $xmp;
+
+    /**
+     * Array of attachment meta to be set in a later hook. Looks like:
+     *
+     *   [
+     *     'https://mywordpress.dev/wp-content/uploads/2022/10/img.jpg' => [
+     *       'frameright_has_hardcrops => [43, 44],
+     *     ],
+     *   ]
+     *
+     * @var array
+     */
+    private $pending_attachment_meta_to_be_set;
 }

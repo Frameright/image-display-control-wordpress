@@ -24,6 +24,7 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
                 'add_post_meta',
                 'is_wp_error',
                 'wp_generate_attachment_metadata',
+                'wp_get_attachment_url',
                 'wp_get_image_editor',
                 'wp_insert_attachment',
             ])
@@ -118,13 +119,17 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
     }
 
     /**
-     * Test create_hardcrops().
+     * Test create_hardcrops() and set_attachment_meta().
      */
-    public function test_create_hardcrops() {
+    public function test_create_hardcrops_and_set_attachment_meta() {
         $input_source_dirname = '/absolute/path/to';
         $input_source_basename = 'img.jpg';
         $input_source_path =
             $input_source_dirname . '/' . $input_source_basename;
+        $input_source_url =
+            'https://mywordpress.dev/wp-content/uploads/2022/10/' .
+            $input_source_basename;
+        $input_source_attachment_id = 43;
 
         $input_xmp_regions = [
             $this->create_mock_image_region(
@@ -216,26 +221,47 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
 
         $this->global_functions_mock
             ->expects($this->once())
-            ->method('add_post_meta')
-            ->with(42, 'frameright', true, true);
-
-        $this->global_functions_mock
-            ->expects($this->once())
             ->method('wp_generate_attachment_metadata')
             ->with(42, $expected_target_path);
 
-        $method = new ReflectionMethod(
+        $this->global_functions_mock
+            ->expects($this->once())
+            ->method('wp_get_attachment_url')
+            ->with($input_source_attachment_id)
+            ->willReturn($input_source_url);
+
+        $this->global_functions_mock
+            ->expects($this->once())
+            ->method('add_post_meta')
+            ->with($input_source_attachment_id, 'frameright_has_hardcrops', [42])
+            ->willReturn(83);
+
+        $create_hardcrops_method = new ReflectionMethod(
             'Frameright\Admin\AdminPlugin',
             'create_hardcrops'
         );
-        $method->setAccessible(true);
-        $method->invoke(
-            new Frameright\Admin\AdminPlugin(
-                $this->global_functions_mock,
-                $this->filesystem_mock,
-                $this->xmp_mock
-            ),
-            $input_source_path
+        $create_hardcrops_method->setAccessible(true);
+        $set_attachment_meta_method = new ReflectionMethod(
+            'Frameright\Admin\AdminPlugin',
+            'set_attachment_meta'
+        );
+        $set_attachment_meta_method->setAccessible(true);
+
+        $plugin_under_test = new Frameright\Admin\AdminPlugin(
+            $this->global_functions_mock,
+            $this->filesystem_mock,
+            $this->xmp_mock
+        );
+
+        $create_hardcrops_method->invoke(
+            $plugin_under_test,
+            $input_source_path,
+            $input_source_url
+        );
+
+        $set_attachment_meta_method->invoke(
+            $plugin_under_test,
+            $input_source_attachment_id
         );
     }
 
