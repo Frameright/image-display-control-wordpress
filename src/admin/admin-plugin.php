@@ -204,13 +204,73 @@ class AdminPlugin {
     }
 
     /**
-     * Create hardcropped version of a given source image.
+     * Create hardcropped version of a given source image and register it in
+     * WordPress.
      *
      * @param string $source_image_path Absolute path to the source image.
      * @param array  $image_region Cropping details.
      * @return int Created WordPress attachment ID.
      */
     private function create_hardcrop($source_image_path, $image_region) {
+        $saved_file = $this->create_hardcrop_on_disk(
+            $source_image_path,
+            $image_region
+        );
+
+        $target_image_title =
+            '[frameright:hardcrop] ' .
+            $this->filesystem->image_title($source_image_path);
+        if ($image_region['id']) {
+            $target_image_title .= ' - ' . $image_region['id'];
+        }
+
+        $target_attachment_id = $this->global_functions->wp_insert_attachment(
+            [
+                'post_mime_type' => $saved_file['mime-type'],
+                'post_title' => $target_image_title,
+            ],
+            $saved_file['path'],
+            0, // no parent post
+            true // report errors
+        );
+        Debug\assert_(
+            !$this->global_functions->is_wp_error($target_attachment_id),
+            'Could not insert attachment'
+        );
+
+        /** This will:
+         *   * create myimage-frameright-scaled.jpg
+         *   * create myimage-frameright-1980x1219.jpg for every container size
+         *     defined in the current WordPress template
+         *   * create a special `_wp_attachment_metadata` attachment meta
+         *     containing:
+         *       * info about all the generated scaled images
+         *       * some of the metadata extracted from the original image
+         */
+        $attachment_metadata = $this->global_functions->wp_generate_attachment_metadata(
+            $target_attachment_id,
+            $saved_file['path']
+        );
+        Debug\log(
+            'Generated WordPress metadata for attached image: ' .
+                print_r($attachment_metadata, true)
+        );
+
+        return $target_attachment_id;
+    }
+
+    /**
+     * Create hardcropped version of a given source image and store it in a new
+     * file on disk.
+     *
+     * @param string $source_image_path Absolute path to the source image.
+     * @param array  $image_region Cropping details.
+     * @return array Output of https://developer.wordpress.org/reference/classes/wp_image_editor/save/
+     */
+    private function create_hardcrop_on_disk(
+        $source_image_path,
+        $image_region
+    ) {
         // Object for making changes to an image and saving these changes
         // somewhere else:
         $image_editor = $this->global_functions->wp_get_image_editor(
@@ -262,46 +322,7 @@ class AdminPlugin {
             $target_image_file['basename'] . ' !== ' . $saved_file['file']
         );
 
-        $target_image_title =
-            '[frameright:hardcrop] ' .
-            $this->filesystem->image_title($source_image_path);
-        if ($image_region['id']) {
-            $target_image_title .= ' - ' . $image_region['id'];
-        }
-
-        $target_attachment_id = $this->global_functions->wp_insert_attachment(
-            [
-                'post_mime_type' => $saved_file['mime-type'],
-                'post_title' => $target_image_title,
-            ],
-            $saved_file['path'],
-            0, // no parent post
-            true // report errors
-        );
-        Debug\assert_(
-            !$this->global_functions->is_wp_error($target_attachment_id),
-            'Could not insert attachment'
-        );
-
-        /** This will:
-         *   * create myimage-frameright-scaled.jpg
-         *   * create myimage-frameright-1980x1219.jpg for every container size
-         *     defined in the current WordPress template
-         *   * create a special `_wp_attachment_metadata` attachment meta
-         *     containing:
-         *       * info about all the generated scaled images
-         *       * some of the metadata extracted from the original image
-         */
-        $attachment_metadata = $this->global_functions->wp_generate_attachment_metadata(
-            $target_attachment_id,
-            $saved_file['path']
-        );
-        Debug\log(
-            'Generated WordPress metadata for attached image: ' .
-                print_r($attachment_metadata, true)
-        );
-
-        return $target_attachment_id;
+        return $saved_file;
     }
 
     /**

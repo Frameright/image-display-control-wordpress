@@ -42,9 +42,10 @@ final class WebsitePluginTest extends PHPUnit\Framework\TestCase {
     }
 
     /**
-     * Test replace_srcsets().
+     * Test replace_srcsets() in the case where the original image has a better
+     * hardcrop.
      */
-    public function test_replace_srcsets() {
+    public function test_replace_srcsets_with_better_hardcrop() {
         $input_container_sizes = [
             'thumbnail' => [
                 'crop' => true,
@@ -84,7 +85,11 @@ final class WebsitePluginTest extends PHPUnit\Framework\TestCase {
                     [
                         'width' => 3000,
                         'height' => 500,
-                        'sizes' => [],
+                        'sizes' => [
+                            'medium' => [
+                                'file' => 'hardcrop43-medium.jpg',
+                            ],
+                        ],
                     ],
                     [
                         'width' => 1000,
@@ -110,7 +115,7 @@ final class WebsitePluginTest extends PHPUnit\Framework\TestCase {
         $expected_srcsets = [
             512 => [
                 'url' =>
-                    'https://mywordpress.com/wp-content/uploads/2022/10/hardcrop43.jpg',
+                    'https://mywordpress.com/wp-content/uploads/2022/10/hardcrop43-medium.jpg',
                 'descriptor' => 'w',
                 'value' => 512,
             ],
@@ -131,6 +136,28 @@ final class WebsitePluginTest extends PHPUnit\Framework\TestCase {
             $input_original_image_meta,
             $input_attachment_id
         );
+
+        $this->assertSame($expected_srcsets, $actual_srcsets);
+    }
+
+    /**
+     * Test replace_srcsets() in the case where the original image has no
+     * hardcrop.
+     */
+    public function test_replace_srcsets_without_hardcrop() {
+        $input_attachment_id = 42;
+
+        $this->global_functions_mock
+            ->expects($this->once())
+            ->method('get_post_meta')
+            ->with($input_attachment_id, 'frameright_has_hardcrops')
+            ->willReturn([]);
+
+        $expected_srcsets = null;
+
+        $actual_srcsets = (new Frameright\Website\WebsitePlugin(
+            $this->global_functions_mock
+        ))->replace_srcsets(null, null, null, null, $input_attachment_id);
 
         $this->assertSame($expected_srcsets, $actual_srcsets);
     }

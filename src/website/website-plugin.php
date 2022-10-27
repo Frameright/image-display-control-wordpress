@@ -97,83 +97,24 @@ class WebsitePlugin {
     ) {
         Debug\log("Replacing srcsets for attachment $attachment_id");
 
-        $hardcrop_attachment_ids = $this->global_functions->get_post_meta(
-            $attachment_id,
-            'frameright_has_hardcrops',
-            true
+        $hardcrop_attachment_ids = $this->get_hardcrop_attachment_ids(
+            $attachment_id
         );
-
         if (!$hardcrop_attachment_ids) {
-            Debug\log('No hardcrop found, skipping');
-            return $sources;
-        }
-        Debug\log(
-            'Attached hardcrops found: ' .
-                print_r($hardcrop_attachment_ids, true)
-        );
-
-        $container_ratio = self::image_ratio($size_array[0], $size_array[1]);
-        Debug\log("Container ratio: $container_ratio");
-
-        $original_image_ratio = self::image_ratio(
-            $image_meta['width'],
-            $image_meta['height']
-        );
-        Debug\log("Original image ratio: $original_image_ratio");
-
-        $smallest_ratio_diff = abs($container_ratio - $original_image_ratio);
-        if ($smallest_ratio_diff < 0.1) {
-            Debug\log('Original image has the same ratio has the container');
             return $sources;
         }
 
-        $hardcrop_attachment_id_with_closest_ratio = null;
-        foreach ($hardcrop_attachment_ids as $hardcrop_attachment_id) {
-            $hardcrop_metadata = $this->global_functions->wp_get_attachment_metadata(
-                $hardcrop_attachment_id
-            );
-            $hardcrop_ratio = self::image_ratio(
-                $hardcrop_metadata['width'],
-                $hardcrop_metadata['height']
-            );
-            Debug\log(
-                "Hardcrop $hardcrop_attachment_id has ratio " . $hardcrop_ratio
-            );
-            $ratio_diff = abs($container_ratio - $hardcrop_ratio);
-            if ($ratio_diff < $smallest_ratio_diff) {
-                $smallest_ratio_diff = $ratio_diff;
-                $hardcrop_attachment_id_with_closest_ratio = $hardcrop_attachment_id;
-                $hardcrop_metadata_with_closest_ratio = $hardcrop_metadata;
-                $hardcrop_closest_ratio = $hardcrop_ratio;
-            }
-        }
-
-        if (!$hardcrop_attachment_id_with_closest_ratio) {
+        $hardcrop_with_closest_ratio = $this->find_best_hardcrop(
+            $size_array,
+            $image_meta,
+            $hardcrop_attachment_ids
+        );
+        if (!$hardcrop_with_closest_ratio) {
             Debug\log('Original image has the best ratio');
             return $sources;
         }
 
-        Debug\log(
-            "Hardcrop $hardcrop_attachment_id_with_closest_ratio has " .
-                'the closest ratio. Metadata: ' .
-                print_r($hardcrop_metadata_with_closest_ratio, true)
-        );
-
-        $hardcrop_main_url = $this->global_functions->wp_get_attachment_url(
-            $hardcrop_attachment_id_with_closest_ratio
-        );
-        Debug\assert_(
-            $hardcrop_main_url,
-            'Could not determine URL of hardcrop'
-        );
-
-        // This transforms
-        // 'https://mywordpress.com/wp-content/uploads/2022/10/img.jpg'
-        // into
-        // 'https://mywordpress.com/wp-content/uploads/2022/10/'
-        $hardcrop_url_beginning =
-            substr($hardcrop_main_url, 0, strrpos($hardcrop_main_url, '/')) .
-            '/';
+        $hardcrop_url = $this->get_main_url($hardcrop_with_closest_ratio['id']);
 
         // Let's create a new set of srcset attributes that point to the best
         // hardcrop.
@@ -207,7 +148,7 @@ class WebsitePlugin {
             }
 
             $hardcrop_sources[$container_size['width']] = [
-                'url' => $hardcrop_main_url,
+                'url' => $hardcrop_url['main'],
                 'descriptor' => 'w',
                 'value' => $container_size['width'],
             ];
@@ -215,12 +156,12 @@ class WebsitePlugin {
             if (
                 array_key_exists(
                     $container_size_name,
-                    $hardcrop_metadata_with_closest_ratio['sizes']
+                    $hardcrop_with_closest_ratio['meta']['sizes']
                 )
             ) {
                 $hardcrop_sources[$container_size['width']]['url'] =
-                    $hardcrop_url_beginning .
-                    $hardcrop_metadata_with_closest_ratio['sizes'][
+                    $hardcrop_url['base'] .
+                    $hardcrop_with_closest_ratio['meta']['sizes'][
                         $container_size_name
                     ]['file'];
             }
@@ -228,6 +169,131 @@ class WebsitePlugin {
 
         Debug\log('New sources: ' . print_r($hardcrop_sources, true));
         return $hardcrop_sources;
+    }
+
+    /**
+     * If the given image has associated hardcrops, return their WordPress
+     * attachment IDs.
+     *
+     * @param int $attachment_id Attachment ID of the original image.
+     * @return array Attachment IDs of associated hardcrops.
+     */
+    private function get_hardcrop_attachment_ids($attachment_id) {
+        $hardcrop_attachment_ids = $this->global_functions->get_post_meta(
+            $attachment_id,
+            'frameright_has_hardcrops',
+            true
+        );
+
+        if (!$hardcrop_attachment_ids) {
+            $hardcrop_attachment_ids = [];
+        }
+
+        Debug\log(
+            'Attached hardcrops found: ' .
+                print_r($hardcrop_attachment_ids, true)
+        );
+
+        return $hardcrop_attachment_ids;
+    }
+
+    /**
+     * Of all the hardcrops of a given original image, find the one which fits
+     * best a given container.
+     *
+     * @param array $size_array An array of requested width and height values.
+     *                          In other words the container size.
+     * @param array $image_meta The original image metadata as returned by
+     *                          `wp_get_attachment_metadata()`.
+     * @param array $hardcrop_attachment_ids Attachment IDs of associated
+     *                                       hardcrops.
+     * @return array|null Attachment ID and metadata of the best fitting
+     *                    hardcrop. Null if the original image fits the
+     *                    container best. Supported keys:
+     *                    * 'id': attachment ID
+     *                    * 'meta': output of wp_get_attachment_metadata()
+     */
+    private function find_best_hardcrop(
+        $size_array,
+        $image_meta,
+        $hardcrop_attachment_ids
+    ) {
+        $container_ratio = self::image_ratio($size_array[0], $size_array[1]);
+        Debug\log("Container ratio: $container_ratio");
+
+        $original_image_ratio = self::image_ratio(
+            $image_meta['width'],
+            $image_meta['height']
+        );
+        Debug\log("Original image ratio: $original_image_ratio");
+
+        $smallest_ratio_diff = abs($container_ratio - $original_image_ratio);
+        if ($smallest_ratio_diff < 0.1) {
+            Debug\log('Original image has the same ratio as the container');
+            return;
+        }
+
+        $hardcrop_attachment_id_with_closest_ratio = null;
+        foreach ($hardcrop_attachment_ids as $hardcrop_attachment_id) {
+            $hardcrop_metadata = $this->global_functions->wp_get_attachment_metadata(
+                $hardcrop_attachment_id
+            );
+            $hardcrop_ratio = self::image_ratio(
+                $hardcrop_metadata['width'],
+                $hardcrop_metadata['height']
+            );
+            Debug\log(
+                "Hardcrop $hardcrop_attachment_id has ratio " . $hardcrop_ratio
+            );
+            $ratio_diff = abs($container_ratio - $hardcrop_ratio);
+            if ($ratio_diff < $smallest_ratio_diff) {
+                $smallest_ratio_diff = $ratio_diff;
+                $hardcrop_attachment_id_with_closest_ratio = $hardcrop_attachment_id;
+                $hardcrop_metadata_with_closest_ratio = $hardcrop_metadata;
+                $hardcrop_closest_ratio = $hardcrop_ratio;
+            }
+        }
+
+        Debug\log(
+            "Hardcrop $hardcrop_attachment_id_with_closest_ratio has " .
+                'the closest ratio. Metadata: ' .
+                print_r($hardcrop_metadata_with_closest_ratio, true)
+        );
+
+        return [
+            'id' => $hardcrop_attachment_id_with_closest_ratio,
+            'meta' => $hardcrop_metadata_with_closest_ratio,
+        ];
+    }
+
+    /**
+     * Get the main URL of a given image.
+     *
+     * An image has several URLs, as it is available in different container
+     * sizes ('medium', 'large', etc.). This is the URL to the largest version
+     * of this image.
+     *
+     * @param int $attachment_id Attachment ID of the image.
+     * @return array Supported keys:
+     *               * 'main': 'https://mywordpress.com/wp-content/uploads/2022/10/img.jpg'
+     *               * 'base': 'https://mywordpress.com/wp-content/uploads/2022/10/'
+     */
+    private function get_main_url($attachment_id) {
+        $main_url = $this->global_functions->wp_get_attachment_url(
+            $attachment_id
+        );
+        Debug\assert_($main_url, 'Could not determine URL');
+
+        // This transforms
+        // 'https://mywordpress.com/wp-content/uploads/2022/10/img.jpg'
+        // into
+        // 'https://mywordpress.com/wp-content/uploads/2022/10/'
+        $url_base = substr($main_url, 0, strrpos($main_url, '/')) . '/';
+
+        return [
+            'main' => $main_url,
+            'base' => $url_base,
+        ];
     }
 
     /**
