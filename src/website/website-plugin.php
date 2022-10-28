@@ -227,7 +227,10 @@ class WebsitePlugin {
         );
         Debug\log("Original image ratio: $original_image_ratio");
 
-        $smallest_ratio_diff = abs($container_ratio - $original_image_ratio);
+        $smallest_ratio_diff = self::image_ratio_diff_factor(
+            $container_ratio,
+            $original_image_ratio
+        );
         if ($smallest_ratio_diff < 0.1) {
             Debug\log('Original image has the same ratio as the container');
             return;
@@ -245,7 +248,10 @@ class WebsitePlugin {
             Debug\log(
                 "Hardcrop $hardcrop_attachment_id has ratio " . $hardcrop_ratio
             );
-            $ratio_diff = abs($container_ratio - $hardcrop_ratio);
+            $ratio_diff = self::image_ratio_diff_factor(
+                $container_ratio,
+                $hardcrop_ratio
+            );
             if ($ratio_diff < $smallest_ratio_diff) {
                 $smallest_ratio_diff = $ratio_diff;
                 $hardcrop_attachment_id_with_closest_ratio = $hardcrop_attachment_id;
@@ -305,6 +311,31 @@ class WebsitePlugin {
      */
     private static function image_ratio($width, $height) {
         return $width / max($height, 1);
+    }
+
+    /**
+     * Calculates the difference between two image ratios, expressed as the
+     * factor >= 1, so that one ratio multiplied by this factor gives the other
+     * ratio.
+     *
+     * @param float $first_ratio First image ratio.
+     * @param float $second_ratio Second image ratio.
+     * @return float Factor >= 1.
+     */
+    private static function image_ratio_diff_factor(
+        $first_ratio,
+        $second_ratio
+    ) {
+        // Avoid dividing by 0:
+        if (!$first_ratio || !$second_ratio) {
+            $first_ratio += 0.1;
+            $second_ratio += 0.1;
+        }
+
+        if ($first_ratio >= $second_ratio) {
+            return $first_ratio / $second_ratio;
+        }
+        return $second_ratio / $first_ratio;
     }
 
     /**

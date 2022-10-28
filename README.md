@@ -30,7 +30,7 @@ The
 [IPTC council](https://en.wikipedia.org/wiki/International_Press_Telecommunications_Council)
 has defined a standard for storing
 [Image Regions](https://iptc.org/std/photometadata/specification/IPTC-PhotoMetadata#image-region)
-in XMP. *Image Regions* are useful for describing specific areas of the image
+in XMP. _Image Regions_ are useful for describing specific areas of the image
 (e.g. objects, people) or for indicating how the image should be cropped or
 rotated to best fit a given container. The
 [Frameright app](https://frameright.app/) can be used to define such Image

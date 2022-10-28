@@ -62,7 +62,7 @@ final class WebsitePluginTest extends PHPUnit\Framework\TestCase {
         ];
         $input_container_size = [
             500, // width
-            100, // height
+            500, // height
         ];
         $input_original_image_meta = [
             'width' => 3000,
@@ -74,16 +74,16 @@ final class WebsitePluginTest extends PHPUnit\Framework\TestCase {
             ->expects($this->once())
             ->method('get_post_meta')
             ->with($input_attachment_id, 'frameright_has_hardcrops')
-            ->willReturn([43, 44]);
+            ->willReturn([43, 44, 45]);
 
         $this->global_functions_mock
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(3))
             ->method('wp_get_attachment_metadata')
-            ->withConsecutive([43], [44])
+            ->withConsecutive([43], [44], [45])
             ->will(
                 $this->onConsecutiveCalls(
                     [
-                        'width' => 3000,
+                        'width' => 600,
                         'height' => 500,
                         'sizes' => [
                             'medium' => [
@@ -94,6 +94,11 @@ final class WebsitePluginTest extends PHPUnit\Framework\TestCase {
                     [
                         'width' => 1000,
                         'height' => 2000,
+                        'sizes' => [],
+                    ],
+                    [
+                        'width' => 500,
+                        'height' => 620,
                         'sizes' => [],
                     ]
                 )
