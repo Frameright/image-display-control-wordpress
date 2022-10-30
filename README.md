@@ -52,7 +52,7 @@ or insert the original image. Upon changing the ratio of the original image
 within a post or page, the best suited hardcrop will automatically be rendered
 to visitors.
 
-&emsp; &rArr; [Usage](docs/usage.md)
+&emsp; :airplane: [Usage](docs/usage.md)
 
 ## Contributing
 
@@ -63,4 +63,4 @@ $ composer install
 $ composer test
 ```
 
-&emsp; &rArr; [Contributing](docs/contributing.md)
+&emsp; :wrench: [Contributing](docs/contributing.md)
