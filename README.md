@@ -40,6 +40,20 @@ This WordPress plugin reads such Image Regions in order to automatically crop
 images the best possible way, dependending on which container they are being
 displayed in.
 
+## How does it work?
+
+When uploading an image via the
+[Image Library](https://wordpress.org/support/article/using-images/), cropped
+versions of that image (so-called _hardcrops_) are automatically generated
+according to the Image Region metadata and also added to the Image Library.
+
+Within a post or page an author can then either directly insert these hardcrops
+or insert the original image. Upon changing the ratio of the original image
+within a post or page, the best suited hardcrop will automatically be rendered
+to visitors.
+
+&emsp; &rArr; [Usage](docs/usage.md)
+
 ## Contributing
 
 Run the unit tests with:
