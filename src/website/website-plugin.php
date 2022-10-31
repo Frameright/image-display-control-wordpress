@@ -231,7 +231,7 @@ class WebsitePlugin {
             $container_ratio,
             $original_image_ratio
         );
-        if ($smallest_ratio_diff < 0.1) {
+        if ($smallest_ratio_diff < 1.1) {
             Debug\log('Original image has the same ratio as the container');
             return;
         }
@@ -258,6 +258,11 @@ class WebsitePlugin {
                 $hardcrop_metadata_with_closest_ratio = $hardcrop_metadata;
                 $hardcrop_closest_ratio = $hardcrop_ratio;
             }
+        }
+
+        if (!$hardcrop_attachment_id_with_closest_ratio) {
+            Debug\log('Original image is the best fit for this container');
+            return;
         }
 
         Debug\log(
