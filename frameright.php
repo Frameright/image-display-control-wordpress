@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:       Image Display Control
- * Plugin URI:        https://frameright.io
+ * Plugin URI:        https://github.com/Frameright/image-display-control-wordpress
  * Description:       An easy way to leverage image cropping metadata on your site. Made by Frameright. Power to the pictures!
  * Author:            Frameright
  * Author URI:        https://frameright.io
