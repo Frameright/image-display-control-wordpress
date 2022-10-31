@@ -1,9 +1,9 @@
 [<img src="https://avatars.githubusercontent.com/u/35964478?s=200&v=4" align="left" width="64" height="64">](https://frameright.io)
 
-# Frameright WordPress Plugin
+# Image Display Control WordPress Plugin
 
-An easy way to leverage image cropping metadata on your site. Power to the
-pictures!
+An easy way to leverage image cropping metadata on your site. Made with :heart:
+by [Frameright](https://frameright.io). Power to the pictures!
 
 ## Which image cropping metadata?
 

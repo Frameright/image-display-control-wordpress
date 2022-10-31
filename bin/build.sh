@@ -13,7 +13,7 @@ echo "Building in $tmpdir ..."
 
 cp -r *.php languages/ license.txt readme.txt src/ "$tmpdir"
 
-target="$(pwd)/frameright.zip"
+target="$(pwd)/image-display-control.zip"
 rm -f "$target"
 
 cd "$tmpdir"

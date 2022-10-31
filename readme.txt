@@ -1,6 +1,6 @@
-=== Frameright ===
+=== Image Display Control ===
 Contributors: lourot
-Tags: image, crop, cropping, image crop, image quality
+Tags: image, crop, cropping, image crop, image quality, image display control, frameright
 Requires at least: 5.1
 Tested up to: 6.0
 Requires PHP: 5.6
@@ -8,7 +8,7 @@ License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.en.html
 Stable Tag: 0.0.2
 
-An easy way to leverage image cropping metadata on your site. Power to the pictures!
+An easy way to leverage image cropping metadata on your site. Made by Frameright. Power to the pictures!
 
 == Description ==
 
@@ -40,8 +40,8 @@ to visitors.
 
 = I have an issue or I want to contribute code =
 
-Please use the [GitHub repository](https://github.com/Frameright/frameright-wordpress-plugin)
-to raise [issues](https://github.com/Frameright/frameright-wordpress-plugin/issues)
+Please use the [GitHub repository](https://github.com/Frameright/image-display-control-wordpress)
+to raise [issues](https://github.com/Frameright/image-display-control-wordpress/issues)
 about the plugin or submit pull requests.
 
 == Changelog ==

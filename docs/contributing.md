@@ -56,7 +56,7 @@ $ ./wpcs/vendor/bin/phpcs -i
 The installed coding standards are MySource, PEAR, PSR1, PSR2, PSR12, Squiz and Zend
 
 $ ./wpcs/vendor/bin/phpcs --config-set installed_paths wpcs/
-Using config file: /.../frameright-wordpress-plugin/wpcs/vendor/squizlabs/php_codesniffer/CodeSniffer.conf
+Using config file: /.../image-display-control-wordpress/wpcs/vendor/squizlabs/php_codesniffer/CodeSniffer.conf
 Config value "installed_paths" added successfully
 
 $ ./wpcs/vendor/bin/phpcs -i
