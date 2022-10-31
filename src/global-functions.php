@@ -20,6 +20,11 @@ class GlobalFunctions {
      * @param array  $arguments   The arguments to pass to the global function.
      */
     public function __call($method_name, $arguments) {
+        if (!function_exists('wp_read_image_metadata')) {
+            // We are in the Gutenberg editor.
+            require_once ABSPATH . 'wp-admin/includes/image.php';
+        }
+
         // Call the global function having the same name:
         return call_user_func_array($method_name, $arguments);
     }

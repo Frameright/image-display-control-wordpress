@@ -1,17 +1,17 @@
 <?php
 /**
- * Tests for Frameright\Website 's WebsitePlugin class.
+ * Tests for Frameright\Render 's RenderPlugin class.
  *
- * @package Frameright\Tests\Website
+ * @package Frameright\Tests\Render
  */
 
-require_once __DIR__ . '/../src/website/website-plugin.php';
+require_once __DIR__ . '/../src/render/render-plugin.php';
 require_once __DIR__ . '/../src/vendor/autoload.php';
 
 /**
- * Tests for WebsitePlugin.
+ * Tests for RenderPlugin.
  */
-final class WebsitePluginTest extends PHPUnit\Framework\TestCase {
+final class RenderPluginTest extends PHPUnit\Framework\TestCase {
     // phpcs:disable PHPCompatibility.FunctionDeclarations.NewReturnTypeDeclarations.voidFound
     /**
      * Test setup.
@@ -38,7 +38,7 @@ final class WebsitePluginTest extends PHPUnit\Framework\TestCase {
             ->method('add_filter')
             ->with('wp_calculate_image_srcset');
 
-        new Frameright\Website\WebsitePlugin($this->global_functions_mock);
+        new Frameright\Render\RenderPlugin($this->global_functions_mock);
     }
 
     /**
@@ -132,7 +132,7 @@ final class WebsitePluginTest extends PHPUnit\Framework\TestCase {
             ],
         ];
 
-        $actual_srcsets = (new Frameright\Website\WebsitePlugin(
+        $actual_srcsets = (new Frameright\Render\RenderPlugin(
             $this->global_functions_mock
         ))->replace_srcsets(
             null,
@@ -160,7 +160,7 @@ final class WebsitePluginTest extends PHPUnit\Framework\TestCase {
 
         $expected_srcsets = null;
 
-        $actual_srcsets = (new Frameright\Website\WebsitePlugin(
+        $actual_srcsets = (new Frameright\Render\RenderPlugin(
             $this->global_functions_mock
         ))->replace_srcsets(null, null, null, null, $input_attachment_id);
 

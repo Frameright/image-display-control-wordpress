@@ -1,6 +1,6 @@
 <?php
 /**
- * Imported only when browsing admin panel.
+ * Implementation of the plugin part firing on administrative hooks.
  *
  * @package Frameright\Admin
  */
@@ -16,7 +16,7 @@ require_once __DIR__ . '/../global-functions.php';
 use Frameright\GlobalFunctions;
 
 /**
- * Implementation of the plugin when inside the admin panel.
+ * Implementation of the plugin part firing on administrative hooks.
  */
 class AdminPlugin {
     /**

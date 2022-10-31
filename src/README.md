@@ -2,8 +2,8 @@
 
 This folder contains two subfolders:
 
-- `admin/`: implementation of the plugin when inside the admin panel;
-- `website/`: implementation of the plugin when outside the admin panel;
+- `admin/`: implementation of the plugin part firing on administrative hooks;
+- `render/`: implementation of the plugin part firing on rendering hooks;
 - `vendor/`: third-party libraries.
 
 Note that although the `vendor/` subfolder is generated (via

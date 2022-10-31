@@ -1,11 +1,11 @@
 <?php
 /**
- * Imported only when browsing as a visitor.
+ * Implementation of the plugin part firing on rendering hooks.
  *
- * @package Frameright\Website
+ * @package Frameright\Render
  */
 
-namespace Frameright\Website;
+namespace Frameright\Render;
 
 require_once __DIR__ . '/../debug.php';
 use Frameright\Debug;
@@ -13,9 +13,9 @@ require_once __DIR__ . '/../global-functions.php';
 use Frameright\GlobalFunctions;
 
 /**
- * Implementation of the plugin when outside the admin panel.
+ * Implementation of the plugin part firing on rendering hooks.
  */
-class WebsitePlugin {
+class RenderPlugin {
     /**
      * Constructor.
      *
