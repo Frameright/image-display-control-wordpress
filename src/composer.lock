@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ce427d1a82860820e01b4a42abcb9044",
+    "content-hash": "dffc328f3d810d3c9dcc859ba1367a04",
     "packages": [
         {
             "name": "dchesterton/image",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/AurelienLourot/image.git",
-                "reference": "558a08e5ad4c5e6d3511b65104c797b9b71e5bdd"
+                "url": "https://github.com/Frameright/image.git",
+                "reference": "b5b29fbf047d2eb195e5000f6c76167cbe90cafa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AurelienLourot/image/zipball/558a08e5ad4c5e6d3511b65104c797b9b71e5bdd",
-                "reference": "558a08e5ad4c5e6d3511b65104c797b9b71e5bdd",
+                "url": "https://api.github.com/repos/Frameright/image/zipball/b5b29fbf047d2eb195e5000f6c76167cbe90cafa",
+                "reference": "b5b29fbf047d2eb195e5000f6c76167cbe90cafa",
                 "shasum": ""
             },
             "require": {
@@ -64,10 +64,10 @@
                 "XMP"
             ],
             "support": {
-                "source": "https://github.com/AurelienLourot/image/tree/master",
-                "issues": "https://github.com/AurelienLourot/image/issues"
+                "source": "https://github.com/Frameright/image/tree/master",
+                "issues": "https://github.com/Frameright/image/issues"
             },
-            "time": "2022-10-15T21:57:26+00:00"
+            "time": "2022-10-31T16:11:58+00:00"
         }
     ],
     "packages-dev": [],
