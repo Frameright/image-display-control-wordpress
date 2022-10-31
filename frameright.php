@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Image Display Control
  * Plugin URI:        https://frameright.io
- * Description:       An easy way to leverage image cropping metadata on your site. Power to the pictures!
+ * Description:       An easy way to leverage image cropping metadata on your site. Made by Frameright. Power to the pictures!
  * Author:            Frameright
  * Author URI:        https://frameright.io
  * Version:           0.0.2
