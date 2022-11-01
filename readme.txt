@@ -6,7 +6,7 @@ Tested up to: 6.0
 Requires PHP: 5.6
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.en.html
-Stable Tag: 0.0.2
+Stable Tag: 0.0.3
 
 An easy way to leverage image cropping metadata on your site. Made by Frameright. Power to the pictures!
 
@@ -46,8 +46,17 @@ about the plugin or submit pull requests.
 
 == Changelog ==
 
+= 0.0.3 (TODO) =
+* TODO
+
 = 0.0.2 (2022-10-31) =
 * Improved algorithm for automatically selecting the best hardcrop.
 
 = 0.0.1 (2022-10-27) =
 * Initial Release.
+
+== Credits ==
+
+This plugin is based on [Frameright/image](https://github.com/Frameright/image),
+a fork of [dchesterton/image](https://github.com/dchesterton/image), an image
+metadata library. Many thanks to [dchesterton](https://github.com/dchesterton)!
