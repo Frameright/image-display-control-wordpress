@@ -1,7 +1,6 @@
-/build/
-/image-display-control.zip
 /node_modules/
 /wpcs/
 
 vendor/
 *.lock
+*.zip

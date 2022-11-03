@@ -6,7 +6,6 @@
          name="PHP_CodeSniffer" xsi:noNamespaceSchemaLocation="phpcs.xsd">
 
     <file>.</file>
-    <exclude-pattern>/build/</exclude-pattern>
     <exclude-pattern>/node_modules/</exclude-pattern>
     <exclude-pattern>/vendor/</exclude-pattern>
     <exclude-pattern>/wpcs/</exclude-pattern>

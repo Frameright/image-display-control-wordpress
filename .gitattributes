@@ -1,0 +1,9 @@
+/.git*             export-ignore
+/.prettier*        export-ignore
+/composer.*        export-ignore
+/docs/             export-ignore
+/package.json      export-ignore
+/php*              export-ignore
+/README.md         export-ignore
+/tests/            export-ignore
+/*.lock            export-ignore

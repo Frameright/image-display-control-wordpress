@@ -81,3 +81,17 @@ Run PHP_CodeSniffer with:
 ```bash
 $ composer lint
 ```
+
+## Building the plugin as a ZIP file
+
+Either build the package locally by committing your changes and running:
+
+```bash
+$ git archive -o image-display-control.zip HEAD
+```
+
+or push your branch up to GitHub and download it from
+`https://github.com/<my-fork>/image-display-control-wordpress/archive/refs/heads/<my-branch>.zip`,
+e.g.
+https://github.com/Frameright/image-display-control-wordpress/archive/refs/heads/master.zip
+.

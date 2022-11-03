@@ -5,7 +5,6 @@
   "scripts": {
     "format": "yarn run prettier --write . || yarnpkg run prettier --write .",
     "lint": "./wpcs/vendor/bin/phpcs",
-    "test": "./vendor/bin/phpunit",
-    "build": "./bin/build.sh"
+    "test": "./vendor/bin/phpunit"
   }
 }
