@@ -1,8 +1,8 @@
 <?php
 /**
- * Tests for Frameright\Admin 's Filesystem class.
+ * Tests for FramerightImageDisplayControl\Admin 's Filesystem class.
  *
- * @package Frameright\Tests\Admin
+ * @package FramerightImageDisplayControl\Tests\Admin
  */
 
 require_once __DIR__ . '/../src/admin/filesystem.php';
@@ -27,7 +27,7 @@ final class FilesystemTest extends PHPUnit\Framework\TestCase {
      */
     public function test_basename_to_name_and_extension() {
         $method = new ReflectionMethod(
-            'Frameright\Admin\Filesystem',
+            'FramerightImageDisplayControl\Admin\Filesystem',
             'basename_to_name_and_extension'
         );
         $method->setAccessible(true);
@@ -48,7 +48,7 @@ final class FilesystemTest extends PHPUnit\Framework\TestCase {
      */
     public function test_name_and_extension_to_basename() {
         $method = new ReflectionMethod(
-            'Frameright\Admin\Filesystem',
+            'FramerightImageDisplayControl\Admin\Filesystem',
             'name_and_extension_to_basename'
         );
         $method->setAccessible(true);
@@ -86,7 +86,7 @@ final class FilesystemTest extends PHPUnit\Framework\TestCase {
             ->with('/absolute/path/to', 'img-frameright.jpg')
             ->willReturn('img-frameright.jpg');
 
-        $actual_result = (new Frameright\Admin\Filesystem(
+        $actual_result = (new FramerightImageDisplayControl\Admin\Filesystem(
             $this->global_functions_mock
         ))->unique_target_file($input_source_path, '-frameright');
 
@@ -109,7 +109,7 @@ final class FilesystemTest extends PHPUnit\Framework\TestCase {
                 'title' => $expected_result,
             ]);
 
-        $actual_result = (new Frameright\Admin\Filesystem(
+        $actual_result = (new FramerightImageDisplayControl\Admin\Filesystem(
             $this->global_functions_mock
         ))->image_title($input_path);
 
@@ -132,7 +132,7 @@ final class FilesystemTest extends PHPUnit\Framework\TestCase {
                 'title' => '',
             ]);
 
-        $actual_result = (new Frameright\Admin\Filesystem(
+        $actual_result = (new FramerightImageDisplayControl\Admin\Filesystem(
             $this->global_functions_mock
         ))->image_title($input_path);
 

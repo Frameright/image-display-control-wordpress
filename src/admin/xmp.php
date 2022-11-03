@@ -2,10 +2,10 @@
 /**
  * XMP-related helper functions.
  *
- * @package Frameright\Admin
+ * @package FramerightImageDisplayControl\Admin
  */
 
-namespace Frameright\Admin;
+namespace FramerightImageDisplayControl\Admin;
 
 /**
  * Note: the native iptcparse() and exif_read_data() PHP functions are of no

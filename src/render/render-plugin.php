@@ -2,15 +2,15 @@
 /**
  * Implementation of the plugin part firing on rendering hooks.
  *
- * @package Frameright\Render
+ * @package FramerightImageDisplayControl\Render
  */
 
-namespace Frameright\Render;
+namespace FramerightImageDisplayControl\Render;
 
 require_once __DIR__ . '/../debug.php';
-use Frameright\Debug;
+use FramerightImageDisplayControl\Debug;
 require_once __DIR__ . '/../global-functions.php';
-use Frameright\GlobalFunctions;
+use FramerightImageDisplayControl\GlobalFunctions;
 
 /**
  * Implementation of the plugin part firing on rendering hooks.

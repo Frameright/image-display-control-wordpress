@@ -2,18 +2,18 @@
 /**
  * Implementation of the plugin part firing on administrative hooks.
  *
- * @package Frameright\Admin
+ * @package FramerightImageDisplayControl\Admin
  */
 
-namespace Frameright\Admin;
+namespace FramerightImageDisplayControl\Admin;
 
 require_once __DIR__ . '/filesystem.php';
 require_once __DIR__ . '/xmp.php';
 
 require_once __DIR__ . '/../debug.php';
-use Frameright\Debug;
+use FramerightImageDisplayControl\Debug;
 require_once __DIR__ . '/../global-functions.php';
-use Frameright\GlobalFunctions;
+use FramerightImageDisplayControl\GlobalFunctions;
 
 /**
  * Implementation of the plugin part firing on administrative hooks.

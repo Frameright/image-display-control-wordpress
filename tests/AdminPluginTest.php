@@ -1,8 +1,8 @@
 <?php
 /**
- * Tests for Frameright\Admin 's AdminPlugin class.
+ * Tests for FramerightImageDisplayControl\Admin 's AdminPlugin class.
  *
- * @package Frameright\Tests\Admin
+ * @package FramerightImageDisplayControl\Tests\Admin
  */
 
 require_once __DIR__ . '/../src/admin/admin-plugin.php';
@@ -47,7 +47,7 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
             ->method('add_filter')
             ->withConsecutive(['wp_handle_upload'], ['wp_read_image_metadata']);
 
-        new Frameright\Admin\AdminPlugin(
+        new FramerightImageDisplayControl\Admin\AdminPlugin(
             $this->global_functions_mock,
             $this->filesystem_mock,
             $this->xmp_mock
@@ -109,7 +109,7 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
             ],
         ];
 
-        $actual_meta = (new Frameright\Admin\AdminPlugin(
+        $actual_meta = (new FramerightImageDisplayControl\Admin\AdminPlugin(
             $this->global_functions_mock,
             $this->filesystem_mock,
             $this->xmp_mock
@@ -239,17 +239,17 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
             ->willReturn(83);
 
         $create_hardcrops_method = new ReflectionMethod(
-            'Frameright\Admin\AdminPlugin',
+            'FramerightImageDisplayControl\Admin\AdminPlugin',
             'create_hardcrops'
         );
         $create_hardcrops_method->setAccessible(true);
         $set_attachment_meta_method = new ReflectionMethod(
-            'Frameright\Admin\AdminPlugin',
+            'FramerightImageDisplayControl\Admin\AdminPlugin',
             'set_attachment_meta'
         );
         $set_attachment_meta_method->setAccessible(true);
 
-        $plugin_under_test = new Frameright\Admin\AdminPlugin(
+        $plugin_under_test = new FramerightImageDisplayControl\Admin\AdminPlugin(
             $this->global_functions_mock,
             $this->filesystem_mock,
             $this->xmp_mock
@@ -305,12 +305,12 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
         ];
 
         $method = new ReflectionMethod(
-            'Frameright\Admin\AdminPlugin',
+            'FramerightImageDisplayControl\Admin\AdminPlugin',
             'read_rectangle_cropping_metadata'
         );
         $method->setAccessible(true);
         $actual_result = $method->invoke(
-            new Frameright\Admin\AdminPlugin(
+            new FramerightImageDisplayControl\Admin\AdminPlugin(
                 $this->global_functions_mock,
                 $this->filesystem_mock,
                 $this->xmp_mock
@@ -350,12 +350,12 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
         ];
 
         $method = new ReflectionMethod(
-            'Frameright\Admin\AdminPlugin',
+            'FramerightImageDisplayControl\Admin\AdminPlugin',
             'absolute'
         );
         $method->setAccessible(true);
         $actual_result = $method->invoke(
-            new Frameright\Admin\AdminPlugin(
+            new FramerightImageDisplayControl\Admin\AdminPlugin(
                 $this->global_functions_mock,
                 $this->filesystem_mock,
                 $this->xmp_mock

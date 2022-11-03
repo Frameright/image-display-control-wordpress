@@ -27,10 +27,10 @@
  * along with Image Display Control WordPress Plugin. If not, see
  * https://www.gnu.org/licenses/gpl-3.0.en.html
  *
- * @package Frameright
+ * @package FramerightImageDisplayControl
  */
 
-namespace Frameright;
+namespace FramerightImageDisplayControl;
 
 require_once __DIR__ . '/src/admin/admin-plugin.php';
 require_once __DIR__ . '/src/render/render-plugin.php';

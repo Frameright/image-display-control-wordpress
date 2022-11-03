@@ -47,7 +47,7 @@ about the plugin or submit pull requests.
 == Changelog ==
 
 = 0.0.3 (TODO) =
-* TODO
+* Renamed software components to avoid name clashes with other plugins.
 
 = 0.0.2 (2022-10-31) =
 * Improved algorithm for automatically selecting the best hardcrop.

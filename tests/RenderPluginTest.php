@@ -1,8 +1,8 @@
 <?php
 /**
- * Tests for Frameright\Render 's RenderPlugin class.
+ * Tests for FramerightImageDisplayControl\Render 's RenderPlugin class.
  *
- * @package Frameright\Tests\Render
+ * @package FramerightImageDisplayControl\Tests\Render
  */
 
 require_once __DIR__ . '/../src/render/render-plugin.php';
@@ -38,7 +38,9 @@ final class RenderPluginTest extends PHPUnit\Framework\TestCase {
             ->method('add_filter')
             ->with('wp_calculate_image_srcset');
 
-        new Frameright\Render\RenderPlugin($this->global_functions_mock);
+        new FramerightImageDisplayControl\Render\RenderPlugin(
+            $this->global_functions_mock
+        );
     }
 
     /**
@@ -132,7 +134,7 @@ final class RenderPluginTest extends PHPUnit\Framework\TestCase {
             ],
         ];
 
-        $actual_srcsets = (new Frameright\Render\RenderPlugin(
+        $actual_srcsets = (new FramerightImageDisplayControl\Render\RenderPlugin(
             $this->global_functions_mock
         ))->replace_srcsets(
             null,
@@ -160,7 +162,7 @@ final class RenderPluginTest extends PHPUnit\Framework\TestCase {
 
         $expected_srcsets = null;
 
-        $actual_srcsets = (new Frameright\Render\RenderPlugin(
+        $actual_srcsets = (new FramerightImageDisplayControl\Render\RenderPlugin(
             $this->global_functions_mock
         ))->replace_srcsets(null, null, null, null, $input_attachment_id);
 

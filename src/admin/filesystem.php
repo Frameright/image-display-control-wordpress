@@ -2,10 +2,10 @@
 /**
  * File-related helper functions.
  *
- * @package Frameright\Admin
+ * @package FramerightImageDisplayControl\Admin
  */
 
-namespace Frameright\Admin;
+namespace FramerightImageDisplayControl\Admin;
 
 /**
  * Collection of file-related helper functions. This class has conceptually no

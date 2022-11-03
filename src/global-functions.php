@@ -2,10 +2,10 @@
 /**
  * Mockable wrapper of all global functions.
  *
- * @package Frameright
+ * @package FramerightImageDisplayControl
  */
 
-namespace Frameright;
+namespace FramerightImageDisplayControl;
 
 /**
  * Wrap here any global function (e.g. the ones provided by WordPress) called
