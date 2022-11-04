@@ -5,6 +5,17 @@
 An easy way to leverage image cropping metadata on your site. Made with :heart:
 by [Frameright](https://frameright.io). Power to the pictures!
 
+## Table of Contents
+
+<!-- toc -->
+
+- [Which image cropping metadata?](#which-image-cropping-metadata)
+- [How does it work?](#how-does-it-work)
+- [Contributing](#contributing)
+- [Dependency tree / credits](#dependency-tree--credits)
+
+<!-- tocstop -->
+
 ## Which image cropping metadata?
 
 An image file (e.g. JPEG, PNG) contains metadata, i.e. information about the

@@ -1,15 +1,35 @@
 # Contributing
 
-## Code formatting
+## Table of Contents
+
+<!-- toc -->
+
+- [:floppy_disk: Code formatting](#floppy_disk-code-formatting)
+- [:memo: Validating](#memo-validating)
+  * [Running the unit tests](#running-the-unit-tests)
+    + [Setting up PHPUnit](#setting-up-phpunit)
+    + [Running PHPUnit](#running-phpunit)
+  * [Validating against WordPress coding standards](#validating-against-wordpress-coding-standards)
+    + [Setting up PHP_CodeSniffer](#setting-up-php_codesniffer)
+    + [Running PHP_CodeSniffer](#running-php_codesniffer)
+- [:bookmark_tabs: Documenting](#bookmark_tabs-documenting)
+  * [Spellchecking the documentation](#spellchecking-the-documentation)
+  * [(Re-)generating tables of contents](#re-generating-tables-of-contents)
+- [:gift: Packaging](#gift-packaging)
+  * [Building the plugin as a ZIP file](#building-the-plugin-as-a-zip-file)
+
+<!-- tocstop -->
+
+## :floppy_disk: Code formatting
 
 Pull and run [prettier](https://github.com/prettier/plugin-php) with:
 
 ```bash
-$ yarn install  # pull
-$ yarn format   # run
+$ yarn install
+$ yarn format
 ```
 
-## Validating
+## :memo: Validating
 
 ### Running the unit tests
 
@@ -84,6 +104,30 @@ Run PHP_CodeSniffer with:
 $ composer lint
 ```
 
+## :bookmark_tabs: Documenting
+
+### Spellchecking the documentation
+
+Pull and run [`mdspell`](https://github.com/lukeapage/node-markdown-spellcheck)
+with:
+
+```bash
+$ yarn install
+$ yarn spellcheck
+```
+
+### (Re-)generating tables of contents
+
+Pull and run [`markdown-toc`](https://github.com/jonschlinkert/markdown-toc)
+with:
+
+```bash
+$ yarn install
+$ yarn gentoc
+```
+
+## :gift: Packaging
+
 ### Building the plugin as a ZIP file
 
 Either build the package locally by committing your changes and running:
@@ -97,13 +141,3 @@ or push your branch up to GitHub and download it from
 e.g.
 https://github.com/Frameright/image-display-control-wordpress/archive/refs/heads/master.zip
 .
-
-### Spellchecking the documentation
-
-Pull and run [`mdspell`](https://github.com/lukeapage/node-markdown-spellcheck)
-with:
-
-```bash
-$ yarn install     # pull
-$ yarn spellcheck  # run
-```
