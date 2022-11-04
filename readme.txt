@@ -46,7 +46,7 @@ about the plugin or submit pull requests.
 
 == Changelog ==
 
-= 0.0.3 (TODO) =
+= 0.0.3 (2022-11-03) =
 * Renamed software components to avoid name clashes with other plugins.
 
 = 0.0.2 (2022-10-31) =

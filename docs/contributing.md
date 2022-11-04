@@ -15,8 +15,14 @@
 - [:bookmark_tabs: Documenting](#bookmark_tabs-documenting)
   * [Spellchecking the documentation](#spellchecking-the-documentation)
   * [(Re-)generating tables of contents](#re-generating-tables-of-contents)
-- [:gift: Packaging](#gift-packaging)
-  * [Building the plugin as a ZIP file](#building-the-plugin-as-a-zip-file)
+- [:gift: Releasing](#gift-releasing)
+  * [Version number](#version-number)
+  * [Changelog](#changelog)
+  * [Last tweaks and checks](#last-tweaks-and-checks)
+  * [Git tag](#git-tag)
+  * [Build the plugin as a ZIP file](#build-the-plugin-as-a-zip-file)
+  * [Set up SVN](#set-up-svn)
+  * [Commit to SVN](#commit-to-svn)
 
 <!-- tocstop -->
 
@@ -126,18 +132,99 @@ $ yarn install
 $ yarn gentoc
 ```
 
-## :gift: Packaging
+## :gift: Releasing
 
-### Building the plugin as a ZIP file
+### Version number
 
-Either build the package locally by committing your changes and running:
+Choose the next version number according to the rules of
+[Semantic Versioning](https://semver.org/) and set it in the following files:
+
+* [frameright.php](../frameright.php#L8)
+* [readme.txt](../readme.txt#L9)
+
+> **NOTES**:
+>
+> * [WordPress Readme Documentation](https://developer.wordpress.org/plugins/wordpress-org/how-your-readme-txt-works/)
+> * [WordPress Readme Example](https://wordpress.org/plugins/readme.txt)
+> * [WordPress Readme Validator](https://wordpress.org/plugins/developers/readme-validator/)
+
+### Changelog
+
+Describe the changes made compared to the last released version in the
+[changelog](../readme.txt). Browse the git history to make sure nothing has
+been left out.
+
+### Last tweaks and checks
+
+Format and validate the source one last time:
+
+```bash
+$ yarn format
+$ yarn gentoc
+$ yarn spellcheck
+$ composer lint
+$ composer test
+```
+
+Commit and push any local changes:
+
+```bash
+$ git add -A
+$ git commit -m "<my message>"
+$ git push
+```
+
+### Git tag
+
+In the rest of this document we'll assume you are releasing version `1.2.3`.
+Create a git tag for the version you are releasing by running:
+
+```bash
+$ git tag 1.2.3
+$ git push --tags
+```
+
+### Build the plugin as a ZIP file
+
+Build the package locally by running:
 
 ```bash
 $ git archive -o image-display-control.zip HEAD
 ```
 
-or push your branch up to GitHub and download it from
-`https://github.com/<my-fork>/image-display-control-wordpress/archive/refs/heads/<my-branch>.zip`,
-e.g.
-https://github.com/Frameright/image-display-control-wordpress/archive/refs/heads/master.zip
-.
+### Set up SVN
+
+WordPress plugins are released to the WordPress Plugin Directory
+[using SVN](https://developer.wordpress.org/plugins/wordpress-org/how-to-use-subversion/).
+
+Check out the repository:
+
+```bash
+$ cd ../
+$ svn co https://plugins.svn.wordpress.org/image-display-control
+$ cd image-display-control/trunk/
+```
+
+### Commit to SVN
+
+Replace the `trunk` files with the previously built archive. This will require
+an unpredictable sequence of the following commands:
+
+* `unzip image-display-control.zip`
+* `svn update`
+* `svn add newfile1 newfile2 newdir1`
+* `svn delete oldfile1`
+* `svn status`
+
+Commit the `trunk` changes and create a new tag:
+
+```bash
+$ cd ../
+$ svn copy trunk tags/1.2.3
+$ svn commit -m "1.2.3" --username my-wordpress-username --password foo
+```
+
+Check the result at https://wordpress.org/plugins/image-display-control/
+
+> **NOTE**: Some things on the WordPress Plugin Directory, like search results,
+> may take 72 hours to get updated.
