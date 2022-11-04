@@ -19,7 +19,7 @@ of the image (e.g. objects, people) or for indicating how the image should be
 cropped or rotated to best fit a given container.
 
 This WordPress plugin reads such image regions in order to automatically crop
-images the best possible way, dependending on which container they are being
+images the best possible way, depending on which container they are being
 displayed in.
 
 The [Frameright app](https://frameright.app/) can be used to define such image

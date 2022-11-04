@@ -3,7 +3,6 @@
     "phpunit/phpunit": "^9.5.25"
   },
   "scripts": {
-    "format": "yarn run prettier --write . || yarnpkg run prettier --write .",
     "lint": "./wpcs/vendor/bin/phpcs",
     "test": "./vendor/bin/phpunit"
   }

@@ -37,7 +37,7 @@ rotated to best fit a given container. The
 Regions and insert them in the metadata of a picture.
 
 This WordPress plugin reads such Image Regions in order to automatically crop
-images the best possible way, dependending on which container they are being
+images the best possible way, depending on which container they are being
 displayed in.
 
 ## How does it work?

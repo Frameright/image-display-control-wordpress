@@ -63,3 +63,14 @@ jobs:
         with:
           php_version: '8.1'
           command: test
+
+  spellchecker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: borales/actions-yarn@v3
+        with:
+          cmd: install
+      - uses: borales/actions-yarn@v3
+        with:
+          cmd: spellcheck

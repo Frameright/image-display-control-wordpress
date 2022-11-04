@@ -1,8 +1,19 @@
 # Contributing
 
-## Running the unit tests
+## Code formatting
 
-### Setting up PHPUnit
+Pull and run [prettier](https://github.com/prettier/plugin-php) with:
+
+```bash
+$ yarn install  # pull
+$ yarn format   # run
+```
+
+## Validating
+
+### Running the unit tests
+
+#### Setting up PHPUnit
 
 Install [PHPUnit](https://phpunit.readthedocs.io/en/9.5/installation.html)
 with:
@@ -12,7 +23,7 @@ $ sudo apt install composer
 $ composer install
 ```
 
-### Running PHPUnit
+#### Running PHPUnit
 
 Run the unit tests with:
 
@@ -20,18 +31,9 @@ Run the unit tests with:
 $ composer test
 ```
 
-## Formatting the code
+### Validating against WordPress coding standards
 
-Pull and run [prettier](https://github.com/prettier/plugin-php) with:
-
-```bash
-$ yarn install     # pull
-$ composer format  # run
-```
-
-## Validating against WordPress coding standards
-
-### Setting up PHP_CodeSniffer
+#### Setting up PHP_CodeSniffer
 
 First pull the
 [WordPress coding standards](https://github.com/WordPress/WordPress-Coding-Standards)
@@ -74,7 +76,7 @@ $ docker run --rm -it --volume $PWD:/app -u `id -u`:`id -g` \
 $ popd
 ```
 
-### Running PHP_CodeSniffer
+#### Running PHP_CodeSniffer
 
 Run PHP_CodeSniffer with:
 
@@ -82,7 +84,7 @@ Run PHP_CodeSniffer with:
 $ composer lint
 ```
 
-## Building the plugin as a ZIP file
+### Building the plugin as a ZIP file
 
 Either build the package locally by committing your changes and running:
 
@@ -95,3 +97,13 @@ or push your branch up to GitHub and download it from
 e.g.
 https://github.com/Frameright/image-display-control-wordpress/archive/refs/heads/master.zip
 .
+
+### Spellchecking the documentation
+
+Pull and run [`mdspell`](https://github.com/lukeapage/node-markdown-spellcheck)
+with:
+
+```bash
+$ yarn install     # pull
+$ yarn spellcheck  # run
+```
