@@ -1,3 +1,6 @@
+[![validate-on-push](https://github.com/Frameright/image-display-control-wordpress/actions/workflows/validate-on-push.yml/badge.svg)](https://github.com/Frameright/image-display-control-wordpress/actions/workflows/validate-on-push.yml)
+[![WordPress Plugin Version](https://img.shields.io/wordpress/plugin/v/image-display-control)](https://wordpress.org/plugins/image-display-control/)
+
 [<img src="https://avatars.githubusercontent.com/u/35964478?s=200&v=4" align="left" width="64" height="64">](https://frameright.io)
 
 # Image Display Control WordPress Plugin

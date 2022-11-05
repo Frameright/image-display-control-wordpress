@@ -32,7 +32,7 @@ Please use the [GitHub repository](https://github.com/Frameright/image-display-c
 
 == Changelog ==
 
-= 0.0.4 (TODO) =
+= 0.0.4 (2022-11-05) =
 * Improved documentation.
 
 = 0.0.3 (2022-11-03) =
