@@ -8,6 +8,6 @@
   "scripts": {
     "format": "./bin/yarn.sh run prettier --write .",
     "gentoc": "./bin/gentoc.sh",
-    "spellcheck": "./bin/yarn.sh run mdspell '**/*.md' 'readme.txt' '!node_modules/**' '!**/vendor/**' '!wpcs/**' --ignore-acronyms --no-suggestions --en-us"
+    "spellcheck": "./bin/yarn.sh run mdspell '**/*.md' 'readme.txt' '!node_modules/**' '!**/vendor/**' '!wpcs/**' --ignore-acronyms --ignore-numbers --no-suggestions --en-us"
   }
 }

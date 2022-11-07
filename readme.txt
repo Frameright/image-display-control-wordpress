@@ -2,7 +2,7 @@
 Contributors: lourot, jarsta
 Tags: image, crop, cropping, image crop, image quality, image display control, frameright
 Requires at least: 5.1
-Tested up to: 6.0
+Tested up to: 6.1
 Requires PHP: 5.6
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.en.html
