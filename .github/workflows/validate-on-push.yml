@@ -68,9 +68,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: borales/actions-yarn@v3
-        with:
-          cmd: install
-      - uses: borales/actions-yarn@v3
-        with:
-          cmd: spellcheck
+      - run: npm install
+      - run: npm run spellcheck

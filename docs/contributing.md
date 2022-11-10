@@ -31,8 +31,8 @@
 Pull and run [prettier](https://github.com/prettier/plugin-php) with:
 
 ```bash
-$ yarn install
-$ yarn format
+$ npm install
+$ npm run format
 ```
 
 ## :memo: Validating
@@ -118,8 +118,8 @@ Pull and run [`mdspell`](https://github.com/lukeapage/node-markdown-spellcheck)
 with:
 
 ```bash
-$ yarn install
-$ yarn spellcheck
+$ npm install
+$ npm run spellcheck
 ```
 
 ### (Re-)generating tables of contents
@@ -128,8 +128,8 @@ Pull and run [`markdown-toc`](https://github.com/jonschlinkert/markdown-toc)
 with:
 
 ```bash
-$ yarn install
-$ yarn gentoc
+$ npm install
+$ npm run gentoc
 ```
 
 ## :gift: Releasing
@@ -159,9 +159,9 @@ been left out.
 Format and validate the source one last time:
 
 ```bash
-$ yarn format
-$ yarn gentoc
-$ yarn spellcheck
+$ npm run format
+$ npm run gentoc
+$ npm run spellcheck
 $ composer lint
 $ composer test
 ```

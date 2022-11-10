@@ -6,8 +6,8 @@
     "markdown-toc": "^1.2.0"
   },
   "scripts": {
-    "format": "./bin/yarn.sh run prettier --write .",
+    "format": "npx prettier --write .",
     "gentoc": "./bin/gentoc.sh",
-    "spellcheck": "./bin/yarn.sh run mdspell '**/*.md' 'readme.txt' '!node_modules/**' '!**/vendor/**' '!wpcs/**' --ignore-acronyms --ignore-numbers --no-suggestions --en-us"
+    "spellcheck": "npx mdspell '**/*.md' 'readme.txt' '!node_modules/**' '!**/vendor/**' '!wpcs/**' --ignore-acronyms --ignore-numbers --no-suggestions --en-us"
   }
 }
