@@ -19,8 +19,11 @@ final class RenderPluginTest extends PHPUnit\Framework\TestCase {
     protected function setUp(): void {
         $this->global_functions_mock = $this->getMockBuilder(stdClass::class)
             ->addMethods([
+                'add_action',
                 'add_filter',
                 'get_post_meta',
+                'plugin_dir_url',
+                'wp_enqueue_script',
                 'wp_get_attachment_metadata',
                 'wp_get_attachment_url',
                 'wp_get_registered_image_subsizes',
@@ -37,6 +40,11 @@ final class RenderPluginTest extends PHPUnit\Framework\TestCase {
             ->expects($this->once())
             ->method('add_filter')
             ->with('wp_calculate_image_srcset');
+
+        $this->global_functions_mock
+            ->expects($this->once())
+            ->method('add_action')
+            ->with('wp_enqueue_scripts');
 
         new FramerightImageDisplayControl\Render\RenderPlugin(
             $this->global_functions_mock
@@ -167,6 +175,28 @@ final class RenderPluginTest extends PHPUnit\Framework\TestCase {
         ))->replace_srcsets(null, null, null, null, $input_attachment_id);
 
         $this->assertSame($expected_srcsets, $actual_srcsets);
+    }
+
+    /**
+     * Test serve_and_load_web_component_js() .
+     */
+    public function test_serve_and_load_web_component_js() {
+        $input_url_to_js_assets =
+            'https://mywordpress.com/wp-content/plugins/frameright/src/assets/js/';
+        $this->global_functions_mock
+            ->expects($this->once())
+            ->method('plugin_dir_url')
+            ->willReturn($input_url_to_js_assets);
+
+        $expected_url_to_js_script = $input_url_to_js_assets . 'hello.js';
+        $this->global_functions_mock
+            ->expects($this->once())
+            ->method('wp_enqueue_script')
+            ->with('img-frameright', $expected_url_to_js_script);
+
+        (new FramerightImageDisplayControl\Render\RenderPlugin(
+            $this->global_functions_mock
+        ))->serve_and_load_web_component_js();
     }
 
     /**

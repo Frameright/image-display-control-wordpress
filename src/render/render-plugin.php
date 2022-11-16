@@ -67,6 +67,11 @@ class RenderPlugin {
             10, // default priority
             5 // number of arguments
         );
+
+        $this->global_functions->add_action('wp_enqueue_scripts', [
+            $this,
+            'serve_and_load_web_component_js',
+        ]);
     }
 
     /**
@@ -169,6 +174,32 @@ class RenderPlugin {
 
         Debug\log('New sources: ' . print_r($hardcrop_sources, true));
         return $hardcrop_sources;
+    }
+
+    /**
+     * Deliver the JavaScript code of the <img-frameright> web component to
+     * the front-end.
+     */
+    public function serve_and_load_web_component_js() {
+        $relative_path_to_js_assets = '../assets/js/';
+        $js_script_name = 'hello.js';
+        $absolute_path_to_js_script = realpath(
+            __DIR__ . '/' . $relative_path_to_js_assets . $js_script_name
+        );
+        Debug\assert_($absolute_path_to_js_script, 'Could not find js assets');
+
+        $url_to_js_assets = $this->global_functions->plugin_dir_url(
+            $absolute_path_to_js_script
+        );
+        $url_to_js_script = $url_to_js_assets . $js_script_name;
+
+        $this->global_functions->wp_enqueue_script(
+            'img-frameright',
+            $url_to_js_script,
+            [], // deps
+            '42.42.0', // dummy version added to URL for cache busting purposes
+            true // put just before </body> instead of </head>
+        );
     }
 
     /**
