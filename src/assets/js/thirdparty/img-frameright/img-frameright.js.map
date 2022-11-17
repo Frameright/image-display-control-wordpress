@@ -1,1 +1,0 @@
-{"version":3,"file":"img-frameright.js","sourceRoot":"","sources":["../../src/img-frameright.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,aAAa,EAAE,MAAM,oBAAoB,CAAC;AAEnD,MAAM,CAAC,cAAc,CAAC,MAAM,CAAC,gBAAgB,EAAE,aAAa,CAAC,CAAC","sourcesContent":["import { ImgFrameright } from './ImgFrameright.js';\n\nwindow.customElements.define('img-frameright', ImgFrameright);\n"]}

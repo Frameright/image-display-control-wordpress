@@ -182,17 +182,18 @@ final class RenderPluginTest extends PHPUnit\Framework\TestCase {
      */
     public function test_serve_and_load_web_component_js() {
         $input_url_to_js_assets =
-            'https://mywordpress.com/wp-content/plugins/frameright/src/assets/js/';
+            'https://mywordpress.com/wp-content/plugins/frameright/src/assets/js/build/';
         $this->global_functions_mock
             ->expects($this->once())
             ->method('plugin_dir_url')
             ->willReturn($input_url_to_js_assets);
 
-        $expected_url_to_js_script = $input_url_to_js_assets . 'hello.js';
+        $expected_url_to_js_script =
+            $input_url_to_js_assets . 'img-frameright.js';
         $this->global_functions_mock
             ->expects($this->once())
             ->method('wp_enqueue_script')
-            ->with('img-frameright', $expected_url_to_js_script);
+            ->with('frameright', $expected_url_to_js_script);
 
         (new FramerightImageDisplayControl\Render\RenderPlugin(
             $this->global_functions_mock

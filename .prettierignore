@@ -1,8 +1,10 @@
-/node_modules/
-/package-lock.json
+/src/assets/js/build/
+/src/assets/js/thirdparty/
 /wpcs/
 
-thirdparty/
+build/
+node_modules/
+package-lock.json
 vendor/
 *.lock
 *.md

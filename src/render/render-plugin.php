@@ -181,8 +181,8 @@ class RenderPlugin {
      * the front-end.
      */
     public function serve_and_load_web_component_js() {
-        $relative_path_to_js_assets = '../assets/js/';
-        $js_script_name = 'hello.js';
+        $relative_path_to_js_assets = '../assets/js/build/';
+        $js_script_name = 'img-frameright.js';
         $absolute_path_to_js_script = realpath(
             __DIR__ . '/' . $relative_path_to_js_assets . $js_script_name
         );
@@ -194,13 +194,15 @@ class RenderPlugin {
         $url_to_js_script = $url_to_js_assets . $js_script_name;
 
         $this->global_functions->wp_enqueue_script(
-            'img-frameright',
+            self::JS_SCRIPT_UNIQUE_HANDLE,
             $url_to_js_script,
             [], // deps
             '42.42.0', // dummy version added to URL for cache busting purposes
             true // put just before </body> instead of </head>
         );
     }
+
+    const JS_SCRIPT_UNIQUE_HANDLE = 'frameright';
 
     /**
      * If the given image has associated hardcrops, return their WordPress

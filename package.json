@@ -8,6 +8,6 @@
   "scripts": {
     "format": "npx prettier --write .",
     "gentoc": "./bin/gentoc.sh",
-    "spellcheck": "npx mdspell '**/*.md' 'readme.txt' '!node_modules/**' '!**/vendor/**' '!wpcs/**' --ignore-acronyms --ignore-numbers --no-suggestions --en-us"
+    "spellcheck": "npx mdspell '**/*.md' 'readme.txt' '!**/node_modules/**' '!**/vendor/**' '!wpcs/**' --ignore-acronyms --ignore-numbers --no-suggestions --en-us"
   }
 }
