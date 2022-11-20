@@ -333,7 +333,7 @@ class RenderPlugin {
      * plugin will wrap the tag with an `<image-display-control>` web
      * component.
      */
-    const ENABLE_EXPERIMENTAL_FEATURE_WEB_COMPONENT = false;
+    const ENABLE_EXPERIMENTAL_FEATURE_WEB_COMPONENT = true; // LA_TEMP
 
     const ASSETS_UNIQUE_HANDLE = 'frameright';
 
