@@ -46,32 +46,48 @@ class RenderPlugin {
          *                <orig_url> 300w,
          *        [...]
          *
-         * with
+         * with either
          *
          *   <img src='<best_crop_url>'
          *        srcset="<best_crop_url> 1024w,
          *                <best_crop_url> 300w,
          *        [...]
          *
+         * or with
+         *   <img-frameright
+         *        [...]
+         *
          * After having played around with all filters mentioned above, it
          * appears that:
          *   * wp_calculate_image_srcset is the best filter for replacing all
          *     srcset attributes.
+         *   * wp_content_img_tag is the best filter for replacing the <img>
+         *     tag entirely.
          *   * wp_content_img_tag would be the best filter for replacing the
          *     src attribute, however it seems like leaving it unchanged still
          *     provides good results.
          */
-        $this->global_functions->add_filter(
-            'wp_calculate_image_srcset',
-            [$this, 'replace_srcsets'],
-            10, // default priority
-            5 // number of arguments
-        );
 
-        $this->global_functions->add_action('wp_enqueue_scripts', [
-            $this,
-            'serve_and_load_web_component_js',
-        ]);
+        if (self::ENABLE_EXPERIMENTAL_FEATURE_WEB_COMPONENT) {
+            $this->global_functions->add_action('wp_enqueue_scripts', [
+                $this,
+                'serve_and_load_web_component_js',
+            ]);
+
+            $this->global_functions->add_filter(
+                'wp_content_img_tag',
+                [$this, 'replace_img_tag'],
+                10, // default priority
+                3 // number of arguments
+            );
+        } else {
+            $this->global_functions->add_filter(
+                'wp_calculate_image_srcset',
+                [$this, 'replace_srcsets'],
+                10, // default priority
+                5 // number of arguments
+            );
+        }
     }
 
     /**
@@ -177,6 +193,34 @@ class RenderPlugin {
     }
 
     /**
+     * Filter called when rendering images, giving the opportunity to the
+     * plugin to tweak the HTML <img> tag.
+     *
+     * If the image being rendered is an original image containing XMP Image
+     * Regions, we will replace the <img> tag with an <img-frameright> tag.
+     *
+     * @param string $filtered_image Full <img> tag.
+     * @param string $context Additional context, like the current filter name
+     *                        or the function name from where this was called.
+     * @param int    $attachment_id The image attachment ID. May be 0 in case
+     *                              the image is not an attachment.
+     * @return string Filter input/output in which the <img> tag may have been
+     *                replaced by an <img-frameright> tag.
+     */
+    public function replace_img_tag($filtered_image, $context, $attachment_id) {
+        Debug\log("Replacing <img> tag for attachment $attachment_id");
+
+        $hardcrop_attachment_ids = $this->get_hardcrop_attachment_ids(
+            $attachment_id
+        );
+        if (!$hardcrop_attachment_ids) {
+            /* TODO return */ $filtered_image;
+        }
+
+        return '<img-frameright></img-frameright>';
+    }
+
+    /**
      * Deliver the JavaScript code of the <img-frameright> web component to
      * the front-end.
      */
@@ -201,6 +245,13 @@ class RenderPlugin {
             true // put just before </body> instead of </head>
         );
     }
+
+    /**
+     * If true, instead of modifying the `<img srcset="...` attributes, the
+     * plugin will replace the tag with the `<img-frameright ...` web
+     * component.
+     */
+    const ENABLE_EXPERIMENTAL_FEATURE_WEB_COMPONENT = false;
 
     const JS_SCRIPT_UNIQUE_HANDLE = 'frameright';
 
