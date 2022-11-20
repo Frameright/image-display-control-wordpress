@@ -72,6 +72,13 @@ class RenderPlugin {
             $this,
             'serve_and_load_web_component_js',
         ]);
+
+        $this->global_functions->add_filter(
+            'script_loader_tag',
+            [$this, 'add_module_attr'],
+            10, // default priority
+            3 // number of arguments
+        );
     }
 
     /**
@@ -200,6 +207,46 @@ class RenderPlugin {
             '42.42.0', // dummy version added to URL for cache busting purposes
             true // put just before </body> instead of </head>
         );
+    }
+
+    /**
+     * Filter called when inserting an HTML <script> tag in the front-end's
+     * DOM, giving us a chance to tweak the tag.
+     *
+     * The <img-frameright> web component requires the script to be loaded as a
+     * 'module'. See
+     *   * https://github.com/AurelienLourot/frameright-web-component/tree/main/img-frameright
+     *   * https://stackoverflow.com/questions/59423089/how-to-add-script-as-a-module-using-wp-enqueue-script-wordpress
+     *
+     * @param string $tag Filter input/output already populated by the <script>
+     *                    tag.
+     * @param string $handle The script's registered unique handle. We won't
+     *                       interfere in any scripts but
+     *                       self::JS_SCRIPT_UNIQUE_HANDLE .
+     * @param string $src The script's source URL.
+     * @return string Filter input/output in which `type="module"` may have
+     *                been inserted.
+     */
+    public function add_module_attr($tag, $handle, $src) {
+        if (self::JS_SCRIPT_UNIQUE_HANDLE === $handle) {
+            // At this point $tag looks like
+            // <script src='https://mywordpress.com/wp-content/plugins/frameright/src/assets/js/build/img-frameright.js?ver=42.42.0' id='frameright-js'></script>
+            $document = new \DOMDocument();
+            $success = $document->loadHTML($tag);
+            Debug\assert_($success, 'Could not parse ' . $tag);
+
+            $element = $document->getElementById(
+                self::JS_SCRIPT_UNIQUE_HANDLE . '-js'
+            );
+            Debug\assert_($element, 'Could not find <script> element');
+
+            $attribute = $element->setAttribute('type', 'module');
+            Debug\assert_($attribute, 'Could not set `type="module"`');
+
+            $tag = $document->saveHTML($element);
+            Debug\assert_($tag, 'Could not generate <script>');
+        }
+        return $tag;
     }
 
     const JS_SCRIPT_UNIQUE_HANDLE = 'frameright';

@@ -37,9 +37,12 @@ final class RenderPluginTest extends PHPUnit\Framework\TestCase {
      */
     public function test_constructor() {
         $this->global_functions_mock
-            ->expects($this->once())
+            ->expects($this->exactly(2))
             ->method('add_filter')
-            ->with('wp_calculate_image_srcset');
+            ->withConsecutive(
+                ['wp_calculate_image_srcset'],
+                ['script_loader_tag']
+            );
 
         $this->global_functions_mock
             ->expects($this->once())
