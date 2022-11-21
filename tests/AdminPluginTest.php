@@ -43,79 +43,15 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
      */
     public function test_constructor() {
         $this->global_functions_mock
-            ->expects($this->exactly(2))
+            ->expects($this->once())
             ->method('add_filter')
-            ->withConsecutive(['wp_handle_upload'], ['wp_read_image_metadata']);
+            ->with('wp_handle_upload');
 
         new FramerightImageDisplayControl\Admin\AdminPlugin(
             $this->global_functions_mock,
             $this->filesystem_mock,
             $this->xmp_mock
         );
-    }
-
-    /**
-     * Test populate_image_metadata().
-     */
-    public function test_populate_image_metadata() {
-        $input_meta = [
-            'aperture' => 0,
-            'camera' => 'Canon EOS 5D Mark III',
-            'created_timestamp' => 1510309891,
-            'focal_length' => 39,
-            'iso' => 800,
-            'shutter_speed' => 0.016666666666667,
-            'orientation' => 1,
-        ];
-        $input_file = '/absolute/path/to/img.jpg';
-
-        $input_xmp_regions = [
-            $this->create_mock_image_region(
-                'region42',
-                ['Region 42'],
-                'rectangle',
-                'relative',
-                0.31,
-                0.18,
-                0.385,
-                0.127
-            ),
-        ];
-        $this->xmp_mock
-            ->expects($this->once())
-            ->method('read_rectangle_cropping_metadata')
-            ->with($input_file)
-            ->willReturn($input_xmp_regions);
-
-        $expected_meta = [
-            'aperture' => 0,
-            'camera' => 'Canon EOS 5D Mark III',
-            'created_timestamp' => 1510309891,
-            'focal_length' => 39,
-            'iso' => 800,
-            'shutter_speed' => 0.016666666666667,
-            'orientation' => 1,
-            'image_regions' => [
-                [
-                    'id' => 'region42',
-                    'names' => ['Region 42'],
-                    'shape' => 'rectangle',
-                    'absolute' => false,
-                    'x' => 0.31,
-                    'y' => 0.18,
-                    'height' => 0.385,
-                    'width' => 0.127,
-                ],
-            ],
-        ];
-
-        $actual_meta = (new FramerightImageDisplayControl\Admin\AdminPlugin(
-            $this->global_functions_mock,
-            $this->filesystem_mock,
-            $this->xmp_mock
-        ))->populate_image_metadata($input_meta, $input_file, null, null, null);
-
-        $this->assertSame($expected_meta, $actual_meta);
     }
 
     /**

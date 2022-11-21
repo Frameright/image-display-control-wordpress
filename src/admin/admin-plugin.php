@@ -52,13 +52,6 @@ class AdminPlugin {
             $this,
             'set_attachment_meta',
         ]);
-
-        $this->global_functions->add_filter(
-            'wp_read_image_metadata',
-            [$this, 'populate_image_metadata'],
-            10, // default priority
-            5 // number of arguments
-        );
     }
 
     /**
@@ -124,47 +117,6 @@ class AdminPlugin {
         } else {
             Debug\log('No pending attachment meta found.');
         }
-    }
-
-    /**
-     * Filter called when the IPTC/EXIF/XMP metadata of an image needs to be
-     * read.
-     *
-     * @param array  $meta Filter input/output already populated by
-     *                     wp_read_image_metadata() using iptcparse() and
-     *                     exif_read_data().
-     * @param string $file Absolute path to the image.
-     * @param int    $image_type Type of image, one of the `IMAGETYPE_XXX`
-     *                           constants.
-     * @param array  $iptc Output of `iptcparse($info['APP13'])`.
-     * @param array  $exif Output of `exif_read_data($file)`.
-     * @return array Filter input/output extended with relevant XMP Image
-     *               Region metadata. See
-     *               https://iptc.org/std/photometadata/specification/IPTC-PhotoMetadata#image-region
-     */
-    public function populate_image_metadata(
-        $meta,
-        $file,
-        $image_type,
-        $iptc,
-        $exif
-    ) {
-        Debug\log("Populating WordPress metadata for $file ...");
-
-        if (array_key_exists('image_regions', $meta)) {
-            Debug\log('Already populated.');
-        } else {
-            // FIXME do not do that for generated hardcrops, only for the
-            // original image. Unfortunately $iptc, $exif and $meta can't be
-            // used to differenciate the original image and the hardcrops as
-            // they are identical.
-            $meta['image_regions'] = $this->read_rectangle_cropping_metadata(
-                $file
-            );
-        }
-
-        Debug\log('Resulting metadata: ' . print_r($meta, true));
-        return $meta;
     }
 
     /**
