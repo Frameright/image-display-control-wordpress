@@ -237,10 +237,10 @@ class RenderPlugin {
             "Expected exactly one <img> tag, found $num_elements instead"
         );
 
-        $element = $elements->item(0);
-        Debug\assert_($element, 'Could not find <img> element');
+        $img_element = $elements->item(0);
+        Debug\assert_($img_element, 'Could not find <img> element');
 
-        $src_attribute = $element->getAttribute('src');
+        $src_attribute = $img_element->getAttribute('src');
         Debug\assert_($src_attribute, 'Could not find src= attribute');
         Debug\log("Image URL: $src_attribute");
 
@@ -272,7 +272,32 @@ class RenderPlugin {
             return $filtered_image;
         }
 
-        return '<img-frameright></img-frameright>';
+        // Create a new <img-frameright> tag, copy most <img> attributes
+        // over to it and return it.
+        $frameright_element = $document->createElement('img-frameright');
+        Debug\assert_(
+            $frameright_element,
+            'Could not create <img-frameright> element'
+        );
+        $exclude_attr_names = ['class'];
+        for ($i = 0; $i < $img_element->attributes->length; ++$i) {
+            $img_attribute = $img_element->attributes->item($i);
+            if (in_array($img_attribute->name, $exclude_attr_names, true)) {
+                continue;
+            }
+            $frameright_attribute = $frameright_element->setAttribute(
+                $img_attribute->name,
+                $img_attribute->value
+            );
+            Debug\assert_(
+                $frameright_attribute,
+                'Could not create ' . $img_attribute->name . '= attribute'
+            );
+        }
+        $frameright_tag = $document->saveHTML($frameright_element);
+        Debug\assert_($frameright_tag, 'Could not generate <img-frameright>');
+        Debug\log("Resulting tag: $frameright_tag");
+        return $frameright_tag;
     }
 
     /**
