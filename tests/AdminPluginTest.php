@@ -167,11 +167,27 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
             ->willReturn($input_source_url);
 
         $this->global_functions_mock
-            ->expects($this->once())
+            ->expects($this->exactly(2))
             ->method('add_post_meta')
-            ->with($input_source_attachment_id, 'frameright_has_hardcrops', [
-                42,
-            ])
+            ->withConsecutive(
+                [$input_source_attachment_id, 'frameright_has_hardcrops', [42]],
+                [
+                    $input_source_attachment_id,
+                    'frameright_has_image_regions',
+                    [
+                        [
+                            'id' => 'region42',
+                            'names' => ['Region 42'],
+                            'shape' => 'rectangle',
+                            'absolute' => false,
+                            'x' => 0.31,
+                            'y' => 0.18,
+                            'height' => 0.385,
+                            'width' => 0.127,
+                        ],
+                    ],
+                ]
+            )
             ->willReturn(83);
 
         $create_hardcrops_method = new ReflectionMethod(

@@ -21,12 +21,14 @@ final class RenderPluginTest extends PHPUnit\Framework\TestCase {
             ->addMethods([
                 'add_action',
                 'add_filter',
+                'attachment_url_to_postid',
                 'get_post_meta',
                 'plugin_dir_url',
                 'wp_enqueue_script',
                 'wp_get_attachment_metadata',
                 'wp_get_attachment_url',
                 'wp_get_registered_image_subsizes',
+                'wp_json_encode',
             ])
             ->getMock();
     }
@@ -184,6 +186,48 @@ final class RenderPluginTest extends PHPUnit\Framework\TestCase {
         ))->replace_srcsets(null, null, null, null, $input_attachment_id);
 
         $this->assertSame($expected_srcsets, $actual_srcsets);
+    }
+
+    /**
+     * Test replace_img_tag() .
+     */
+    public function test_replace_img_tag() {
+        $input_image_url =
+            'https://mywordpress.com/wp-content/uploads/2022/11/myimage.jpg';
+        $input_tag =
+            '<img width="2000" height="1000" src="' .
+            $input_image_url .
+            '" class="wp-post-image" />';
+
+        $this->global_functions_mock
+            ->expects($this->once())
+            ->method('attachment_url_to_postid')
+            ->with($input_image_url)
+            ->willReturn(42);
+
+        $this->global_functions_mock
+            ->expects($this->once())
+            ->method('get_post_meta')
+            ->with(42, 'frameright_has_image_regions')
+            ->willReturn('an array of regions');
+
+        $this->global_functions_mock
+            ->expects($this->once())
+            ->method('wp_json_encode')
+            ->with('an array of regions')
+            ->willReturn('a json-encoded array of regions');
+
+        $expected_tag =
+            '<img-frameright width="2000" height="1000" src="' .
+            $input_image_url .
+            '" image-regions="a json-encoded array of regions">' .
+            '</img-frameright>';
+
+        $actual_tag = (new FramerightImageDisplayControl\Render\RenderPlugin(
+            $this->global_functions_mock
+        ))->replace_img_tag($input_tag, null, 0);
+
+        $this->assertSame($expected_tag, $actual_tag);
     }
 
     /**

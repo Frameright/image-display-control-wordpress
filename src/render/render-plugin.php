@@ -253,7 +253,7 @@ class RenderPlugin {
              *   * The image isn't part of a post/page content, but for example
              *     a featured image. In this case we should try to figure out
              *     if there is an attachment for this image URL, in order to
-             *     see if the image has some Image Regions.
+             *     see if the image has some relevant image regions.
              */
             $attachment_id = $this->global_functions->attachment_url_to_postid(
                 $src_attribute
@@ -264,16 +264,19 @@ class RenderPlugin {
             }
         }
 
-        $hardcrop_attachment_ids = $this->get_hardcrop_attachment_ids(
-            $attachment_id
+        $regions = $this->global_functions->get_post_meta(
+            $attachment_id,
+            'frameright_has_image_regions',
+            true
         );
-        if (!$hardcrop_attachment_ids) {
-            Debug\log('Image has no Image Regions, leaving unchanged');
+        if (!$regions) {
+            Debug\log('Image has no relevant image regions, leaving unchanged');
             return $filtered_image;
         }
+        Debug\log('Found relevant image regions: ' . print_r($regions, true));
 
-        // Create a new <img-frameright> tag, copy most <img> attributes
-        // over to it and return it.
+        // Create a new <img-frameright> tag and copy most <img> attributes
+        // over to it.
         $frameright_element = $document->createElement('img-frameright');
         Debug\assert_(
             $frameright_element,
@@ -294,6 +297,19 @@ class RenderPlugin {
                 'Could not create ' . $img_attribute->name . '= attribute'
             );
         }
+
+        // Pass relevant image regions to the web component:
+        $regions_json = $this->global_functions->wp_json_encode($regions);
+        Debug\assert_($regions_json, 'Could not serialize image regions');
+        $frameright_attribute = $frameright_element->setAttribute(
+            'image-regions',
+            $regions_json
+        );
+        Debug\assert_(
+            $frameright_attribute,
+            'Could not create image-regions= attribute'
+        );
+
         $frameright_tag = $document->saveHTML($frameright_element);
         Debug\assert_($frameright_tag, 'Could not generate <img-frameright>');
         Debug\log("Resulting tag: $frameright_tag");

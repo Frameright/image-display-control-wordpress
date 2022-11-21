@@ -152,6 +152,7 @@ class AdminPlugin {
         // hook to set attachment meta. So we store it for a later hook.
         $this->pending_attachment_meta_to_be_set[$source_image_url] = [
             'frameright_has_hardcrops' => $hardcrop_attachment_ids,
+            'frameright_has_image_regions' => $image_regions,
         ];
     }
 
