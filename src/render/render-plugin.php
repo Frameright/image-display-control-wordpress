@@ -226,23 +226,10 @@ class RenderPlugin {
          *          sizes="(max-width: 2000px) 100vw, 2000px"
          *     />
          */
-        $document = new \DOMDocument();
-        $success = $document->loadHTML($filtered_image);
-        Debug\assert_($success, 'Could not parse ' . $filtered_image);
-
-        $elements = $document->getElementsByTagName('img');
-        $num_elements = $elements->length;
-        Debug\assert_(
-            1 === $num_elements,
-            "Expected exactly one <img> tag, found $num_elements instead"
-        );
-
-        $img_element = $elements->item(0);
-        Debug\assert_($img_element, 'Could not find <img> element');
-
-        $src_attribute = $img_element->getAttribute('src');
-        Debug\assert_($src_attribute, 'Could not find src= attribute');
-        Debug\log("Image URL: $src_attribute");
+        $parsed_img_tag = self::parse_img_tag($filtered_image);
+        $document = $parsed_img_tag['document'];
+        $img_element = $parsed_img_tag['element'];
+        $src_attribute = $parsed_img_tag['src'];
 
         if (!$attachment_id) {
             /**
@@ -274,44 +261,14 @@ class RenderPlugin {
             return $filtered_image;
         }
         Debug\log('Found relevant image regions: ' . print_r($regions, true));
-
-        // Create a new <img-frameright> tag and copy most <img> attributes
-        // over to it.
-        $frameright_element = $document->createElement('img-frameright');
-        Debug\assert_(
-            $frameright_element,
-            'Could not create <img-frameright> element'
-        );
-        $exclude_attr_names = ['class'];
-        for ($i = 0; $i < $img_element->attributes->length; ++$i) {
-            $img_attribute = $img_element->attributes->item($i);
-            if (in_array($img_attribute->name, $exclude_attr_names, true)) {
-                continue;
-            }
-            $frameright_attribute = $frameright_element->setAttribute(
-                $img_attribute->name,
-                $img_attribute->value
-            );
-            Debug\assert_(
-                $frameright_attribute,
-                'Could not create ' . $img_attribute->name . '= attribute'
-            );
-        }
-
-        // Pass relevant image regions to the web component:
         $regions_json = $this->global_functions->wp_json_encode($regions);
         Debug\assert_($regions_json, 'Could not serialize image regions');
-        $frameright_attribute = $frameright_element->setAttribute(
-            'image-regions',
+
+        $frameright_tag = self::build_frameright_tag(
+            $document,
+            $img_element,
             $regions_json
         );
-        Debug\assert_(
-            $frameright_attribute,
-            'Could not create image-regions= attribute'
-        );
-
-        $frameright_tag = $document->saveHTML($frameright_element);
-        Debug\assert_($frameright_tag, 'Could not generate <img-frameright>');
         Debug\log("Resulting tag: $frameright_tag");
         return $frameright_tag;
     }
@@ -521,6 +478,93 @@ class RenderPlugin {
             return $first_ratio / $second_ratio;
         }
         return $second_ratio / $first_ratio;
+    }
+
+    /**
+     * Parse an '<img src="..." />' tag.
+     *
+     * @param string $img_tag Tag to be parsed.
+     * @return array Supported keys:
+     *               * 'document':  Instance of \DOMDocument
+     *               * 'element':   Instance of \DOMElement
+     *               * 'src':       Value (string) of the src= attribute
+     */
+    private static function parse_img_tag($img_tag) {
+        $document = new \DOMDocument();
+        $success = $document->loadHTML($img_tag);
+        Debug\assert_($success, 'Could not parse ' . $img_tag);
+
+        $elements = $document->getElementsByTagName('img');
+        $num_elements = $elements->length;
+        Debug\assert_(
+            1 === $num_elements,
+            "Expected exactly one <img> tag, found $num_elements instead"
+        );
+
+        $img_element = $elements->item(0);
+        Debug\assert_($img_element, 'Could not find <img> element');
+
+        $src_attribute = $img_element->getAttribute('src');
+        Debug\assert_($src_attribute, 'Could not find src= attribute');
+        Debug\log("Image URL: $src_attribute");
+
+        return [
+            'document' => $document,
+            'element' => $img_element,
+            'src' => $src_attribute,
+        ];
+    }
+
+    /**
+     * Build an '<img-frameright src="..." />' tag.
+     *
+     * @param \DOMDocument $document Document containing the original <img>
+     *                               element. Will be altered.
+     * @param \DOMElement  $img_element Original <img> element.
+     * @param string       $regions JSON-serialized image regions.
+     * @return string Resulting tag.
+     */
+    private static function build_frameright_tag(
+        $document,
+        $img_element,
+        $regions
+    ) {
+        // Create a new <img-frameright> tag and copy most <img> attributes
+        // over to it.
+        $frameright_element = $document->createElement('img-frameright');
+        Debug\assert_(
+            $frameright_element,
+            'Could not create <img-frameright> element'
+        );
+        $exclude_attr_names = ['class'];
+        for ($i = 0; $i < $img_element->attributes->length; ++$i) {
+            $img_attribute = $img_element->attributes->item($i);
+            if (in_array($img_attribute->name, $exclude_attr_names, true)) {
+                continue;
+            }
+            $frameright_attribute = $frameright_element->setAttribute(
+                $img_attribute->name,
+                $img_attribute->value
+            );
+            Debug\assert_(
+                $frameright_attribute,
+                'Could not create ' . $img_attribute->name . '= attribute'
+            );
+        }
+
+        // Pass relevant image regions to the web component:
+        $frameright_attribute = $frameright_element->setAttribute(
+            'image-regions',
+            $regions
+        );
+        Debug\assert_(
+            $frameright_attribute,
+            'Could not create image-regions= attribute'
+        );
+
+        $frameright_tag = $document->saveHTML($frameright_element);
+        Debug\assert_($frameright_tag, 'Could not generate <img-frameright>');
+        return $frameright_tag;
     }
 
     /**
