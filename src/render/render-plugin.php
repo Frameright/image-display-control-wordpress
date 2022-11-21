@@ -209,12 +209,67 @@ class RenderPlugin {
      */
     public function replace_img_tag($filtered_image, $context, $attachment_id) {
         Debug\log("Replacing <img> tag for attachment $attachment_id");
+        Debug\log("Original tag: $filtered_image");
+
+        /**
+         * At this point $filtered_image looks like
+         *
+         *     <img width="2000" height="1000"
+         *          src="https://mywordpress.com/wp-content/uploads/2022/11/myimage.jpg"
+         *          class="attachment-post-thumbnail size-post-thumbnail wp-post-image"
+         *          alt="" decoding="async" loading="lazy"
+         *          srcset="https://mywordpress.com/wp-content/uploads/2022/11/myimage.jpg 2000w,
+         *                  https://mywordpress.com/wp-content/uploads/2022/11/myimage-300x150.jpg 300w,
+         *                  https://mywordpress.com/wp-content/uploads/2022/11/myimage-1024x512.jpg 1024w,
+         *                  https://mywordpress.com/wp-content/uploads/2022/11/myimage-768x384.jpg 768w,
+         *                  https://mywordpress.com/wp-content/uploads/2022/11/myimage-1536x768.jpg 1536w"
+         *          sizes="(max-width: 2000px) 100vw, 2000px"
+         *     />
+         */
+        $document = new \DOMDocument();
+        $success = $document->loadHTML($filtered_image);
+        Debug\assert_($success, 'Could not parse ' . $filtered_image);
+
+        $elements = $document->getElementsByTagName('img');
+        $num_elements = $elements->length;
+        Debug\assert_(
+            1 === $num_elements,
+            "Expected exactly one <img> tag, found $num_elements instead"
+        );
+
+        $element = $elements->item(0);
+        Debug\assert_($element, 'Could not find <img> element');
+
+        $src_attribute = $element->getAttribute('src');
+        Debug\assert_($src_attribute, 'Could not find src= attribute');
+        Debug\log("Image URL: $src_attribute");
+
+        if (!$attachment_id) {
+            /**
+             * This happens in two cases:
+             *   * The image is outside WordPress, like a gravatar, in which
+             *     case we should return early and leave the <img> tag
+             *     unmodified.
+             *   * The image isn't part of a post/page content, but for example
+             *     a featured image. In this case we should try to figure out
+             *     if there is an attachment for this image URL, in order to
+             *     see if the image has some Image Regions.
+             */
+            $attachment_id = $this->global_functions->attachment_url_to_postid(
+                $src_attribute
+            );
+            if (!$attachment_id) {
+                Debug\log('Image is not in media library, leaving unchanged');
+                return $filtered_image;
+            }
+        }
 
         $hardcrop_attachment_ids = $this->get_hardcrop_attachment_ids(
             $attachment_id
         );
         if (!$hardcrop_attachment_ids) {
-            /* TODO return */ $filtered_image;
+            Debug\log('Image has no Image Regions, leaving unchanged');
+            return $filtered_image;
         }
 
         return '<img-frameright></img-frameright>';
