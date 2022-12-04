@@ -220,7 +220,8 @@ final class RenderPluginTest extends PHPUnit\Framework\TestCase {
         $expected_tag =
             '<img-frameright width="2000" height="1000" src="' .
             $input_image_url .
-            '" image-regions="a json-encoded array of regions">' .
+            '" class="wp-post-image" ' .
+            'image-regions="a json-encoded array of regions">' .
             '</img-frameright>';
 
         $actual_tag = (new FramerightImageDisplayControl\Render\RenderPlugin(

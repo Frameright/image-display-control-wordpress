@@ -529,19 +529,15 @@ class RenderPlugin {
         $img_element,
         $regions
     ) {
-        // Create a new <img-frameright> tag and copy most <img> attributes
+        // Create a new <img-frameright> tag and copy all <img> attributes
         // over to it.
         $frameright_element = $document->createElement('img-frameright');
         Debug\assert_(
             $frameright_element,
             'Could not create <img-frameright> element'
         );
-        $exclude_attr_names = ['class'];
         for ($i = 0; $i < $img_element->attributes->length; ++$i) {
             $img_attribute = $img_element->attributes->item($i);
-            if (in_array($img_attribute->name, $exclude_attr_names, true)) {
-                continue;
-            }
             $frameright_attribute = $frameright_element->setAttribute(
                 $img_attribute->name,
                 $img_attribute->value
