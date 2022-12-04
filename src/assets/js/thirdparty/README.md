@@ -3,7 +3,7 @@
 > NPM, we can pull it with a `package.json` instead and get rid of this manual
 > setup.
 
-`img-frameright/` has been downloaded and unpacked manually from GitHub.
+`img-frameright-*.tgz` has been downloaded from GitHub.
 
 Each time we push code to
 https://github.com/AurelienLourot/frameright-web-component , a GitHub action
