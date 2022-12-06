@@ -559,6 +559,17 @@ class RenderPlugin {
             'Could not create image-regions= attribute'
         );
 
+        if (Debug\enabled()) {
+            $frameright_attribute = $frameright_element->setAttribute(
+                'debug',
+                ''
+            );
+            Debug\assert_(
+                $frameright_attribute,
+                'Could not create debug attribute'
+            );
+        }
+
         $frameright_tag = $document->saveHTML($frameright_element);
         Debug\assert_($frameright_tag, 'Could not generate <img-frameright>');
         return $frameright_tag;

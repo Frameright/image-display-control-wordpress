@@ -8,12 +8,21 @@
 namespace FramerightImageDisplayControl\Debug;
 
 /**
- * Log $text to debug.log if WP_DEBUG is true.
+ * Test whether debugging is enabled or not.
+ *
+ * @return boolean WP_DEBUG
+ */
+function enabled() {
+    return defined('WP_DEBUG') && WP_DEBUG;
+}
+
+/**
+ * Log $text to debug.log if debugging is enabled.
  *
  * @param string $text Text to be logged.
  */
 function log($text) {
-    if (defined('WP_DEBUG') && WP_DEBUG) {
+    if (enabled()) {
         error_log('[frameright] ' . $text);
     }
 }
