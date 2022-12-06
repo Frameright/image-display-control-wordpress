@@ -7,6 +7,9 @@
 
 namespace FramerightImageDisplayControl\Admin;
 
+require_once __DIR__ . '/../debug.php';
+use FramerightImageDisplayControl\Debug;
+
 /**
  * Note: the native iptcparse() and exif_read_data() PHP functions are of no
  * help here because they both don't parse the XMP metadata (the metadata in

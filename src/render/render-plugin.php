@@ -504,7 +504,8 @@ class RenderPlugin {
         $img_element = $elements->item(0);
         Debug\assert_($img_element, 'Could not find <img> element');
 
-        $src_attribute = $img_element->getAttribute('src');
+        $src_attribute = $img_element->attributes->getNamedItem('src')
+            ->nodeValue;
         Debug\assert_($src_attribute, 'Could not find src= attribute');
         Debug\log("Image URL: $src_attribute");
 
