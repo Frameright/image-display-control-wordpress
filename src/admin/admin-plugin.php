@@ -231,15 +231,10 @@ class AdminPlugin {
         );
         Debug\assert_(
             !$this->global_functions->is_wp_error($image_editor),
-            'Could not create image editor'
+            'Could not create image editor for cropping'
         );
 
-        $source_image_size = $image_editor->get_size();
-        $absolute_image_region = $this->absolute(
-            $image_region,
-            $source_image_size['width'],
-            $source_image_size['height']
-        );
+        $absolute_image_region = $this->absolute($image_region);
         $crop_result = $image_editor->crop(
             $absolute_image_region['x'],
             $absolute_image_region['y'],
@@ -288,6 +283,13 @@ class AdminPlugin {
      *               directly be used as WordPress metadata.
      */
     private function read_rectangle_cropping_metadata($path) {
+        $image_editor = $this->global_functions->wp_get_image_editor($path);
+        Debug\assert_(
+            !$this->global_functions->is_wp_error($image_editor),
+            'Could not create image editor for reading image size'
+        );
+        $image_size = $image_editor->get_size();
+
         $wordpress_metadata = [];
 
         $regions = $this->xmp->read_rectangle_cropping_metadata($path);
@@ -299,9 +301,14 @@ class AdminPlugin {
                 'names' => $region->names,
                 'shape' => $region->rbShape,
 
-                // Otherwise relative, see
+                // Can be 'relative' or 'pixel', see
                 // https://iptc.org/std/photometadata/specification/IPTC-PhotoMetadata#boundary-measuring-unit
-                'absolute' => strtolower($region->rbUnit) === 'pixel',
+                'unit' => $region->rbUnit,
+
+                // Useful when unit is 'pixel', see
+                // https://github.com/AurelienLourot/frameright-web-component
+                'imageWidth' => $image_size['width'],
+                'imageHeight' => $image_size['height'],
 
                 'x' => $region->rbXY->rbX,
                 'y' => $region->rbXY->rbY,
@@ -320,41 +327,45 @@ class AdminPlugin {
      *
      * @param array $wordpress_metadata_region Output of
      *                                         read_rectangle_cropping_metadata().
-     * @param int   $source_image_width Conversion factor in pixels.
-     * @param int   $source_image_height Conversion factor in pixels.
      * @return array Modified $wordpress_metadata_region .
      */
-    private function absolute(
-        $wordpress_metadata_region,
-        $source_image_width,
-        $source_image_height
-    ) {
-        if (!$wordpress_metadata_region['absolute']) {
+    private function absolute($wordpress_metadata_region) {
+        $unit = strtolower($wordpress_metadata_region['unit']);
+        if ('pixel' !== $unit) {
+            Debug\assert_(
+                'relative' === $unit,
+                'Unknown region unit: ' . $unit
+            );
+
             $wordpress_metadata_region['x'] = (int) round(
-                $wordpress_metadata_region['x'] * $source_image_width
+                $wordpress_metadata_region['x'] *
+                    $wordpress_metadata_region['imageWidth']
             );
             $wordpress_metadata_region['width'] = (int) round(
-                $wordpress_metadata_region['width'] * $source_image_width
+                $wordpress_metadata_region['width'] *
+                    $wordpress_metadata_region['imageWidth']
             );
             $wordpress_metadata_region['y'] = (int) round(
-                $wordpress_metadata_region['y'] * $source_image_height
+                $wordpress_metadata_region['y'] *
+                    $wordpress_metadata_region['imageHeight']
             );
             $wordpress_metadata_region['height'] = (int) round(
-                $wordpress_metadata_region['height'] * $source_image_height
+                $wordpress_metadata_region['height'] *
+                    $wordpress_metadata_region['imageHeight']
             );
-            $wordpress_metadata_region['absolute'] = true;
+            $wordpress_metadata_region['unit'] = 'pixel';
         }
 
         Debug\assert_(
             $wordpress_metadata_region['x'] +
                 $wordpress_metadata_region['width'] <=
-                $source_image_width,
+                $wordpress_metadata_region['imageWidth'],
             'Cropping width overflow'
         );
         Debug\assert_(
             $wordpress_metadata_region['y'] +
                 $wordpress_metadata_region['height'] <=
-                $source_image_width,
+                $wordpress_metadata_region['imageHeight'],
             'Cropping height overflow'
         );
 

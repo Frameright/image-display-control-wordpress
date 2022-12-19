@@ -1,7 +1,7 @@
 {
-  "_FIXME": "img-frameright seems to have an undeclared dependency to tslib",
+  "_FIXME": "image-display-control seems to have an undeclared dependency to tslib",
   "dependencies": {
-    "img-frameright": "file:thirdparty/img-frameright-0.0.0.tgz",
+    "image-display-control": "file:thirdparty/image-display-control-0.0.0.tgz",
     "tslib": "^2.3.1"
   },
   "devDependencies": {

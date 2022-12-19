@@ -25,6 +25,7 @@ final class RenderPluginTest extends PHPUnit\Framework\TestCase {
                 'get_post_meta',
                 'plugin_dir_url',
                 'wp_enqueue_script',
+                'wp_enqueue_style',
                 'wp_get_attachment_metadata',
                 'wp_get_attachment_url',
                 'wp_get_registered_image_subsizes',
@@ -42,7 +43,7 @@ final class RenderPluginTest extends PHPUnit\Framework\TestCase {
             FramerightImageDisplayControl\Render\RenderPlugin::ENABLE_EXPERIMENTAL_FEATURE_WEB_COMPONENT
         ) {
             $this->global_functions_mock
-                ->expects($this->once())
+                ->expects($this->exactly(2))
                 ->method('add_action')
                 ->with('wp_enqueue_scripts');
 
@@ -189,9 +190,9 @@ final class RenderPluginTest extends PHPUnit\Framework\TestCase {
     }
 
     /**
-     * Test replace_img_tag() .
+     * Test wrap_img_tag() .
      */
-    public function test_replace_img_tag() {
+    public function test_wrap_img_tag() {
         $input_image_url =
             'https://mywordpress.com/wp-content/uploads/2022/11/myimage.jpg';
         $input_tag =
@@ -218,23 +219,45 @@ final class RenderPluginTest extends PHPUnit\Framework\TestCase {
             ->willReturn('a json-encoded array of regions');
 
         $expected_tag =
-            '<img-frameright width="2000" height="1000" src="' .
-            $input_image_url .
-            '" class="wp-post-image" ' .
-            'image-regions="a json-encoded array of regions">' .
-            '</img-frameright>';
+            '<image-display-control class="image-display-control frameright" ' .
+            "image-regions='a json-encoded array of regions'>" .
+            $input_tag .
+            '</image-display-control>';
 
         $actual_tag = (new FramerightImageDisplayControl\Render\RenderPlugin(
             $this->global_functions_mock
-        ))->replace_img_tag($input_tag, null, 0);
+        ))->wrap_img_tag($input_tag, null, 0);
 
         $this->assertSame($expected_tag, $actual_tag);
     }
 
     /**
-     * Test serve_and_load_web_component_js() .
+     * Test serve_css() .
      */
-    public function test_serve_and_load_web_component_js() {
+    public function test_serve_css() {
+        $input_url_to_css_assets =
+            'https://mywordpress.com/wp-content/plugins/frameright/src/assets/css/';
+        $this->global_functions_mock
+            ->expects($this->once())
+            ->method('plugin_dir_url')
+            ->willReturn($input_url_to_css_assets);
+
+        $expected_url_to_stylesheet =
+            $input_url_to_css_assets . 'frameright.css';
+        $this->global_functions_mock
+            ->expects($this->once())
+            ->method('wp_enqueue_style')
+            ->with('frameright', $expected_url_to_stylesheet);
+
+        (new FramerightImageDisplayControl\Render\RenderPlugin(
+            $this->global_functions_mock
+        ))->serve_css();
+    }
+
+    /**
+     * Test serve_web_component_js() .
+     */
+    public function test_serve_web_component_js() {
         $input_url_to_js_assets =
             'https://mywordpress.com/wp-content/plugins/frameright/src/assets/js/build/';
         $this->global_functions_mock
@@ -243,7 +266,7 @@ final class RenderPluginTest extends PHPUnit\Framework\TestCase {
             ->willReturn($input_url_to_js_assets);
 
         $expected_url_to_js_script =
-            $input_url_to_js_assets . 'img-frameright.js';
+            $input_url_to_js_assets . 'image-display-control.js';
         $this->global_functions_mock
             ->expects($this->once())
             ->method('wp_enqueue_script')
@@ -251,7 +274,7 @@ final class RenderPluginTest extends PHPUnit\Framework\TestCase {
 
         (new FramerightImageDisplayControl\Render\RenderPlugin(
             $this->global_functions_mock
-        ))->serve_and_load_web_component_js();
+        ))->serve_web_component_js();
     }
 
     /**

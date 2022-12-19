@@ -1,0 +1,8 @@
+/* Note: we use two classes here in order to give a lot of specificity/weight to
+   the CSS rule. */
+image-display-control.image-display-control.frameright > img {
+    width: auto;
+    height: auto;
+    max-width: none;
+    max-height: none;
+}

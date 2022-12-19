@@ -87,6 +87,6 @@ composer test
   - [`php-xml`](https://www.php.net/manual/en/book.dom.php)
 - PHP 5.6+
 - WordPress 5.1+
-- [Frameright Web Component](https://github.com/AurelienLourot/frameright-web-component)
+- [Image Display Control Web Component](https://github.com/AurelienLourot/frameright-web-component)
   - [Lit 2.0.2+](https://lit.dev/)
   - ES2015

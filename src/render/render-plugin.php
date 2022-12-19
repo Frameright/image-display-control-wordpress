@@ -54,8 +54,11 @@ class RenderPlugin {
          *        [...]
          *
          * or with
-         *   <img-frameright
-         *        [...]
+         *   <image-display-control image-regions='[...]'>
+         *       <img src='<orig_url>'
+         *            srcset="<orig_url> 1024w,
+         *                    <orig_url> 300w,
+         *            [...]
          *
          * After having played around with all filters mentioned above, it
          * appears that:
@@ -71,12 +74,16 @@ class RenderPlugin {
         if (self::ENABLE_EXPERIMENTAL_FEATURE_WEB_COMPONENT) {
             $this->global_functions->add_action('wp_enqueue_scripts', [
                 $this,
-                'serve_and_load_web_component_js',
+                'serve_css',
+            ]);
+            $this->global_functions->add_action('wp_enqueue_scripts', [
+                $this,
+                'serve_web_component_js',
             ]);
 
             $this->global_functions->add_filter(
                 'wp_content_img_tag',
-                [$this, 'replace_img_tag'],
+                [$this, 'wrap_img_tag'],
                 10, // default priority
                 3 // number of arguments
             );
@@ -197,7 +204,7 @@ class RenderPlugin {
      * plugin to tweak the HTML <img> tag.
      *
      * If the image being rendered is an original image containing XMP Image
-     * Regions, we will replace the <img> tag with an <img-frameright> tag.
+     * Regions, we will wrap the <img> tag with an <image-display-control> tag.
      *
      * @param string $filtered_image Full <img> tag.
      * @param string $context Additional context, like the current filter name
@@ -205,10 +212,10 @@ class RenderPlugin {
      * @param int    $attachment_id The image attachment ID. May be 0 in case
      *                              the image is not an attachment.
      * @return string Filter input/output in which the <img> tag may have been
-     *                replaced by an <img-frameright> tag.
+     *                wrapped in an <image-display-control> tag.
      */
-    public function replace_img_tag($filtered_image, $context, $attachment_id) {
-        Debug\log("Replacing <img> tag for attachment $attachment_id");
+    public function wrap_img_tag($filtered_image, $context, $attachment_id) {
+        Debug\log("Wrapping <img> tag for attachment $attachment_id");
         Debug\log("Original tag: $filtered_image");
 
         /**
@@ -226,10 +233,6 @@ class RenderPlugin {
          *          sizes="(max-width: 2000px) 100vw, 2000px"
          *     />
          */
-        $parsed_img_tag = self::parse_img_tag($filtered_image);
-        $document = $parsed_img_tag['document'];
-        $img_element = $parsed_img_tag['element'];
-        $src_attribute = $parsed_img_tag['src'];
 
         if (!$attachment_id) {
             /**
@@ -242,6 +245,12 @@ class RenderPlugin {
              *     if there is an attachment for this image URL, in order to
              *     see if the image has some relevant image regions.
              */
+
+            $parsed_img_tag = self::parse_img_tag($filtered_image);
+            $document = $parsed_img_tag['document'];
+            $img_element = $parsed_img_tag['element'];
+            $src_attribute = $parsed_img_tag['src'];
+
             $attachment_id = $this->global_functions->attachment_url_to_postid(
                 $src_attribute
             );
@@ -264,22 +273,42 @@ class RenderPlugin {
         $regions_json = $this->global_functions->wp_json_encode($regions);
         Debug\assert_($regions_json, 'Could not serialize image regions');
 
-        $frameright_tag = self::build_frameright_tag(
-            $document,
-            $img_element,
-            $regions_json
-        );
-        Debug\log("Resulting tag: $frameright_tag");
-        return $frameright_tag;
+        $idc_tag = self::build_idc_tag($filtered_image, $regions_json);
+        Debug\log("Resulting tag: $idc_tag");
+        return $idc_tag;
     }
 
     /**
-     * Deliver the JavaScript code of the <img-frameright> web component to
-     * the front-end.
+     * Deliver our CSS to the front-end.
      */
-    public function serve_and_load_web_component_js() {
+    public function serve_css() {
+        $relative_path_to_css_assets = '../assets/css/';
+        $stylesheet_name = 'frameright.css';
+        $absolute_path_to_stylesheet = realpath(
+            __DIR__ . '/' . $relative_path_to_css_assets . $stylesheet_name
+        );
+        Debug\assert_($absolute_path_to_stylesheet, 'Could not find js assets');
+
+        $url_to_css_assets = $this->global_functions->plugin_dir_url(
+            $absolute_path_to_stylesheet
+        );
+        $url_to_stylesheet = $url_to_css_assets . $stylesheet_name;
+
+        $this->global_functions->wp_enqueue_style(
+            self::ASSETS_UNIQUE_HANDLE,
+            $url_to_stylesheet,
+            [], // deps
+            '42.42.0' // dummy version added to URL for cache busting purposes
+        );
+    }
+
+    /**
+     * Deliver the JavaScript code of the <image-display-control> web component
+     * to the front-end.
+     */
+    public function serve_web_component_js() {
         $relative_path_to_js_assets = '../assets/js/build/';
-        $js_script_name = 'img-frameright.js';
+        $js_script_name = 'image-display-control.js';
         $absolute_path_to_js_script = realpath(
             __DIR__ . '/' . $relative_path_to_js_assets . $js_script_name
         );
@@ -291,7 +320,7 @@ class RenderPlugin {
         $url_to_js_script = $url_to_js_assets . $js_script_name;
 
         $this->global_functions->wp_enqueue_script(
-            self::JS_SCRIPT_UNIQUE_HANDLE,
+            self::ASSETS_UNIQUE_HANDLE,
             $url_to_js_script,
             [], // deps
             '42.42.0', // dummy version added to URL for cache busting purposes
@@ -301,12 +330,12 @@ class RenderPlugin {
 
     /**
      * If true, instead of modifying the `<img srcset="...` attributes, the
-     * plugin will replace the tag with the `<img-frameright ...` web
+     * plugin will wrap the tag with an `<image-display-control>` web
      * component.
      */
     const ENABLE_EXPERIMENTAL_FEATURE_WEB_COMPONENT = false;
 
-    const JS_SCRIPT_UNIQUE_HANDLE = 'frameright';
+    const ASSETS_UNIQUE_HANDLE = 'frameright';
 
     /**
      * If the given image has associated hardcrops, return their WordPress
@@ -517,62 +546,25 @@ class RenderPlugin {
     }
 
     /**
-     * Build an '<img-frameright src="..." />' tag.
+     * Build an '<image-display-control>' tag.
      *
-     * @param \DOMDocument $document Document containing the original <img>
-     *                               element. Will be altered.
-     * @param \DOMElement  $img_element Original <img> element.
-     * @param string       $regions JSON-serialized image regions.
+     * @param string $img_element Original <img> element to be wrapped.
+     * @param string $regions JSON-serialized image regions.
      * @return string Resulting tag.
      */
-    private static function build_frameright_tag(
-        $document,
-        $img_element,
-        $regions
-    ) {
-        // Create a new <img-frameright> tag and copy all <img> attributes
-        // over to it.
-        $frameright_element = $document->createElement('img-frameright');
-        Debug\assert_(
-            $frameright_element,
-            'Could not create <img-frameright> element'
-        );
-        for ($i = 0; $i < $img_element->attributes->length; ++$i) {
-            $img_attribute = $img_element->attributes->item($i);
-            $frameright_attribute = $frameright_element->setAttribute(
-                $img_attribute->name,
-                $img_attribute->value
-            );
-            Debug\assert_(
-                $frameright_attribute,
-                'Could not create ' . $img_attribute->name . '= attribute'
-            );
-        }
+    private static function build_idc_tag($img_element, $regions) {
+        $idc_tag = '<image-display-control ';
 
-        // Pass relevant image regions to the web component:
-        $frameright_attribute = $frameright_element->setAttribute(
-            'image-regions',
-            $regions
-        );
-        Debug\assert_(
-            $frameright_attribute,
-            'Could not create image-regions= attribute'
-        );
-
+        // Note: we use two classes here in order to be able to write CSS rules
+        // that have a higher specificity.
+        $idc_tag .= 'class="image-display-control frameright" ';
         if (Debug\enabled()) {
-            $frameright_attribute = $frameright_element->setAttribute(
-                'debug',
-                ''
-            );
-            Debug\assert_(
-                $frameright_attribute,
-                'Could not create debug attribute'
-            );
+            $idc_tag .= 'loglevel="debug" ';
         }
-
-        $frameright_tag = $document->saveHTML($frameright_element);
-        Debug\assert_($frameright_tag, 'Could not generate <img-frameright>');
-        return $frameright_tag;
+        $idc_tag .= "image-regions='" . $regions . "'>";
+        $idc_tag .= $img_element;
+        $idc_tag .= '</image-display-control>';
+        return $idc_tag;
     }
 
     /**

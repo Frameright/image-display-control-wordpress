@@ -89,7 +89,7 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
             ->addMethods(['crop', 'get_size', 'save'])
             ->getMock();
         $this->global_functions_mock
-            ->expects($this->once())
+            ->expects($this->exactly(2))
             ->method('wp_get_image_editor')
             ->with($input_source_path)
             ->willReturn($image_editor_mock);
@@ -179,7 +179,9 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
                             'id' => 'region42',
                             'names' => ['Region 42'],
                             'shape' => 'rectangle',
-                            'absolute' => false,
+                            'unit' => 'relative',
+                            'imageWidth' => 507,
+                            'imageHeight' => 407,
                             'x' => 0.31,
                             'y' => 0.18,
                             'height' => 0.385,
@@ -225,6 +227,23 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
     public function test_read_rectangle_cropping_metadata() {
         $input_path = '/absolute/path/to/img.jpg';
 
+        $image_editor_mock = $this->getMockBuilder(stdClass::class)
+            ->addMethods(['get_size'])
+            ->getMock();
+        $this->global_functions_mock
+            ->expects($this->once())
+            ->method('wp_get_image_editor')
+            ->with($input_path)
+            ->willReturn($image_editor_mock);
+
+        $image_editor_mock
+            ->expects($this->once())
+            ->method('get_size')
+            ->willReturn([
+                'width' => 507,
+                'height' => 407,
+            ]);
+
         $input_xmp_regions = [
             $this->create_mock_image_region(
                 'region42',
@@ -248,7 +267,9 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
                 'id' => 'region42',
                 'names' => ['Region 42'],
                 'shape' => 'rectangle',
-                'absolute' => false,
+                'unit' => 'relative',
+                'imageWidth' => 507,
+                'imageHeight' => 407,
                 'x' => 0.31,
                 'y' => 0.18,
                 'height' => 0.385,
@@ -281,20 +302,22 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
             'id' => 'region42',
             'names' => ['Region 42'],
             'shape' => 'rectangle',
-            'absolute' => false,
+            'unit' => 'relative',
+            'imageWidth' => 507,
+            'imageHeight' => 407,
             'x' => 0.31,
             'y' => 0.18,
             'height' => 0.385,
             'width' => 0.127,
         ];
-        $input_source_image_width = 507;
-        $input_source_image_height = 407;
 
         $expected_result = [
             'id' => 'region42',
             'names' => ['Region 42'],
             'shape' => 'rectangle',
-            'absolute' => true,
+            'unit' => 'pixel',
+            'imageWidth' => 507,
+            'imageHeight' => 407,
             'x' => 157,
             'y' => 73,
             'height' => 157,
@@ -312,9 +335,7 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
                 $this->filesystem_mock,
                 $this->xmp_mock
             ),
-            $input_region,
-            $input_source_image_width,
-            $input_source_image_height
+            $input_region
         );
 
         $this->assertSame($expected_result, $actual_result);
