@@ -73,8 +73,8 @@ to visitors.
 Run the unit tests with:
 
 ```bash
-$ composer install
-$ composer test
+composer install
+composer test
 ```
 
 &emsp; :wrench: [Contributing](docs/contributing.md)

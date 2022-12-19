@@ -31,8 +31,8 @@
 Pull and run [prettier](https://github.com/prettier/plugin-php) with:
 
 ```bash
-$ npm install
-$ npm run format
+npm install
+npm run format
 ```
 
 ## :memo: Validating
@@ -45,8 +45,8 @@ Install [PHPUnit](https://phpunit.readthedocs.io/en/9.5/installation.html)
 with:
 
 ```bash
-$ sudo apt install composer
-$ composer install
+sudo apt install composer
+composer install
 ```
 
 #### Running PHPUnit
@@ -54,7 +54,7 @@ $ composer install
 Run the unit tests with:
 
 ```bash
-$ composer test
+composer test
 ```
 
 ### Validating against WordPress coding standards
@@ -107,7 +107,7 @@ $ popd
 Run PHP_CodeSniffer with:
 
 ```bash
-$ composer lint
+composer lint
 ```
 
 ## :bookmark_tabs: Documenting
@@ -118,8 +118,8 @@ Pull and run [`mdspell`](https://github.com/lukeapage/node-markdown-spellcheck)
 with:
 
 ```bash
-$ npm install
-$ npm run spellcheck
+npm install
+npm run spellcheck
 ```
 
 ### (Re-)generating tables of contents
@@ -128,8 +128,8 @@ Pull and run [`markdown-toc`](https://github.com/jonschlinkert/markdown-toc)
 with:
 
 ```bash
-$ npm install
-$ npm run gentoc
+npm install
+npm run gentoc
 ```
 
 ## :gift: Releasing
@@ -159,19 +159,19 @@ been left out.
 Format and validate the source one last time:
 
 ```bash
-$ npm run format
-$ npm run gentoc
-$ npm run spellcheck
-$ composer lint
-$ composer test
+npm run format
+npm run gentoc
+npm run spellcheck
+composer lint
+composer test
 ```
 
 Commit and push any local changes:
 
 ```bash
-$ git add -A
-$ git commit -m "<my message>"
-$ git push
+git add -A
+git commit -m "<my message>"
+git push
 ```
 
 ### Git tag
@@ -180,8 +180,8 @@ In the rest of this document we'll assume you are releasing version `1.2.3`.
 Create a git tag for the version you are releasing by running:
 
 ```bash
-$ git tag 1.2.3
-$ git push --tags
+git tag 1.2.3
+git push --tags
 ```
 
 ### Build the plugin as a ZIP file
@@ -189,7 +189,7 @@ $ git push --tags
 Build the package locally by running:
 
 ```bash
-$ git archive -o image-display-control.zip HEAD
+git archive -o image-display-control.zip HEAD
 ```
 
 ### Set up SVN
@@ -200,9 +200,9 @@ WordPress plugins are released to the WordPress Plugin Directory
 Check out the repository:
 
 ```bash
-$ cd ../
-$ svn co https://plugins.svn.wordpress.org/image-display-control
-$ cd image-display-control/trunk/
+cd ../
+svn co https://plugins.svn.wordpress.org/image-display-control
+cd image-display-control/trunk/
 ```
 
 ### Commit to SVN
@@ -219,9 +219,9 @@ an unpredictable sequence of the following commands:
 Commit the `trunk` changes and create a new tag:
 
 ```bash
-$ cd ../
-$ svn copy trunk tags/1.2.3
-$ svn commit -m "1.2.3" --username my-wordpress-username --password foo
+cd ../
+svn copy trunk tags/1.2.3
+svn commit -m "1.2.3" --username my-wordpress-username --password foo
 ```
 
 Check the result at https://wordpress.org/plugins/image-display-control/
