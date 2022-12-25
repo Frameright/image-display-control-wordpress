@@ -1,8 +1,26 @@
-/* Note: we use two classes here in order to give a lot of specificity/weight to
-   the CSS rule. */
+/**
+ * Note: we use two classes here in order to give a lot of specificity/weight to
+ * the CSS rule.
+ */
 image-display-control.image-display-control.frameright > img {
+    /**
+     * The goal here is to override e.g. the following rule, coming from the
+     * WordPress template:
+     *   .wp-block-post-featured-image.alignfull img, .wp-block-post-featured-image.alignwide img {
+     *       width: 100%;
+     *   }
+     */
     width: auto;
-    height: auto;
+
+    /**
+     * The goal here is to override e.g. the following rule, coming from the
+     * WordPress template:
+     *   .wp-block-post-featured-image img {
+     *       max-width: 100%;
+     *   }
+     */
     max-width: none;
+
+    height: auto;
     max-height: none;
 }
