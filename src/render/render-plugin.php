@@ -95,6 +95,326 @@ class RenderPlugin {
                 5 // number of arguments
             );
         }
+
+        /*LA_TODO $this->global_functions->add_filter(
+            'pre_option_stylesheet',
+            [$this, 'pre_option'],
+            10, // default priority
+            3 // number of arguments
+        );
+        $this->global_functions->add_filter(
+            'alloptions',
+            [$this, 'alloptions'],
+            10, // default priority
+            1 // number of arguments
+        );
+        $this->global_functions->add_filter(
+            'option_stylesheet',
+            [$this, 'option'],
+            10, // default priority
+            2 // number of arguments
+        );
+        $this->global_functions->add_filter(
+            'stylesheet',
+            [$this, 'stylesheet'],
+            10, // default priority
+            1 // number of arguments
+        );
+        $this->global_functions->add_filter(
+            'theme_file_path',
+            [$this, 'theme_file_path'],
+            10, // default priority
+            2 // number of arguments
+        );
+        $this->global_functions->add_filter(
+            'theme_file_uri',
+            [$this, 'theme_file_uri'],
+            10, // default priority
+            2 // number of arguments
+        );
+        $this->global_functions->add_filter(
+            'stylesheet_directory',
+            [$this, 'stylesheet_directory'],
+            10, // default priority
+            3 // number of arguments
+        );
+        $this->global_functions->add_filter(
+            'locale_stylesheet_uri',
+            [$this, 'locale_stylesheet_uri'],
+            10, // default priority
+            2 // number of arguments
+        );
+        $this->global_functions->add_filter(
+            'wp_sitemaps_stylesheet_url',
+            [$this, 'wp_sitemaps_stylesheet_url'],
+            10, // default priority
+            1 // number of arguments
+        );
+        $this->global_functions->add_filter(
+            'wp_sitemaps_stylesheet_index_url',
+            [$this, 'wp_sitemaps_stylesheet_index_url'],
+            10, // default priority
+            1 // number of arguments
+        );
+        $this->global_functions->add_filter(
+            'theme_root',
+            [$this, 'theme_root'],
+            10, // default priority
+            1 // number of arguments
+        );
+        $this->global_functions->add_filter(
+            'pre_option_theme_mods_twentytwentythree',
+            [$this, 'pre_option'],
+            10, // default priority
+            3 // number of arguments
+        );
+        $this->global_functions->add_filter(
+            'option_theme_mods_twentytwentythree',
+            [$this, 'option'],
+            10, // default priority
+            2 // number of arguments
+        );
+        $this->global_functions->add_filter(
+            'pre_option_template',
+            [$this, 'pre_option'],
+            10, // default priority
+            3 // number of arguments
+        );
+        $this->global_functions->add_filter(
+            'option_template',
+            [$this, 'option'],
+            10, // default priority
+            2 // number of arguments
+        );
+        $this->global_functions->add_filter(
+            'option_image_default_size',
+            [$this, 'option'],
+            10, // default priority
+            2 // number of arguments
+        );
+        $this->global_functions->add_filter(
+            'option_show_on_front',
+            [$this, 'option'],
+            10, // default priority
+            2 // number of arguments
+        );*/
+        $this->global_functions->add_filter(
+            'page_css_class',
+            [$this, 'page_css_class'],
+            10, // default priority
+            5 // number of arguments
+        );
+        /*LA_TODO $this->global_functions->add_filter(
+            'render_block_data',
+            [$this, 'render_block_data'],
+            10, // default priority
+            3 // number of arguments
+        );*/
+        $this->global_functions->add_filter(
+            'render_block_core/image',
+            [$this, 'render_block_this_name'],
+            10, // default priority
+            3 // number of arguments
+        );
+        $this->global_functions->add_filter(
+            'render_block_core/post-featured-image',
+            [$this, 'render_block_this_name'],
+            10, // default priority
+            3 // number of arguments
+        );
+        /*LA_TODO $this->global_functions->add_filter(
+            'post_thumbnail_id',
+            [$this, 'post_thumbnail_id'],
+            10, // default priority
+            2 // number of arguments
+        );*/
+        $this->global_functions->add_filter(
+            'block_default_classname',
+            [$this, 'block_default_classname'],
+            10, // default priority
+            2 // number of arguments
+        );
+    }
+
+    /**
+     * See https://developer.wordpress.org/reference/hooks/pre_option_option/
+     */
+    public function pre_option($pre_option, $option, $default) {
+        Debug\log('LA_TEMP pre_option');
+        Debug\log('  pre_option: ' . print_r($pre_option, true));
+        Debug\log('  option: ' . print_r($option, true));
+        Debug\log('  default: ' . print_r($default, true));
+        return $pre_option;
+    }
+
+    /**
+     * See https://developer.wordpress.org/reference/hooks/alloptions/
+     */
+    public function alloptions($alloptions) {
+        Debug\log('LA_TEMP alloptions');
+        Debug\log('  alloptions: ' . print_r($alloptions, true));
+        return $alloptions;
+    }
+
+    /**
+     * See https://developer.wordpress.org/reference/hooks/option_option/
+     */
+    public function option($value, $option) {
+        Debug\log('LA_TEMP option');
+        Debug\log('  value: ' . print_r($value, true));
+        Debug\log('  option: ' . print_r($option, true));
+        return $value;
+    }
+
+    /**
+     * See https://developer.wordpress.org/reference/hooks/stylesheet/
+     */
+    public function stylesheet($stylesheet) {
+        Debug\log('LA_TEMP stylesheet');
+        Debug\log('  stylesheet: ' . print_r($stylesheet, true));
+        return $stylesheet;
+    }
+
+    /**
+     * See https://developer.wordpress.org/reference/hooks/theme_file_path/
+     */
+    public function theme_file_path($path, $file) {
+        Debug\log('LA_TEMP theme_file_path');
+        Debug\log('  path: ' . print_r($path, true));
+        Debug\log('  file: ' . print_r($file, true));
+        return $path;
+    }
+
+    /**
+     * See https://developer.wordpress.org/reference/hooks/theme_file_uri/
+     */
+    public function theme_file_uri($url, $file) {
+        Debug\log('LA_TEMP theme_file_uri');
+        Debug\log('  url: ' . print_r($url, true));
+        Debug\log('  file: ' . print_r($file, true));
+        return $url;
+    }
+
+    /**
+     * See https://developer.wordpress.org/reference/hooks/stylesheet_directory/
+     */
+    public function stylesheet_directory(
+        $stylesheet_dir,
+        $stylesheet,
+        $theme_root
+    ) {
+        Debug\log('LA_TEMP stylesheet_directory');
+        Debug\log('  stylesheet_dir: ' . print_r($stylesheet_dir, true));
+        Debug\log('  stylesheet: ' . print_r($stylesheet, true));
+        Debug\log('  theme_root: ' . print_r($theme_root, true));
+        return $stylesheet_dir;
+    }
+
+    /**
+     * See https://developer.wordpress.org/reference/hooks/locale_stylesheet_uri/
+     */
+    public function locale_stylesheet_uri(
+        $stylesheet_uri,
+        $stylesheet_dir_uri
+    ) {
+        Debug\log('LA_TEMP locale_stylesheet_uri');
+        Debug\log('  stylesheet_uri: ' . print_r($stylesheet_uri, true));
+        Debug\log(
+            '  stylesheet_dir_uri: ' . print_r($stylesheet_dir_uri, true)
+        );
+        return $stylesheet_uri;
+    }
+
+    /**
+     * See https://developer.wordpress.org/reference/hooks/wp_sitemaps_stylesheet_url/
+     */
+    public function wp_sitemaps_stylesheet_url($sitemap_url) {
+        Debug\log('LA_TEMP wp_sitemaps_stylesheet_url');
+        Debug\log('  sitemap_url: ' . print_r($sitemap_url, true));
+        return $sitemap_url;
+    }
+
+    /**
+     * See https://developer.wordpress.org/reference/hooks/wp_sitemaps_stylesheet_index_url/
+     */
+    public function wp_sitemaps_stylesheet_index_url($sitemap_url) {
+        Debug\log('LA_TEMP wp_sitemaps_stylesheet_index_url');
+        Debug\log('  sitemap_url: ' . print_r($sitemap_url, true));
+        return $sitemap_url;
+    }
+
+    /**
+     * See https://developer.wordpress.org/reference/hooks/theme_root/
+     */
+    public function theme_root($theme_root) {
+        Debug\log('LA_TEMP theme_root');
+        Debug\log('  theme_root: ' . print_r($theme_root, true));
+        return $theme_root;
+    }
+
+    /**
+     * See https://developer.wordpress.org/reference/hooks/page_css_class/
+     */
+    public function page_css_class(
+        $css_class,
+        $page,
+        $depth,
+        $args,
+        $current_page_id
+    ) {
+        Debug\log('LA_TEMP page_css_class');
+        Debug\log('  css_class: ' . print_r($css_class, true));
+        Debug\log('  page: ' . print_r($page, true));
+        Debug\log('  depth: ' . print_r($depth, true));
+        Debug\log('  args: ' . print_r($args, true));
+        Debug\log('  current_page_id: ' . print_r($current_page_id, true));
+        return $css_class;
+    }
+
+    /**
+     * See https://developer.wordpress.org/reference/hooks/render_block_data/
+     */
+    public function render_block_data(
+        $parsed_block,
+        $source_block,
+        $parent_block
+    ) {
+        Debug\log('LA_TEMP render_block_data');
+        Debug\log('  parsed_block: ' . print_r($parsed_block, true));
+        Debug\log('  source_block: ' . print_r($source_block, true));
+        Debug\log('  parent_block: ' . print_r($parent_block, true));
+        return $parsed_block;
+    }
+
+    /**
+     * See https://developer.wordpress.org/reference/hooks/render_block_this-name/
+     */
+    public function render_block_this_name($block_content, $block, $instance) {
+        Debug\log('LA_TEMP render_block_this_name');
+        Debug\log('  block_content: ' . print_r($block_content, true));
+        Debug\log('  block: ' . print_r($block, true));
+        //LA_TODO Debug\log('  instance: ' . print_r($instance, true));
+        return $block_content;
+    }
+
+    /**
+     * See https://developer.wordpress.org/reference/hooks/post_thumbnail_id/
+     */
+    public function post_thumbnail_id($thumbnail_id, $post) {
+        Debug\log('LA_TEMP post_thumbnail_id');
+        Debug\log('  thumbnail_id: ' . print_r($thumbnail_id, true));
+        Debug\log('  post: ' . print_r($post, true));
+        return $thumbnail_id;
+    }
+
+    /**
+     * See https://wp-kama.com/function/wp_get_block_default_classname
+     */
+    public function block_default_classname($classname, $block_name) {
+        Debug\log('LA_TEMP block_default_classname');
+        Debug\log('  classname: ' . print_r($classname, true));
+        Debug\log('  block_name: ' . print_r($block_name, true));
+        return $classname;
     }
 
     /**
