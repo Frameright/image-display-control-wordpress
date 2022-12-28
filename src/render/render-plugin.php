@@ -96,6 +96,7 @@ class RenderPlugin {
             );
         }
 
+        Debug\log_all_fired_hooks();
         $this->global_functions->add_filter(
             'pre_option_stylesheet',
             [$this, 'pre_option_stylesheet'],
