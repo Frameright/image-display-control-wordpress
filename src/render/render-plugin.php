@@ -213,7 +213,7 @@ class RenderPlugin {
     }
 
     /**
-     * https://developer.wordpress.org/reference/hooks/pre_option_option/
+     * See https://developer.wordpress.org/reference/hooks/pre_option_option/
      */
     public function pre_option_stylesheet($pre_option, $option, $default) {
         Debug\log('LA_TEMP pre_option_stylesheet');
@@ -224,7 +224,7 @@ class RenderPlugin {
     }
 
     /**
-     * https://developer.wordpress.org/reference/hooks/alloptions/
+     * See https://developer.wordpress.org/reference/hooks/alloptions/
      */
     public function alloptions($alloptions) {
         Debug\log('LA_TEMP alloptions');
@@ -233,7 +233,7 @@ class RenderPlugin {
     }
 
     /**
-     * https://developer.wordpress.org/reference/hooks/option_option/
+     * See https://developer.wordpress.org/reference/hooks/option_option/
      */
     public function option_stylesheet($value, $option) {
         Debug\log('LA_TEMP option_stylesheet');
@@ -243,7 +243,7 @@ class RenderPlugin {
     }
 
     /**
-     * https://developer.wordpress.org/reference/hooks/stylesheet/
+     * See https://developer.wordpress.org/reference/hooks/stylesheet/
      */
     public function stylesheet($stylesheet) {
         Debug\log('LA_TEMP stylesheet');
@@ -252,7 +252,7 @@ class RenderPlugin {
     }
 
     /**
-     * https://developer.wordpress.org/reference/hooks/theme_file_path/
+     * See https://developer.wordpress.org/reference/hooks/theme_file_path/
      */
     public function theme_file_path($path, $file) {
         Debug\log('LA_TEMP theme_file_path');
@@ -262,7 +262,7 @@ class RenderPlugin {
     }
 
     /**
-     * https://developer.wordpress.org/reference/hooks/stylesheet_directory/
+     * See https://developer.wordpress.org/reference/hooks/stylesheet_directory/
      */
     public function stylesheet_directory(
         $stylesheet_dir,
@@ -277,7 +277,7 @@ class RenderPlugin {
     }
 
     /**
-     * https://developer.wordpress.org/reference/hooks/locale_stylesheet_uri/
+     * See https://developer.wordpress.org/reference/hooks/locale_stylesheet_uri/
      */
     public function locale_stylesheet_uri(
         $stylesheet_uri,
@@ -290,7 +290,7 @@ class RenderPlugin {
     }
 
     /**
-     * https://developer.wordpress.org/reference/hooks/wp_sitemaps_stylesheet_url/
+     * See https://developer.wordpress.org/reference/hooks/wp_sitemaps_stylesheet_url/
      */
     public function wp_sitemaps_stylesheet_url($sitemap_url) {
         Debug\log('LA_TEMP wp_sitemaps_stylesheet_url');
@@ -299,7 +299,7 @@ class RenderPlugin {
     }
 
     /**
-     * https://developer.wordpress.org/reference/hooks/wp_sitemaps_stylesheet_index_url/
+     * See https://developer.wordpress.org/reference/hooks/wp_sitemaps_stylesheet_index_url/
      */
     public function wp_sitemaps_stylesheet_index_url($sitemap_url) {
         Debug\log('LA_TEMP wp_sitemaps_stylesheet_index_url');
@@ -308,7 +308,7 @@ class RenderPlugin {
     }
 
     /**
-     * https://developer.wordpress.org/reference/hooks/theme_root/
+     * See https://developer.wordpress.org/reference/hooks/theme_root/
      */
     public function theme_root($theme_root) {
         Debug\log('LA_TEMP theme_root');
@@ -317,7 +317,7 @@ class RenderPlugin {
     }
 
     /**
-     * https://developer.wordpress.org/reference/hooks/pre_option_option/
+     * See https://developer.wordpress.org/reference/hooks/pre_option_option/
      */
     public function pre_option_theme_mods_twentytwentythree(
         $pre_option,
@@ -332,7 +332,7 @@ class RenderPlugin {
     }
 
     /**
-     * https://developer.wordpress.org/reference/hooks/option_option/
+     * See https://developer.wordpress.org/reference/hooks/option_option/
      */
     public function option_theme_mods_twentytwentythree($value, $option) {
         Debug\log('LA_TEMP option_theme_mods_twentytwentythree');
@@ -342,7 +342,7 @@ class RenderPlugin {
     }
 
     /**
-     * https://developer.wordpress.org/reference/hooks/pre_option_option/
+     * See https://developer.wordpress.org/reference/hooks/pre_option_option/
      */
     public function pre_option_template($pre_option, $option, $default) {
         Debug\log('LA_TEMP pre_option_template');
@@ -353,7 +353,7 @@ class RenderPlugin {
     }
 
     /**
-     * https://developer.wordpress.org/reference/hooks/option_option/
+     * See https://developer.wordpress.org/reference/hooks/option_option/
      */
     public function option_template($value, $option) {
         Debug\log('LA_TEMP option_template');
@@ -363,7 +363,7 @@ class RenderPlugin {
     }
 
     /**
-     * https://developer.wordpress.org/reference/hooks/page_css_class/
+     * See https://developer.wordpress.org/reference/hooks/page_css_class/
      */
     public function page_css_class(
         $css_class,
@@ -382,7 +382,7 @@ class RenderPlugin {
     }
 
     /**
-     * https://developer.wordpress.org/reference/hooks/render_block_data/
+     * See https://developer.wordpress.org/reference/hooks/render_block_data/
      */
     public function render_block_data(
         $parsed_block,
@@ -397,7 +397,7 @@ class RenderPlugin {
     }
 
     /**
-     * https://developer.wordpress.org/reference/hooks/render_block_this-name/
+     * See https://developer.wordpress.org/reference/hooks/render_block_this-name/
      */
     public function render_block_core_image($block_content, $block, $instance) {
         Debug\log('LA_TEMP render_block_core/image');
@@ -408,7 +408,7 @@ class RenderPlugin {
     }
 
     /**
-     * https://developer.wordpress.org/reference/hooks/post_thumbnail_id/
+     * See https://developer.wordpress.org/reference/hooks/post_thumbnail_id/
      */
     public function post_thumbnail_id($thumbnail_id, $post) {
         Debug\log('LA_TEMP post_thumbnail_id');
