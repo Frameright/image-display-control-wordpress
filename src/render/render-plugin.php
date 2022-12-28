@@ -96,9 +96,9 @@ class RenderPlugin {
             );
         }
 
-        $this->global_functions->add_filter(
+        /*LA_TODO $this->global_functions->add_filter(
             'pre_option_stylesheet',
-            [$this, 'pre_option_stylesheet'],
+            [$this, 'pre_option'],
             10, // default priority
             3 // number of arguments
         );
@@ -110,16 +110,16 @@ class RenderPlugin {
         );
         $this->global_functions->add_filter(
             'option_stylesheet',
-            [$this, 'option_stylesheet'],
+            [$this, 'option'],
             10, // default priority
             2 // number of arguments
-        );
-        /*LA_TODO $this->global_functions->add_filter(
-            'alloptions',
+        );*/
+        $this->global_functions->add_filter(
+            'stylesheet',
             [$this, 'stylesheet'],
             10, // default priority
             1 // number of arguments
-        );*/
+        );
         $this->global_functions->add_filter(
             'theme_file_path',
             [$this, 'theme_file_path'],
@@ -127,6 +127,12 @@ class RenderPlugin {
             2 // number of arguments
         );
         $this->global_functions->add_filter(
+            'theme_file_uri',
+            [$this, 'theme_file_uri'],
+            10, // default priority
+            2 // number of arguments
+        );
+        /*LA_TODO $this->global_functions->add_filter(
             'stylesheet_directory',
             [$this, 'stylesheet_directory'],
             10, // default priority
@@ -155,37 +161,43 @@ class RenderPlugin {
             [$this, 'theme_root'],
             10, // default priority
             1 // number of arguments
-        );
+        );*/
         $this->global_functions->add_filter(
             'pre_option_theme_mods_twentytwentythree',
-            [$this, 'pre_option_theme_mods_twentytwentythree'],
+            [$this, 'pre_option'],
             10, // default priority
             3 // number of arguments
         );
         $this->global_functions->add_filter(
             'option_theme_mods_twentytwentythree',
-            [$this, 'option_theme_mods_twentytwentythree'],
+            [$this, 'option'],
             10, // default priority
             2 // number of arguments
         );
-        $this->global_functions->add_filter(
+        /*LA_TODO $this->global_functions->add_filter(
             'pre_option_template',
-            [$this, 'pre_option_template'],
+            [$this, 'pre_option'],
             10, // default priority
             3 // number of arguments
         );
         $this->global_functions->add_filter(
             'option_template',
-            [$this, 'option_template'],
+            [$this, 'option'],
+            10, // default priority
+            2 // number of arguments
+        );*/
+        $this->global_functions->add_filter(
+            'option_image_default_size',
+            [$this, 'option'],
             10, // default priority
             2 // number of arguments
         );
-        $this->global_functions->add_filter(
-            'page_css_class',
-            [$this, 'page_css_class'],
+        /*LA_TODO $this->global_functions->add_filter(
+            'option_show_on_front',
+            [$this, 'option'],
             10, // default priority
-            5 // number of arguments
-        );
+            2 // number of arguments
+        );*/
         $this->global_functions->add_filter(
             'page_css_class',
             [$this, 'page_css_class'],
@@ -210,13 +222,19 @@ class RenderPlugin {
             10, // default priority
             2 // number of arguments
         );
+        $this->global_functions->add_filter(
+            'block_default_classname',
+            [$this, 'block_default_classname'],
+            10, // default priority
+            2 // number of arguments
+        );
     }
 
     /**
      * See https://developer.wordpress.org/reference/hooks/pre_option_option/
      */
-    public function pre_option_stylesheet($pre_option, $option, $default) {
-        Debug\log('LA_TEMP pre_option_stylesheet');
+    public function pre_option($pre_option, $option, $default) {
+        Debug\log('LA_TEMP pre_option');
         Debug\log('  pre_option: ' . print_r($pre_option, true));
         Debug\log('  option: ' . print_r($option, true));
         Debug\log('  default: ' . print_r($default, true));
@@ -235,8 +253,8 @@ class RenderPlugin {
     /**
      * See https://developer.wordpress.org/reference/hooks/option_option/
      */
-    public function option_stylesheet($value, $option) {
-        Debug\log('LA_TEMP option_stylesheet');
+    public function option($value, $option) {
+        Debug\log('LA_TEMP option');
         Debug\log('  value: ' . print_r($value, true));
         Debug\log('  option: ' . print_r($option, true));
         return $value;
@@ -259,6 +277,16 @@ class RenderPlugin {
         Debug\log('  path: ' . print_r($path, true));
         Debug\log('  file: ' . print_r($file, true));
         return $path;
+    }
+
+    /**
+     * See https://developer.wordpress.org/reference/hooks/theme_file_uri/
+     */
+    public function theme_file_uri($url, $file) {
+        Debug\log('LA_TEMP theme_file_uri');
+        Debug\log('  url: ' . print_r($url, true));
+        Debug\log('  file: ' . print_r($file, true));
+        return $url;
     }
 
     /**
@@ -319,52 +347,6 @@ class RenderPlugin {
     }
 
     /**
-     * See https://developer.wordpress.org/reference/hooks/pre_option_option/
-     */
-    public function pre_option_theme_mods_twentytwentythree(
-        $pre_option,
-        $option,
-        $default
-    ) {
-        Debug\log('LA_TEMP pre_option_theme_mods_twentytwentythree');
-        Debug\log('  pre_option: ' . print_r($pre_option, true));
-        Debug\log('  option: ' . print_r($option, true));
-        Debug\log('  default: ' . print_r($default, true));
-        return $pre_option;
-    }
-
-    /**
-     * See https://developer.wordpress.org/reference/hooks/option_option/
-     */
-    public function option_theme_mods_twentytwentythree($value, $option) {
-        Debug\log('LA_TEMP option_theme_mods_twentytwentythree');
-        Debug\log('  value: ' . print_r($value, true));
-        Debug\log('  option: ' . print_r($option, true));
-        return $value;
-    }
-
-    /**
-     * See https://developer.wordpress.org/reference/hooks/pre_option_option/
-     */
-    public function pre_option_template($pre_option, $option, $default) {
-        Debug\log('LA_TEMP pre_option_template');
-        Debug\log('  pre_option: ' . print_r($pre_option, true));
-        Debug\log('  option: ' . print_r($option, true));
-        Debug\log('  default: ' . print_r($default, true));
-        return $pre_option;
-    }
-
-    /**
-     * See https://developer.wordpress.org/reference/hooks/option_option/
-     */
-    public function option_template($value, $option) {
-        Debug\log('LA_TEMP option_template');
-        Debug\log('  value: ' . print_r($value, true));
-        Debug\log('  option: ' . print_r($option, true));
-        return $value;
-    }
-
-    /**
      * See https://developer.wordpress.org/reference/hooks/page_css_class/
      */
     public function page_css_class(
@@ -417,6 +399,16 @@ class RenderPlugin {
         Debug\log('  thumbnail_id: ' . print_r($thumbnail_id, true));
         Debug\log('  post: ' . print_r($post, true));
         return $thumbnail_id;
+    }
+
+    /**
+     * See https://wp-kama.com/function/wp_get_block_default_classname
+     */
+    public function block_default_classname($classname, $block_name) {
+        Debug\log('LA_TEMP block_default_classname');
+        Debug\log('  classname: ' . print_r($classname, true));
+        Debug\log('  block_name: ' . print_r($block_name, true));
+        return $classname;
     }
 
     /**
