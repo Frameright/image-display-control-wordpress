@@ -96,7 +96,6 @@ class RenderPlugin {
             );
         }
 
-        Debug\log_all_fired_hooks();
         $this->global_functions->add_filter(
             'pre_option_stylesheet',
             [$this, 'pre_option_stylesheet'],
@@ -115,12 +114,12 @@ class RenderPlugin {
             10, // default priority
             2 // number of arguments
         );
-        $this->global_functions->add_filter(
+        /*LA_TODO $this->global_functions->add_filter(
             'alloptions',
             [$this, 'stylesheet'],
             10, // default priority
             1 // number of arguments
-        );
+        );*/
         $this->global_functions->add_filter(
             'theme_file_path',
             [$this, 'theme_file_path'],
@@ -218,9 +217,9 @@ class RenderPlugin {
      */
     public function pre_option_stylesheet($pre_option, $option, $default) {
         Debug\log('LA_TEMP pre_option_stylesheet');
-        Debug\log('  pre_option' . print_r($pre_option, true));
-        Debug\log('  option' . print_r($option, true));
-        Debug\log('  default' . print_r($default, true));
+        Debug\log('  pre_option: ' . print_r($pre_option, true));
+        Debug\log('  option: ' . print_r($option, true));
+        Debug\log('  default: ' . print_r($default, true));
         return $pre_option;
     }
 
@@ -229,7 +228,7 @@ class RenderPlugin {
      */
     public function alloptions($alloptions) {
         Debug\log('LA_TEMP alloptions');
-        Debug\log('  alloptions' . print_r($alloptions, true));
+        Debug\log('  alloptions: ' . print_r($alloptions, true));
         return $alloptions;
     }
 
@@ -238,8 +237,8 @@ class RenderPlugin {
      */
     public function option_stylesheet($value, $option) {
         Debug\log('LA_TEMP option_stylesheet');
-        Debug\log('  value' . print_r($value, true));
-        Debug\log('  option' . print_r($option, true));
+        Debug\log('  value: ' . print_r($value, true));
+        Debug\log('  option: ' . print_r($option, true));
         return $value;
     }
 
@@ -248,7 +247,7 @@ class RenderPlugin {
      */
     public function stylesheet($stylesheet) {
         Debug\log('LA_TEMP stylesheet');
-        Debug\log('  stylesheet' . print_r($stylesheet, true));
+        Debug\log('  stylesheet: ' . print_r($stylesheet, true));
         return $stylesheet;
     }
 
@@ -257,8 +256,8 @@ class RenderPlugin {
      */
     public function theme_file_path($path, $file) {
         Debug\log('LA_TEMP theme_file_path');
-        Debug\log('  path' . print_r($path, true));
-        Debug\log('  file' . print_r($file, true));
+        Debug\log('  path: ' . print_r($path, true));
+        Debug\log('  file: ' . print_r($file, true));
         return $path;
     }
 
@@ -271,9 +270,9 @@ class RenderPlugin {
         $theme_root
     ) {
         Debug\log('LA_TEMP stylesheet_directory');
-        Debug\log('  stylesheet_dir' . print_r($stylesheet_dir, true));
-        Debug\log('  stylesheet' . print_r($stylesheet, true));
-        Debug\log('  theme_root' . print_r($theme_root, true));
+        Debug\log('  stylesheet_dir: ' . print_r($stylesheet_dir, true));
+        Debug\log('  stylesheet: ' . print_r($stylesheet, true));
+        Debug\log('  theme_root: ' . print_r($theme_root, true));
         return $stylesheet_dir;
     }
 
@@ -285,8 +284,10 @@ class RenderPlugin {
         $stylesheet_dir_uri
     ) {
         Debug\log('LA_TEMP locale_stylesheet_uri');
-        Debug\log('  stylesheet_uri' . print_r($stylesheet_uri, true));
-        Debug\log('  stylesheet_dir_uri' . print_r($stylesheet_dir_uri, true));
+        Debug\log('  stylesheet_uri: ' . print_r($stylesheet_uri, true));
+        Debug\log(
+            '  stylesheet_dir_uri: ' . print_r($stylesheet_dir_uri, true)
+        );
         return $stylesheet_uri;
     }
 
@@ -295,7 +296,7 @@ class RenderPlugin {
      */
     public function wp_sitemaps_stylesheet_url($sitemap_url) {
         Debug\log('LA_TEMP wp_sitemaps_stylesheet_url');
-        Debug\log('  sitemap_url' . print_r($sitemap_url, true));
+        Debug\log('  sitemap_url: ' . print_r($sitemap_url, true));
         return $sitemap_url;
     }
 
@@ -304,7 +305,7 @@ class RenderPlugin {
      */
     public function wp_sitemaps_stylesheet_index_url($sitemap_url) {
         Debug\log('LA_TEMP wp_sitemaps_stylesheet_index_url');
-        Debug\log('  sitemap_url' . print_r($sitemap_url, true));
+        Debug\log('  sitemap_url: ' . print_r($sitemap_url, true));
         return $sitemap_url;
     }
 
@@ -313,7 +314,7 @@ class RenderPlugin {
      */
     public function theme_root($theme_root) {
         Debug\log('LA_TEMP theme_root');
-        Debug\log('  theme_root' . print_r($theme_root, true));
+        Debug\log('  theme_root: ' . print_r($theme_root, true));
         return $theme_root;
     }
 
@@ -326,9 +327,9 @@ class RenderPlugin {
         $default
     ) {
         Debug\log('LA_TEMP pre_option_theme_mods_twentytwentythree');
-        Debug\log('  pre_option' . print_r($pre_option, true));
-        Debug\log('  option' . print_r($option, true));
-        Debug\log('  default' . print_r($default, true));
+        Debug\log('  pre_option: ' . print_r($pre_option, true));
+        Debug\log('  option: ' . print_r($option, true));
+        Debug\log('  default: ' . print_r($default, true));
         return $pre_option;
     }
 
@@ -337,8 +338,8 @@ class RenderPlugin {
      */
     public function option_theme_mods_twentytwentythree($value, $option) {
         Debug\log('LA_TEMP option_theme_mods_twentytwentythree');
-        Debug\log('  value' . print_r($value, true));
-        Debug\log('  option' . print_r($option, true));
+        Debug\log('  value: ' . print_r($value, true));
+        Debug\log('  option: ' . print_r($option, true));
         return $value;
     }
 
@@ -347,9 +348,9 @@ class RenderPlugin {
      */
     public function pre_option_template($pre_option, $option, $default) {
         Debug\log('LA_TEMP pre_option_template');
-        Debug\log('  pre_option' . print_r($pre_option, true));
-        Debug\log('  option' . print_r($option, true));
-        Debug\log('  default' . print_r($default, true));
+        Debug\log('  pre_option: ' . print_r($pre_option, true));
+        Debug\log('  option: ' . print_r($option, true));
+        Debug\log('  default: ' . print_r($default, true));
         return $pre_option;
     }
 
@@ -358,8 +359,8 @@ class RenderPlugin {
      */
     public function option_template($value, $option) {
         Debug\log('LA_TEMP option_template');
-        Debug\log('  value' . print_r($value, true));
-        Debug\log('  option' . print_r($option, true));
+        Debug\log('  value: ' . print_r($value, true));
+        Debug\log('  option: ' . print_r($option, true));
         return $value;
     }
 
@@ -374,11 +375,11 @@ class RenderPlugin {
         $current_page_id
     ) {
         Debug\log('LA_TEMP page_css_class');
-        Debug\log('  css_class' . print_r($css_class, true));
-        Debug\log('  page' . print_r($page, true));
-        Debug\log('  depth' . print_r($depth, true));
-        Debug\log('  args' . print_r($args, true));
-        Debug\log('  current_page_id' . print_r($current_page_id, true));
+        Debug\log('  css_class: ' . print_r($css_class, true));
+        Debug\log('  page: ' . print_r($page, true));
+        Debug\log('  depth: ' . print_r($depth, true));
+        Debug\log('  args: ' . print_r($args, true));
+        Debug\log('  current_page_id: ' . print_r($current_page_id, true));
         return $css_class;
     }
 
@@ -391,9 +392,9 @@ class RenderPlugin {
         $parent_block
     ) {
         Debug\log('LA_TEMP render_block_data');
-        Debug\log('  parsed_block' . print_r($parsed_block, true));
-        Debug\log('  source_block' . print_r($source_block, true));
-        Debug\log('  parent_block' . print_r($parent_block, true));
+        Debug\log('  parsed_block: ' . print_r($parsed_block, true));
+        Debug\log('  source_block: ' . print_r($source_block, true));
+        Debug\log('  parent_block: ' . print_r($parent_block, true));
         return $parsed_block;
     }
 
@@ -402,9 +403,9 @@ class RenderPlugin {
      */
     public function render_block_core_image($block_content, $block, $instance) {
         Debug\log('LA_TEMP render_block_core/image');
-        Debug\log('  block_content' . print_r($block_content, true));
-        Debug\log('  block' . print_r($block, true));
-        Debug\log('  instance' . print_r($instance, true));
+        Debug\log('  block_content: ' . print_r($block_content, true));
+        Debug\log('  block: ' . print_r($block, true));
+        Debug\log('  instance: ' . print_r($instance, true));
         return $block_content;
     }
 
@@ -413,8 +414,8 @@ class RenderPlugin {
      */
     public function post_thumbnail_id($thumbnail_id, $post) {
         Debug\log('LA_TEMP post_thumbnail_id');
-        Debug\log('  thumbnail_id' . print_r($thumbnail_id, true));
-        Debug\log('  post' . print_r($post, true));
+        Debug\log('  thumbnail_id: ' . print_r($thumbnail_id, true));
+        Debug\log('  post: ' . print_r($post, true));
         return $thumbnail_id;
     }
 
