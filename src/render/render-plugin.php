@@ -212,7 +212,9 @@ class RenderPlugin {
         );
     }
 
-    // https://developer.wordpress.org/reference/hooks/pre_option_option/
+    /**
+     * https://developer.wordpress.org/reference/hooks/pre_option_option/
+     */
     public function pre_option_stylesheet($pre_option, $option, $default) {
         Debug\log('LA_TEMP pre_option_stylesheet');
         Debug\log('  pre_option' . print_r($pre_option, true));
@@ -221,14 +223,18 @@ class RenderPlugin {
         return $pre_option;
     }
 
-    // https://developer.wordpress.org/reference/hooks/alloptions/
+    /**
+     * https://developer.wordpress.org/reference/hooks/alloptions/
+     */
     public function alloptions($alloptions) {
         Debug\log('LA_TEMP alloptions');
         Debug\log('  alloptions' . print_r($alloptions, true));
         return $alloptions;
     }
 
-    // https://developer.wordpress.org/reference/hooks/option_option/
+    /**
+     * https://developer.wordpress.org/reference/hooks/option_option/
+     */
     public function option_stylesheet($value, $option) {
         Debug\log('LA_TEMP option_stylesheet');
         Debug\log('  value' . print_r($value, true));
@@ -236,14 +242,18 @@ class RenderPlugin {
         return $value;
     }
 
-    // https://developer.wordpress.org/reference/hooks/stylesheet/
+    /**
+     * https://developer.wordpress.org/reference/hooks/stylesheet/
+     */
     public function stylesheet($stylesheet) {
         Debug\log('LA_TEMP stylesheet');
         Debug\log('  stylesheet' . print_r($stylesheet, true));
         return $stylesheet;
     }
 
-    // https://developer.wordpress.org/reference/hooks/theme_file_path/
+    /**
+     * https://developer.wordpress.org/reference/hooks/theme_file_path/
+     */
     public function theme_file_path($path, $file) {
         Debug\log('LA_TEMP theme_file_path');
         Debug\log('  path' . print_r($path, true));
@@ -251,7 +261,9 @@ class RenderPlugin {
         return $path;
     }
 
-    // https://developer.wordpress.org/reference/hooks/stylesheet_directory/
+    /**
+     * https://developer.wordpress.org/reference/hooks/stylesheet_directory/
+     */
     public function stylesheet_directory(
         $stylesheet_dir,
         $stylesheet,
@@ -264,7 +276,9 @@ class RenderPlugin {
         return $stylesheet_dir;
     }
 
-    // https://developer.wordpress.org/reference/hooks/locale_stylesheet_uri/
+    /**
+     * https://developer.wordpress.org/reference/hooks/locale_stylesheet_uri/
+     */
     public function locale_stylesheet_uri(
         $stylesheet_uri,
         $stylesheet_dir_uri
@@ -275,28 +289,36 @@ class RenderPlugin {
         return $stylesheet_uri;
     }
 
-    // https://developer.wordpress.org/reference/hooks/wp_sitemaps_stylesheet_url/
+    /**
+     * https://developer.wordpress.org/reference/hooks/wp_sitemaps_stylesheet_url/
+     */
     public function wp_sitemaps_stylesheet_url($sitemap_url) {
         Debug\log('LA_TEMP wp_sitemaps_stylesheet_url');
         Debug\log('  sitemap_url' . print_r($sitemap_url, true));
         return $sitemap_url;
     }
 
-    // https://developer.wordpress.org/reference/hooks/wp_sitemaps_stylesheet_index_url/
+    /**
+     * https://developer.wordpress.org/reference/hooks/wp_sitemaps_stylesheet_index_url/
+     */
     public function wp_sitemaps_stylesheet_index_url($sitemap_url) {
         Debug\log('LA_TEMP wp_sitemaps_stylesheet_index_url');
         Debug\log('  sitemap_url' . print_r($sitemap_url, true));
         return $sitemap_url;
     }
 
-    // https://developer.wordpress.org/reference/hooks/theme_root/
+    /**
+     * https://developer.wordpress.org/reference/hooks/theme_root/
+     */
     public function theme_root($theme_root) {
         Debug\log('LA_TEMP theme_root');
         Debug\log('  theme_root' . print_r($theme_root, true));
         return $theme_root;
     }
 
-    // https://developer.wordpress.org/reference/hooks/pre_option_option/
+    /**
+     * https://developer.wordpress.org/reference/hooks/pre_option_option/
+     */
     public function pre_option_theme_mods_twentytwentythree(
         $pre_option,
         $option,
@@ -309,7 +331,9 @@ class RenderPlugin {
         return $pre_option;
     }
 
-    // https://developer.wordpress.org/reference/hooks/option_option/
+    /**
+     * https://developer.wordpress.org/reference/hooks/option_option/
+     */
     public function option_theme_mods_twentytwentythree($value, $option) {
         Debug\log('LA_TEMP option_theme_mods_twentytwentythree');
         Debug\log('  value' . print_r($value, true));
@@ -317,7 +341,9 @@ class RenderPlugin {
         return $value;
     }
 
-    // https://developer.wordpress.org/reference/hooks/pre_option_option/
+    /**
+     * https://developer.wordpress.org/reference/hooks/pre_option_option/
+     */
     public function pre_option_template($pre_option, $option, $default) {
         Debug\log('LA_TEMP pre_option_template');
         Debug\log('  pre_option' . print_r($pre_option, true));
@@ -326,7 +352,9 @@ class RenderPlugin {
         return $pre_option;
     }
 
-    // https://developer.wordpress.org/reference/hooks/option_option/
+    /**
+     * https://developer.wordpress.org/reference/hooks/option_option/
+     */
     public function option_template($value, $option) {
         Debug\log('LA_TEMP option_template');
         Debug\log('  value' . print_r($value, true));
@@ -334,7 +362,9 @@ class RenderPlugin {
         return $value;
     }
 
-    // https://developer.wordpress.org/reference/hooks/page_css_class/
+    /**
+     * https://developer.wordpress.org/reference/hooks/page_css_class/
+     */
     public function page_css_class(
         $css_class,
         $page,
@@ -351,7 +381,9 @@ class RenderPlugin {
         return $css_class;
     }
 
-    // https://developer.wordpress.org/reference/hooks/render_block_data/
+    /**
+     * https://developer.wordpress.org/reference/hooks/render_block_data/
+     */
     public function render_block_data(
         $parsed_block,
         $source_block,
@@ -364,7 +396,9 @@ class RenderPlugin {
         return $parsed_block;
     }
 
-    // https://developer.wordpress.org/reference/hooks/render_block_this-name/
+    /**
+     * https://developer.wordpress.org/reference/hooks/render_block_this-name/
+     */
     public function render_block_core_image($block_content, $block, $instance) {
         Debug\log('LA_TEMP render_block_core/image');
         Debug\log('  block_content' . print_r($block_content, true));
@@ -373,7 +407,9 @@ class RenderPlugin {
         return $block_content;
     }
 
-    // https://developer.wordpress.org/reference/hooks/post_thumbnail_id/
+    /**
+     * https://developer.wordpress.org/reference/hooks/post_thumbnail_id/
+     */
     public function post_thumbnail_id($thumbnail_id, $post) {
         Debug\log('LA_TEMP post_thumbnail_id');
         Debug\log('  thumbnail_id' . print_r($thumbnail_id, true));
