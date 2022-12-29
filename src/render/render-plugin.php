@@ -113,26 +113,26 @@ class RenderPlugin {
             [$this, 'option'],
             10, // default priority
             2 // number of arguments
-        );*/
+        );
         $this->global_functions->add_filter(
             'stylesheet',
             [$this, 'stylesheet'],
             10, // default priority
             1 // number of arguments
-        );
+        );*/
         $this->global_functions->add_filter(
             'theme_file_path',
             [$this, 'theme_file_path'],
             10, // default priority
             2 // number of arguments
         );
-        $this->global_functions->add_filter(
+        /*LA_TODO $this->global_functions->add_filter(
             'theme_file_uri',
             [$this, 'theme_file_uri'],
             10, // default priority
             2 // number of arguments
         );
-        /*LA_TODO $this->global_functions->add_filter(
+        $this->global_functions->add_filter(
             'stylesheet_directory',
             [$this, 'stylesheet_directory'],
             10, // default priority
@@ -161,7 +161,7 @@ class RenderPlugin {
             [$this, 'theme_root'],
             10, // default priority
             1 // number of arguments
-        );*/
+        );
         $this->global_functions->add_filter(
             'pre_option_theme_mods_twentytwentythree',
             [$this, 'pre_option'],
@@ -174,7 +174,7 @@ class RenderPlugin {
             10, // default priority
             2 // number of arguments
         );
-        /*LA_TODO $this->global_functions->add_filter(
+        $this->global_functions->add_filter(
             'pre_option_template',
             [$this, 'pre_option'],
             10, // default priority
@@ -185,14 +185,14 @@ class RenderPlugin {
             [$this, 'option'],
             10, // default priority
             2 // number of arguments
-        );*/
+        );
         $this->global_functions->add_filter(
             'option_image_default_size',
             [$this, 'option'],
             10, // default priority
             2 // number of arguments
         );
-        /*LA_TODO $this->global_functions->add_filter(
+        $this->global_functions->add_filter(
             'option_show_on_front',
             [$this, 'option'],
             10, // default priority
@@ -204,15 +204,21 @@ class RenderPlugin {
             10, // default priority
             5 // number of arguments
         );
-        $this->global_functions->add_filter(
+        /*LA_TODO $this->global_functions->add_filter(
             'render_block_data',
             [$this, 'render_block_data'],
             10, // default priority
             3 // number of arguments
-        );
+        );*/
         $this->global_functions->add_filter(
             'render_block_core/image',
-            [$this, 'render_block_core_image'],
+            [$this, 'render_block_this_name'],
+            10, // default priority
+            3 // number of arguments
+        );
+        $this->global_functions->add_filter(
+            'render_block_core/post-featured-image',
+            [$this, 'render_block_this_name'],
             10, // default priority
             3 // number of arguments
         );
@@ -383,8 +389,8 @@ class RenderPlugin {
     /**
      * See https://developer.wordpress.org/reference/hooks/render_block_this-name/
      */
-    public function render_block_core_image($block_content, $block, $instance) {
-        Debug\log('LA_TEMP render_block_core/image');
+    public function render_block_this_name($block_content, $block, $instance) {
+        Debug\log('LA_TEMP render_block_this_name');
         Debug\log('  block_content: ' . print_r($block_content, true));
         Debug\log('  block: ' . print_r($block, true));
         Debug\log('  instance: ' . print_r($instance, true));
