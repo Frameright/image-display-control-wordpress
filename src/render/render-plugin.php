@@ -119,14 +119,14 @@ class RenderPlugin {
             [$this, 'stylesheet'],
             10, // default priority
             1 // number of arguments
-        );*/
+        );
         $this->global_functions->add_filter(
             'theme_file_path',
             [$this, 'theme_file_path'],
             10, // default priority
             2 // number of arguments
         );
-        /*LA_TODO $this->global_functions->add_filter(
+        $this->global_functions->add_filter(
             'theme_file_uri',
             [$this, 'theme_file_uri'],
             10, // default priority
@@ -222,12 +222,12 @@ class RenderPlugin {
             10, // default priority
             3 // number of arguments
         );
-        $this->global_functions->add_filter(
+        /*LA_TODO $this->global_functions->add_filter(
             'post_thumbnail_id',
             [$this, 'post_thumbnail_id'],
             10, // default priority
             2 // number of arguments
-        );
+        );*/
         $this->global_functions->add_filter(
             'block_default_classname',
             [$this, 'block_default_classname'],
