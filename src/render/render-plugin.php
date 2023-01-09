@@ -393,7 +393,7 @@ class RenderPlugin {
         Debug\log('LA_TEMP render_block_this_name');
         Debug\log('  block_content: ' . print_r($block_content, true));
         Debug\log('  block: ' . print_r($block, true));
-        Debug\log('  instance: ' . print_r($instance, true));
+        //LA_TODO Debug\log('  instance: ' . print_r($instance, true));
         return $block_content;
     }
 
