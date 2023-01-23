@@ -88,5 +88,3 @@ composer test
 - PHP 5.6+
 - WordPress 5.1+
 - [Image Display Control Web Component](https://github.com/AurelienLourot/frameright-web-component)
-  - [Lit 2.0.2+](https://lit.dev/)
-  - ES2015

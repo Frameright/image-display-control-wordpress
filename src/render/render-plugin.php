@@ -41,24 +41,25 @@ class RenderPlugin {
          *
          * The goal of this class is to replace
          *
-         *   <img src='<orig_url>'
+         *   <img src="<orig_url>"
          *        srcset="<orig_url> 1024w,
          *                <orig_url> 300w,
          *        [...]
          *
          * with either
          *
-         *   <img src='<best_crop_url>'
+         *   <img src="<best_crop_url>"
          *        srcset="<best_crop_url> 1024w,
          *                <best_crop_url> 300w,
          *        [...]
          *
-         * or with
-         *   <image-display-control image-regions='[...]'>
-         *       <img src='<orig_url>'
-         *            srcset="<orig_url> 1024w,
-         *                    <orig_url> 300w,
-         *            [...]
+         * or
+         *
+         *   <img is="image-display-control"
+         *        src="<orig_url>"
+         *        srcset="<orig_url> 1024w,
+         *                <orig_url> 300w,
+         *        [...]
          *
          * After having played around with all filters mentioned above, it
          * appears that:
@@ -83,7 +84,7 @@ class RenderPlugin {
 
             $this->global_functions->add_filter(
                 'wp_content_img_tag',
-                [$this, 'wrap_img_tag'],
+                [$this, 'add_img_tag_attributes'],
                 10, // default priority
                 3 // number of arguments
             );
@@ -204,18 +205,25 @@ class RenderPlugin {
      * plugin to tweak the HTML <img> tag.
      *
      * If the image being rendered is an original image containing XMP Image
-     * Regions, we will wrap the <img> tag with an <image-display-control> tag.
+     * Regions, we will add image-display-control-related attributes to the
+     * <img> tag.
      *
      * @param string $filtered_image Full <img> tag.
      * @param string $context Additional context, like the current filter name
      *                        or the function name from where this was called.
      * @param int    $attachment_id The image attachment ID. May be 0 in case
      *                              the image is not an attachment.
-     * @return string Filter input/output in which the <img> tag may have been
-     *                wrapped in an <image-display-control> tag.
+     * @return string Filter input/output in which the <img> tag may have
+     *                received additional HTML attributes.
      */
-    public function wrap_img_tag($filtered_image, $context, $attachment_id) {
-        Debug\log("Wrapping <img> tag for attachment $attachment_id");
+    public function add_img_tag_attributes(
+        $filtered_image,
+        $context,
+        $attachment_id
+    ) {
+        Debug\log(
+            "Maybe adding attributes to <img> tag for attachment $attachment_id"
+        );
         Debug\log("Original tag: $filtered_image");
 
         /**
@@ -233,6 +241,10 @@ class RenderPlugin {
          *          sizes="(max-width: 2000px) 100vw, 2000px"
          *     />
          */
+        $parsed_img_tag = self::parse_img_tag($filtered_image);
+        $document = $parsed_img_tag['document'];
+        $img_element = $parsed_img_tag['element'];
+        $src_attribute = $parsed_img_tag['src'];
 
         if (!$attachment_id) {
             /**
@@ -245,12 +257,6 @@ class RenderPlugin {
              *     if there is an attachment for this image URL, in order to
              *     see if the image has some relevant image regions.
              */
-
-            $parsed_img_tag = self::parse_img_tag($filtered_image);
-            $document = $parsed_img_tag['document'];
-            $img_element = $parsed_img_tag['element'];
-            $src_attribute = $parsed_img_tag['src'];
-
             $attachment_id = $this->global_functions->attachment_url_to_postid(
                 $src_attribute
             );
@@ -273,9 +279,13 @@ class RenderPlugin {
         $regions_json = $this->global_functions->wp_json_encode($regions);
         Debug\assert_($regions_json, 'Could not serialize image regions');
 
-        $idc_tag = self::build_idc_tag($filtered_image, $regions_json);
-        Debug\log("Resulting tag: $idc_tag");
-        return $idc_tag;
+        $img_idc_tag = self::build_img_idc_tag(
+            $document,
+            $img_element,
+            $regions_json
+        );
+        Debug\log("Resulting tag: $img_idc_tag");
+        return $img_idc_tag;
     }
 
     /**
@@ -330,8 +340,8 @@ class RenderPlugin {
 
     /**
      * If true, instead of modifying the `<img srcset="...` attributes, the
-     * plugin will wrap the tag with an `<image-display-control>` web
-     * component.
+     * plugin will extend the tag with image-display-control-related attributes
+     * to turn it into a custom web component.
      */
     const ENABLE_EXPERIMENTAL_FEATURE_WEB_COMPONENT = false;
 
@@ -546,25 +556,33 @@ class RenderPlugin {
     }
 
     /**
-     * Build an '<image-display-control>' tag.
+     * Build an '<img is="image-display-control" />' tag.
      *
-     * @param string $img_element Original <img> element to be wrapped.
-     * @param string $regions JSON-serialized image regions.
+     * @param \DOMDocument $document Document containing the original <img>
+     *                               element. Will be altered as a side-effect,
+     *                               throw it away afterwards.
+     * @param \DOMElement  $img_element Original <img> element. Will be altered
+     *                                  as a side-effect, throw it away
+     *                                  afterwards.
+     * @param string       $regions JSON-serialized image regions.
      * @return string Resulting tag.
      */
-    private static function build_idc_tag($img_element, $regions) {
-        $idc_tag = '<image-display-control ';
-
-        // Note: we use two classes here in order to be able to write CSS rules
-        // that have a higher specificity.
-        $idc_tag .= 'class="image-display-control frameright" ';
+    private static function build_img_idc_tag(
+        $document,
+        $img_element,
+        $regions
+    ) {
+        $img_element->setAttribute('is', 'image-display-control');
+        $img_element->setAttribute('data-image-regions', $regions);
         if (Debug\enabled()) {
-            $idc_tag .= 'loglevel="debug" ';
+            $img_element->setAttribute('data-loglevel', 'debug');
         }
-        $idc_tag .= "image-regions='" . $regions . "'>";
-        $idc_tag .= $img_element;
-        $idc_tag .= '</image-display-control>';
-        return $idc_tag;
+        $img_idc_tag = $document->saveHTML($img_element);
+        Debug\assert_(
+            $img_idc_tag,
+            'Could not generate <img is="image-display-control"> tag'
+        );
+        return $img_idc_tag;
     }
 
     /**

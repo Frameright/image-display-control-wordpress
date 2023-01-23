@@ -190,9 +190,9 @@ final class RenderPluginTest extends PHPUnit\Framework\TestCase {
     }
 
     /**
-     * Test wrap_img_tag() .
+     * Test build_img_idc_tag() .
      */
-    public function test_wrap_img_tag() {
+    public function test_build_img_idc_tag() {
         $input_image_url =
             'https://mywordpress.com/wp-content/uploads/2022/11/myimage.jpg';
         $input_tag =
@@ -219,14 +219,14 @@ final class RenderPluginTest extends PHPUnit\Framework\TestCase {
             ->willReturn('a json-encoded array of regions');
 
         $expected_tag =
-            '<image-display-control class="image-display-control frameright" ' .
-            "image-regions='a json-encoded array of regions'>" .
-            $input_tag .
-            '</image-display-control>';
+            '<img width="2000" height="1000" src="' .
+            $input_image_url .
+            '" class="wp-post-image" is="image-display-control" ' .
+            'data-image-regions="a json-encoded array of regions">';
 
         $actual_tag = (new FramerightImageDisplayControl\Render\RenderPlugin(
             $this->global_functions_mock
-        ))->wrap_img_tag($input_tag, null, 0);
+        ))->add_img_tag_attributes($input_tag, null, 0);
 
         $this->assertSame($expected_tag, $actual_tag);
     }
