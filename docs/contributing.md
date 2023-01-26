@@ -207,21 +207,23 @@ cd image-display-control/trunk/
 
 ### Commit to SVN
 
-Replace the `trunk` files with the previously built archive. This will require
-an unpredictable sequence of the following commands:
+Replace the `trunk` files with the previously built archive:
 
-* `unzip image-display-control.zip`
-* `svn update`
-* `svn add newfile1 newfile2 newdir1`
-* `svn delete oldfile1`
-* `svn status`
+```bash
+for i in $(find . -name "*"); do svn delete $i; done
+rm -rf *
+mv ../../image-display-control-wordpress/image-display-control.zip .
+unzip image-display-control.zip
+for i in $(find . -name "*"); do svn add $i; done
+svn status
+```
 
 Commit the `trunk` changes and create a new tag:
 
 ```bash
 cd ../
 svn copy trunk tags/1.2.3
-svn commit -m "1.2.3" --username my-wordpress-username --password foo
+svn commit -m "1.2.3" --username my-wordpress-username --password 'foo'
 ```
 
 Check the result at https://wordpress.org/plugins/image-display-control/
