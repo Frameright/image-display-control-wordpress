@@ -31,6 +31,8 @@ class RenderPlugin {
          * When rendering an image, the most important filters involved are
          * the following ones, in this order:
          *   * render_block_data
+         *   * render_block_core/image
+         *   * render_block_core/post-featured-image
          *   * wp_img_tag_add_width_and_height_attr
          *   * wp_get_attachment_metadata
          *   * wp_image_src_get_dimensions
@@ -48,17 +50,17 @@ class RenderPlugin {
          *
          * with either
          *
-         *   <img src="<best_crop_url>"
-         *        srcset="<best_crop_url> 1024w,
-         *                <best_crop_url> 300w,
-         *        [...]
-         *
-         * or
-         *
          *   <img is="image-display-control"
          *        src="<orig_url>"
          *        srcset="<orig_url> 1024w,
          *                <orig_url> 300w,
+         *        [...]
+         *
+         * or (legacy mode)
+         *
+         *   <img src="<best_crop_url>"
+         *        srcset="<best_crop_url> 1024w,
+         *                <best_crop_url> 300w,
          *        [...]
          *
          * After having played around with all filters mentioned above, it
@@ -72,28 +74,28 @@ class RenderPlugin {
          *     provides good results.
          */
 
-        if (self::ENABLE_EXPERIMENTAL_FEATURE_WEB_COMPONENT) {
-            $this->global_functions->add_action('wp_enqueue_scripts', [
-                $this,
-                'serve_css',
-            ]);
-            $this->global_functions->add_action('wp_enqueue_scripts', [
-                $this,
-                'serve_web_component_js',
-            ]);
+        $this->global_functions->add_action('wp_enqueue_scripts', [
+            $this,
+            'serve_css',
+        ]);
+        $this->global_functions->add_action('wp_enqueue_scripts', [
+            $this,
+            'serve_web_component_js',
+        ]);
 
-            $this->global_functions->add_filter(
-                'wp_content_img_tag',
-                [$this, 'add_img_tag_attributes'],
-                10, // default priority
-                3 // number of arguments
-            );
-        } else {
+        if (self::LEGACY_HARDCROP_MODE) {
             $this->global_functions->add_filter(
                 'wp_calculate_image_srcset',
                 [$this, 'replace_srcsets'],
                 10, // default priority
                 5 // number of arguments
+            );
+        } else {
+            $this->global_functions->add_filter(
+                'wp_content_img_tag',
+                [$this, 'add_img_tag_attributes'],
+                10, // default priority
+                3 // number of arguments
             );
         }
     }
@@ -339,11 +341,11 @@ class RenderPlugin {
     }
 
     /**
-     * If true, instead of modifying the `<img srcset="...` attributes, the
-     * plugin will extend the tag with image-display-control-related attributes
-     * to turn it into a custom web component.
+     * If true, instead of enabling our web component on the `<img>` elements,
+     * the plugin will modify the `<img srcset="...` attribute in order to
+     * serve hardcrops to the front-end.
      */
-    const ENABLE_EXPERIMENTAL_FEATURE_WEB_COMPONENT = false;
+    const LEGACY_HARDCROP_MODE = false;
 
     const ASSETS_UNIQUE_HANDLE = 'frameright';
 

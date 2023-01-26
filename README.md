@@ -5,21 +5,21 @@
 
 # Image Display Control WordPress Plugin
 
-An easy way to leverage image cropping metadata on your site. Made with :heart:
+An easy way to leverage image region metadata on your site. Made with :heart:
 by [Frameright](https://frameright.io). Power to the pictures!
 
 ## Table of Contents
 
 <!-- toc -->
 
-- [Which image cropping metadata?](#which-image-cropping-metadata)
+- [Which image metadata?](#which-image-metadata)
 - [How does it work?](#how-does-it-work)
 - [Contributing](#contributing)
 - [Dependency tree / credits](#dependency-tree--credits)
 
 <!-- tocstop -->
 
-## Which image cropping metadata?
+## Which image metadata?
 
 An image file (e.g. JPEG, PNG) contains metadata, i.e. information about the
 image, e.g. which camera model was used or when the picture has been taken.
@@ -47,24 +47,20 @@ has defined a standard for storing
 in XMP. _Image Regions_ are useful for describing specific areas of the image
 (e.g. objects, people) or for indicating how the image should be cropped or
 rotated to best fit a given container. The
-[Frameright app](https://frameright.app/) can be used to define such Image
-Regions and insert them in the metadata of a picture.
+[Frameright app](https://frameright.app/) can be used to define such _Image
+Regions_ and insert them in the metadata of a picture.
 
-This WordPress plugin reads such Image Regions in order to automatically crop
+This WordPress plugin reads such _Image Regions_ in order to automatically crop
 images the best possible way, depending on which container they are being
 displayed in.
 
 ## How does it work?
 
-When uploading an image via the
-[Image Library](https://wordpress.org/support/article/using-images/), cropped
-versions of that image (so-called _hardcrops_) are automatically generated
-according to the Image Region metadata and also added to the Image Library.
-
-Within a post or page an author can then either directly insert these hardcrops
-or insert the original image. Upon changing the ratio of the original image
-within a post or page, the best suited hardcrop will automatically be rendered
-to visitors.
+When rendering a post or a page, the plugin looks for images that have _Image
+Region_ metadata and replaces them on the front-end with a
+[web component](https://github.com/AurelienLourot/frameright-web-component)
+automatically zooming on the best suited _Image Region_, effectively
+doing better than a classical middle-crop.
 
 &emsp; :airplane: [Usage](docs/usage.md)
 
@@ -88,3 +84,6 @@ composer test
 - PHP 5.6+
 - WordPress 5.1+
 - [Image Display Control Web Component](https://github.com/AurelienLourot/frameright-web-component)
+  - [ungap/custom-elements](https://github.com/ungap/custom-elements), a
+    polyfill for web components on Safari. Many thanks to
+    [WebReflection](https://github.com/WebReflection)!

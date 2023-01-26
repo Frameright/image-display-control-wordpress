@@ -39,23 +39,23 @@ final class RenderPluginTest extends PHPUnit\Framework\TestCase {
      * Test constructor.
      */
     public function test_constructor() {
-        if (
-            FramerightImageDisplayControl\Render\RenderPlugin::ENABLE_EXPERIMENTAL_FEATURE_WEB_COMPONENT
-        ) {
-            $this->global_functions_mock
-                ->expects($this->exactly(2))
-                ->method('add_action')
-                ->with('wp_enqueue_scripts');
+        $this->global_functions_mock
+            ->expects($this->exactly(2))
+            ->method('add_action')
+            ->with('wp_enqueue_scripts');
 
-            $this->global_functions_mock
-                ->expects($this->once())
-                ->method('add_filter')
-                ->with('wp_content_img_tag');
-        } else {
+        if (
+            FramerightImageDisplayControl\Render\RenderPlugin::LEGACY_HARDCROP_MODE
+        ) {
             $this->global_functions_mock
                 ->expects($this->once())
                 ->method('add_filter')
                 ->with('wp_calculate_image_srcset');
+        } else {
+            $this->global_functions_mock
+                ->expects($this->once())
+                ->method('add_filter')
+                ->with('wp_content_img_tag');
         }
 
         new FramerightImageDisplayControl\Render\RenderPlugin(

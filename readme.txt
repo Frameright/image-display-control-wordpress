@@ -1,6 +1,6 @@
 === Image Display Control ===
 Contributors: lourot, jarsta
-Tags: image, crop, cropping, image crop, image quality, image display control, frameright
+Tags: image, crop, cropping, image crop, image quality, image display control, frameright, responsive, design, layout, iptc, metadata
 Requires at least: 5.1
 Tested up to: 6.1
 Requires PHP: 5.6
@@ -8,7 +8,7 @@ License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.en.html
 Stable Tag: 0.0.5
 
-An easy way to leverage image cropping metadata on your site. Made by Frameright. Power to the pictures!
+An easy way to leverage image region metadata on your site. Made by Frameright. Power to the pictures!
 
 == Description ==
 
@@ -20,9 +20,7 @@ The [Frameright app](https://frameright.app/) can be used to define such image r
 
 = How does it work? =
 
-When uploading an image via the Image Library, cropped versions of that image (so-called hardcrops) are automatically generated according to the image region metadata and also added to the Image Library.
-
-Within a post or page an author can then either directly insert these hardcrops or insert the original image. Upon changing the ratio of the original image within a post or page, the best suited hardcrop will automatically be rendered to visitors.
+When rendering a post or a page, the plugin looks for images that have image region metadata and replaces them with a web component automatically zooming on the best suited image region, effectively doing better than a classical middle-crop.
 
 == Frequently Asked Questions ==
 
@@ -32,8 +30,8 @@ Please use the [GitHub repository](https://github.com/Frameright/image-display-c
 
 == Changelog ==
 
-= 0.0.5 (TODO) =
-* TODO
+= 0.0.5 (2023-01-26) =
+* Switched to rendering a [web component](https://github.com/AurelienLourot/frameright-web-component) on the front-end.
 
 = 0.0.4 (2022-11-05) =
 * Improved documentation.
