@@ -31,7 +31,7 @@ Please use the [GitHub repository](https://github.com/Frameright/image-display-c
 == Changelog ==
 
 = 0.0.5 (2023-01-26) =
-* Switched to rendering a [web component](https://github.com/AurelienLourot/frameright-web-component) on the front-end.
+* Switched to rendering a [web component](https://github.com/Frameright/image-display-control-web-component) on the front-end.
 
 = 0.0.4 (2022-11-05) =
 * Improved documentation.

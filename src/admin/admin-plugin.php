@@ -306,7 +306,7 @@ class AdminPlugin {
                 'unit' => $region->rbUnit,
 
                 // Useful when unit is 'pixel', see
-                // https://github.com/AurelienLourot/frameright-web-component
+                // https://github.com/Frameright/image-display-control-web-component/blob/main/image-display-control/docs/reference/attributes.md
                 'imageWidth' => $image_size['width'],
                 'imageHeight' => $image_size['height'],
 

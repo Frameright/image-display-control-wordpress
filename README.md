@@ -58,7 +58,7 @@ displayed in.
 
 When rendering a post or a page, the plugin looks for images that have _Image
 Region_ metadata and replaces them on the front-end with a
-[web component](https://github.com/AurelienLourot/frameright-web-component)
+[web component](https://github.com/Frameright/image-display-control-web-component)
 automatically zooming on the best suited _Image Region_, effectively
 doing better than a classical middle-crop.
 
@@ -83,7 +83,7 @@ composer test
   - [`php-xml`](https://www.php.net/manual/en/book.dom.php)
 - PHP 5.6+
 - WordPress 5.1+
-- [Image Display Control Web Component](https://github.com/AurelienLourot/frameright-web-component)
+- [Image Display Control Web Component](https://github.com/Frameright/image-display-control-web-component)
   - [ungap/custom-elements](https://github.com/ungap/custom-elements), a
     polyfill for web components on Safari. Many thanks to
     [WebReflection](https://github.com/WebReflection)!
