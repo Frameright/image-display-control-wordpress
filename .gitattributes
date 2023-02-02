@@ -7,7 +7,6 @@
 /php*                             export-ignore
 /README.md                        export-ignore
 /src/assets/js/rollup.config.mjs  export-ignore
-/src/assets/js/thirdparty         export-ignore
 /tests/                           export-ignore
 composer.*                        export-ignore
 package*.json                     export-ignore

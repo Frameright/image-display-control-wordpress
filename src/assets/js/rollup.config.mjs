@@ -24,7 +24,7 @@ export default {
     }),
   ],
   input:
-    './node_modules/image-display-control/dist/src/image-display-control.js',
+    './node_modules/@frameright/image-display-control-web-component/dist/src/image-display-control.js',
   output: {
     dir: 'build',
   },

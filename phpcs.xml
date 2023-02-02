@@ -7,7 +7,6 @@
 
     <file>.</file>
     <exclude-pattern>/src/assets/js/build/</exclude-pattern>
-    <exclude-pattern>/src/assets/js/thirdparty/</exclude-pattern>
     <exclude-pattern>/vendor/</exclude-pattern>
     <exclude-pattern>/wpcs/</exclude-pattern>
     <exclude-pattern>node_modules/</exclude-pattern>
