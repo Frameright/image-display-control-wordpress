@@ -23,8 +23,7 @@ export default {
       patterns: [],
     }),
   ],
-  input:
-    './node_modules/@frameright/image-display-control-web-component/dist/src/image-display-control.js',
+  input: './index.js',
   output: {
     dir: 'build',
   },

@@ -265,8 +265,7 @@ final class RenderPluginTest extends PHPUnit\Framework\TestCase {
             ->method('plugin_dir_url')
             ->willReturn($input_url_to_js_assets);
 
-        $expected_url_to_js_script =
-            $input_url_to_js_assets . 'image-display-control.js';
+        $expected_url_to_js_script = $input_url_to_js_assets . 'index.js';
         $this->global_functions_mock
             ->expects($this->once())
             ->method('wp_enqueue_script')

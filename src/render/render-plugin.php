@@ -310,7 +310,10 @@ class RenderPlugin {
             self::ASSETS_UNIQUE_HANDLE,
             $url_to_stylesheet,
             [], // deps
-            '42.42.0' // dummy version added to URL for cache busting purposes
+            // Dummy version added to URL for cache busting purposes. We follow
+            // so far the version of
+            // https://github.com/Frameright/image-display-control-web-component
+            '0.0.7'
         );
     }
 
@@ -320,7 +323,7 @@ class RenderPlugin {
      */
     public function serve_web_component_js() {
         $relative_path_to_js_assets = '../assets/js/build/';
-        $js_script_name = 'image-display-control.js';
+        $js_script_name = 'index.js';
         $absolute_path_to_js_script = realpath(
             __DIR__ . '/' . $relative_path_to_js_assets . $js_script_name
         );
@@ -335,7 +338,10 @@ class RenderPlugin {
             self::ASSETS_UNIQUE_HANDLE,
             $url_to_js_script,
             [], // deps
-            '42.42.0', // dummy version added to URL for cache busting purposes
+            // Dummy version added to URL for cache busting purposes. We follow
+            // so far the version of
+            // https://github.com/Frameright/image-display-control-web-component
+            '0.0.7',
             true // put just before </body> instead of </head>
         );
     }
