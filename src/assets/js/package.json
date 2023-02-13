@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@frameright/image-display-control-web-component": "^0.0.9",
+    "@frameright/image-display-control-web-component": "file:../../../../frameright-web-component/image-display-control/frameright-image-display-control-web-component-0.1.0.tgz",
     "@juggle/resize-observer": "^3.4.0"
   },
   "devDependencies": {
