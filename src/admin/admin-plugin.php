@@ -286,14 +286,20 @@ class AdminPlugin {
      *               directly be used as WordPress metadata.
      */
     private function read_rectangle_cropping_metadata($path) {
-        $image_editor = $this->global_functions->wp_get_image_editor($path);
-        Debug\assert_(
-            !$this->global_functions->is_wp_error($image_editor),
-            'Could not create image editor for reading image size'
-        );
-        $image_size = $image_editor->get_size();
-
         $wordpress_metadata = [];
+
+        $image_editor = $this->global_functions->wp_get_image_editor($path);
+        if ($this->global_functions->is_wp_error($image_editor)) {
+            Debug\log(
+                'Could not create image editor for reading image size of ' .
+                    $path .
+                    ': ' .
+                    $image_editor->get_error_message()
+            );
+            return $wordpress_metadata;
+        }
+
+        $image_size = $image_editor->get_size();
 
         $regions = $this->xmp->read_rectangle_cropping_metadata($path);
         Debug\log('Found relevant image regions: ' . print_r($regions, true));
