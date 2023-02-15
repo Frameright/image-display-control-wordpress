@@ -45,7 +45,7 @@ class AdminPlugin {
 
         $this->global_functions->add_filter('wp_handle_upload', [
             $this,
-            'handle_image_upload',
+            'handle_file_upload',
         ]);
 
         $this->global_functions->add_action('add_attachment', [
@@ -55,7 +55,8 @@ class AdminPlugin {
     }
 
     /**
-     * Filter called when an image gets uploaded to the media library.
+     * Filter called when a file gets uploaded, e.g. when an image is uploaded
+     * to the media library.
      *
      * @param array $data Filter input/output with the following keys:
      *                    * 'file': '/absolute/path/to/img.jpg'
@@ -63,9 +64,11 @@ class AdminPlugin {
      *                    * 'type': 'image/jpeg'.
      * @return array Unmodified filter input/output.
      */
-    public function handle_image_upload($data) {
-        Debug\log('An image got uploaded: ' . print_r($data, true));
-        $this->create_hardcrops($data['file'], $data['url']);
+    public function handle_file_upload($data) {
+        Debug\log('A file got uploaded: ' . print_r($data, true));
+        if (0 === strpos($data['type'], 'image/')) {
+            $this->create_hardcrops($data['file'], $data['url']);
+        }
         return $data;
     }
 

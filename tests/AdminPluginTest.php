@@ -55,7 +55,7 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
     }
 
     /**
-     * Test create_hardcrops() and set_attachment_meta().
+     * Test test_handle_file_upload() and set_attachment_meta().
      */
     public function test_create_hardcrops_and_set_attachment_meta() {
         $input_source_dirname = '/absolute/path/to';
@@ -65,7 +65,14 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
         $input_source_url =
             'https://mywordpress.dev/wp-content/uploads/2022/10/' .
             $input_source_basename;
+        $input_source_type = 'image/jpeg';
         $input_source_attachment_id = 43;
+
+        $input_handle_file_upload_filter = [
+            'file' => $input_source_path,
+            'url' => $input_source_url,
+            'type' => $input_source_type,
+        ];
 
         $input_xmp_regions = [
             $this->create_mock_image_region(
@@ -192,16 +199,14 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
             )
             ->willReturn(83);
 
-        $create_hardcrops_method = new ReflectionMethod(
+        $handle_file_upload_method = new ReflectionMethod(
             'FramerightImageDisplayControl\Admin\AdminPlugin',
-            'create_hardcrops'
+            'handle_file_upload'
         );
-        $create_hardcrops_method->setAccessible(true);
         $set_attachment_meta_method = new ReflectionMethod(
             'FramerightImageDisplayControl\Admin\AdminPlugin',
             'set_attachment_meta'
         );
-        $set_attachment_meta_method->setAccessible(true);
 
         $plugin_under_test = new FramerightImageDisplayControl\Admin\AdminPlugin(
             $this->global_functions_mock,
@@ -209,11 +214,12 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
             $this->xmp_mock
         );
 
-        $create_hardcrops_method->invoke(
+        $expected_result = $input_handle_file_upload_filter;
+        $actual_result = $handle_file_upload_method->invoke(
             $plugin_under_test,
-            $input_source_path,
-            $input_source_url
+            $input_handle_file_upload_filter
         );
+        $this->assertSame($expected_result, $actual_result);
 
         $set_attachment_meta_method->invoke(
             $plugin_under_test,
