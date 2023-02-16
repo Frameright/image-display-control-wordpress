@@ -53,9 +53,12 @@ final class RenderPluginTest extends PHPUnit\Framework\TestCase {
                 ->with('wp_calculate_image_srcset');
         } else {
             $this->global_functions_mock
-                ->expects($this->once())
+                ->expects($this->exactly(2))
                 ->method('add_filter')
-                ->with('wp_content_img_tag');
+                ->withConsecutive(
+                    ['wp_content_img_tag'],
+                    ['post_thumbnail_html']
+                );
         }
 
         new FramerightImageDisplayControl\Render\RenderPlugin(
@@ -190,9 +193,9 @@ final class RenderPluginTest extends PHPUnit\Framework\TestCase {
     }
 
     /**
-     * Test build_img_idc_tag() .
+     * Test tweak_img_tag() .
      */
-    public function test_build_img_idc_tag() {
+    public function test_tweak_img_tag() {
         $input_image_url =
             'https://mywordpress.com/wp-content/uploads/2022/11/myimage.jpg';
         $input_tag =
@@ -226,7 +229,43 @@ final class RenderPluginTest extends PHPUnit\Framework\TestCase {
 
         $actual_tag = (new FramerightImageDisplayControl\Render\RenderPlugin(
             $this->global_functions_mock
-        ))->add_img_tag_attributes($input_tag, null, 0);
+        ))->tweak_img_tag($input_tag, null, 0);
+
+        $this->assertSame($expected_tag, $actual_tag);
+    }
+
+    /**
+     * Test tweak_thumbnail_html() .
+     */
+    public function test_tweak_thumbnail_html() {
+        $input_image_url =
+            'https://mywordpress.com/wp-content/uploads/2022/11/myimage.jpg';
+        $input_tag =
+            '<div class="thumbnail"><img width="2000" height="1000" src="' .
+            $input_image_url .
+            '" class="wp-post-image" /></div>';
+
+        $this->global_functions_mock
+            ->expects($this->once())
+            ->method('get_post_meta')
+            ->with(42, 'frameright_has_image_regions')
+            ->willReturn('an array of regions');
+
+        $this->global_functions_mock
+            ->expects($this->once())
+            ->method('wp_json_encode')
+            ->with('an array of regions')
+            ->willReturn('a json-encoded array of regions');
+
+        $expected_tag =
+            '<div class="thumbnail"><img width="2000" height="1000" src="' .
+            $input_image_url .
+            '" class="wp-post-image" is="image-display-control" ' .
+            'data-image-regions="a json-encoded array of regions"></div>';
+
+        $actual_tag = (new FramerightImageDisplayControl\Render\RenderPlugin(
+            $this->global_functions_mock
+        ))->tweak_thumbnail_html($input_tag, null, 42, null, null);
 
         $this->assertSame($expected_tag, $actual_tag);
     }
