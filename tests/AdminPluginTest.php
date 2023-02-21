@@ -23,14 +23,9 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
                 'add_filter',
                 'add_post_meta',
                 'is_wp_error',
-                'wp_generate_attachment_metadata',
                 'wp_get_attachment_url',
                 'wp_get_image_editor',
-                'wp_insert_attachment',
             ])
-            ->getMock();
-        $this->filesystem_mock = $this->getMockBuilder(stdClass::class)
-            ->addMethods(['image_title', 'unique_target_file'])
             ->getMock();
         $this->xmp_mock = $this->getMockBuilder(stdClass::class)
             ->addMethods(['read_rectangle_cropping_metadata'])
@@ -49,7 +44,6 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
 
         new FramerightImageDisplayControl\Admin\AdminPlugin(
             $this->global_functions_mock,
-            $this->filesystem_mock,
             $this->xmp_mock
         );
     }
@@ -57,7 +51,7 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
     /**
      * Test test_handle_file_upload() and set_attachment_meta().
      */
-    public function test_create_hardcrops_and_set_attachment_meta() {
+    public function test_handle_file_upload_and_set_attachment_meta() {
         $input_source_dirname = '/absolute/path/to';
         $input_source_basename = 'img.jpg';
         $input_source_path =
@@ -93,35 +87,16 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
             ->willReturn($input_xmp_regions);
 
         $image_editor_mock = $this->getMockBuilder(stdClass::class)
-            ->addMethods(['crop', 'get_size', 'save'])
+            ->addMethods(['get_size'])
             ->getMock();
         $this->global_functions_mock
-            ->expects($this->exactly(2))
+            ->expects($this->once())
             ->method('wp_get_image_editor')
             ->with($input_source_path)
             ->willReturn($image_editor_mock);
 
         $expected_target_name = 'img-frameright-region42';
         $expected_target_basename = $expected_target_name . '.jpg';
-        $expected_target_path =
-            $input_source_dirname . '/' . $expected_target_basename;
-        $this->filesystem_mock
-            ->expects($this->once())
-            ->method('unique_target_file')
-            ->with($input_source_path, '-frameright-region42')
-            ->willReturn([
-                'path' => $expected_target_path,
-                'basename' => $expected_target_basename,
-                'dirname' => $input_source_dirname,
-                'name' => $expected_target_name,
-                'extension' => 'jpg',
-            ]);
-
-        $this->filesystem_mock
-            ->expects($this->once())
-            ->method('image_title')
-            ->with($input_source_path)
-            ->willReturn('My title');
 
         $image_editor_mock
             ->expects($this->once())
@@ -131,42 +106,6 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
                 'height' => 407,
             ]);
 
-        $image_editor_mock
-            ->expects($this->once())
-            ->method('crop')
-            ->with(157, 73, 64, 157)
-            ->willReturn(true);
-
-        $image_editor_mock
-            ->expects($this->once())
-            ->method('save')
-            ->with($expected_target_path)
-            ->willReturn([
-                'path' => $expected_target_path,
-                'file' => $expected_target_basename,
-                'width' => 64,
-                'height' => 157,
-                'mime-type' => 'image/jpeg',
-                'filesize' => 4242,
-            ]);
-
-        $this->global_functions_mock
-            ->expects($this->once())
-            ->method('wp_insert_attachment')
-            ->with(
-                [
-                    'post_mime_type' => 'image/jpeg',
-                    'post_title' => '[frameright:hardcrop] My title - region42',
-                ],
-                $expected_target_path
-            )
-            ->willReturn(42);
-
-        $this->global_functions_mock
-            ->expects($this->once())
-            ->method('wp_generate_attachment_metadata')
-            ->with(42, $expected_target_path);
-
         $this->global_functions_mock
             ->expects($this->once())
             ->method('wp_get_attachment_url')
@@ -174,26 +113,23 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
             ->willReturn($input_source_url);
 
         $this->global_functions_mock
-            ->expects($this->exactly(2))
+            ->expects($this->once())
             ->method('add_post_meta')
-            ->withConsecutive(
-                [$input_source_attachment_id, 'frameright_has_hardcrops', [42]],
+            ->with(
+                $input_source_attachment_id,
+                'frameright_has_image_regions',
                 [
-                    $input_source_attachment_id,
-                    'frameright_has_image_regions',
                     [
-                        [
-                            'id' => 'region42',
-                            'names' => ['Region 42'],
-                            'shape' => 'rectangle',
-                            'unit' => 'relative',
-                            'imageWidth' => 507,
-                            'imageHeight' => 407,
-                            'x' => 0.31,
-                            'y' => 0.18,
-                            'height' => 0.385,
-                            'width' => 0.127,
-                        ],
+                        'id' => 'region42',
+                        'names' => ['Region 42'],
+                        'shape' => 'rectangle',
+                        'unit' => 'relative',
+                        'imageWidth' => 507,
+                        'imageHeight' => 407,
+                        'x' => 0.31,
+                        'y' => 0.18,
+                        'height' => 0.385,
+                        'width' => 0.127,
                     ],
                 ]
             )
@@ -210,7 +146,6 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
 
         $plugin_under_test = new FramerightImageDisplayControl\Admin\AdminPlugin(
             $this->global_functions_mock,
-            $this->filesystem_mock,
             $this->xmp_mock
         );
 
@@ -291,57 +226,9 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
         $actual_result = $method->invoke(
             new FramerightImageDisplayControl\Admin\AdminPlugin(
                 $this->global_functions_mock,
-                $this->filesystem_mock,
                 $this->xmp_mock
             ),
             $input_path
-        );
-
-        $this->assertSame($expected_result, $actual_result);
-    }
-
-    /**
-     * Test absolute()..
-     */
-    public function test_absolute() {
-        $input_region = [
-            'id' => 'region42',
-            'names' => ['Region 42'],
-            'shape' => 'rectangle',
-            'unit' => 'relative',
-            'imageWidth' => 507,
-            'imageHeight' => 407,
-            'x' => 0.31,
-            'y' => 0.18,
-            'height' => 0.385,
-            'width' => 0.127,
-        ];
-
-        $expected_result = [
-            'id' => 'region42',
-            'names' => ['Region 42'],
-            'shape' => 'rectangle',
-            'unit' => 'pixel',
-            'imageWidth' => 507,
-            'imageHeight' => 407,
-            'x' => 157,
-            'y' => 73,
-            'height' => 157,
-            'width' => 64,
-        ];
-
-        $method = new ReflectionMethod(
-            'FramerightImageDisplayControl\Admin\AdminPlugin',
-            'absolute'
-        );
-        $method->setAccessible(true);
-        $actual_result = $method->invoke(
-            new FramerightImageDisplayControl\Admin\AdminPlugin(
-                $this->global_functions_mock,
-                $this->filesystem_mock,
-                $this->xmp_mock
-            ),
-            $input_region
         );
 
         $this->assertSame($expected_result, $actual_result);
@@ -387,13 +274,6 @@ final class AdminPluginTest extends PHPUnit\Framework\TestCase {
      * @var Mock_stdClass
      */
     private $global_functions_mock;
-
-    /**
-     * Filesystem mock.
-     *
-     * @var Mock_stdClass
-     */
-    private $filesystem_mock;
 
     /**
      * Xmp mock.

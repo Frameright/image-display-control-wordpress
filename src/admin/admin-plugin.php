@@ -7,7 +7,6 @@
 
 namespace FramerightImageDisplayControl\Admin;
 
-require_once __DIR__ . '/filesystem.php';
 require_once __DIR__ . '/xmp.php';
 
 require_once __DIR__ . '/../debug.php';
@@ -24,21 +23,15 @@ class AdminPlugin {
      *
      * @param Mock_stdClass $global_functions_mock Mock of GlobalFunctions if
      *                                             running tests.
-     * @param Mock_stdClass $filesystem_mock Mock of Filesystem if running
-     *                                       tests.
      * @param Mock_stdClass $xmp_mock Mock of Xmp if running tests.
      */
     public function __construct(
         $global_functions_mock = null,
-        $filesystem_mock = null,
         $xmp_mock = null
     ) {
         $this->global_functions = $global_functions_mock
             ? $global_functions_mock
             : new GlobalFunctions();
-        $this->filesystem = $filesystem_mock
-            ? $filesystem_mock
-            : new Filesystem($this->global_functions);
         $this->xmp = $xmp_mock ? $xmp_mock : new Xmp();
 
         $this->pending_attachment_meta_to_be_set = [];
@@ -67,7 +60,7 @@ class AdminPlugin {
     public function handle_file_upload($data) {
         Debug\log('A file got uploaded: ' . print_r($data, true));
         if (0 === strpos($data['type'], 'image/')) {
-            $this->create_hardcrops($data['file'], $data['url']);
+            $this->parse_image_regions($data['file'], $data['url']);
         }
         return $data;
     }
@@ -123,13 +116,18 @@ class AdminPlugin {
     }
 
     /**
-     * Create hardcropped versions of a given source image.
+     * Parse image regions from the XMP metadata of a given image and populate
+     * pending_attachment_meta_to_be_set out of it, for a later hook to set it
+     * as attachment meta.
      *
      * @param string $source_image_path Absolute path to the source image.
      * @param string $source_image_url URL of the source image.
      */
-    private function create_hardcrops($source_image_path, $source_image_url) {
-        Debug\log("Creating hardcrops of $source_image_path ...");
+    private function parse_image_regions(
+        $source_image_path,
+        $source_image_url
+    ) {
+        Debug\log("Parsing image regions of $source_image_path ...");
 
         $image_regions = $this->read_rectangle_cropping_metadata(
             $source_image_path
@@ -142,138 +140,12 @@ class AdminPlugin {
             return;
         }
 
-        $hardcrop_attachment_ids = [];
-        foreach ($image_regions as $image_region) {
-            array_push(
-                $hardcrop_attachment_ids,
-                $this->create_hardcrop($source_image_path, $image_region)
-            );
-        }
-
         // The goal here is to set as attachment meta on the original image the
-        // list of created hardcrops. However this is not possible yet in this
-        // hook to set attachment meta. So we store it for a later hook.
+        // list of found regions. However it is not possible yet in this hook to
+        // set attachment meta yet. So we store it for a later hook.
         $this->pending_attachment_meta_to_be_set[$source_image_url] = [
-            'frameright_has_hardcrops' => $hardcrop_attachment_ids,
             'frameright_has_image_regions' => $image_regions,
         ];
-    }
-
-    /**
-     * Create hardcropped version of a given source image and register it in
-     * WordPress.
-     *
-     * @param string $source_image_path Absolute path to the source image.
-     * @param array  $image_region Cropping details.
-     * @return int Created WordPress attachment ID.
-     */
-    private function create_hardcrop($source_image_path, $image_region) {
-        $saved_file = $this->create_hardcrop_on_disk(
-            $source_image_path,
-            $image_region
-        );
-
-        $target_image_title =
-            '[frameright:hardcrop] ' .
-            $this->filesystem->image_title($source_image_path);
-        if ($image_region['id']) {
-            $target_image_title .= ' - ' . $image_region['id'];
-        }
-
-        $target_attachment_id = $this->global_functions->wp_insert_attachment(
-            [
-                'post_mime_type' => $saved_file['mime-type'],
-                'post_title' => $target_image_title,
-            ],
-            $saved_file['path'],
-            0, // no parent post
-            true // report errors
-        );
-        Debug\assert_(
-            !$this->global_functions->is_wp_error($target_attachment_id),
-            'Could not insert attachment'
-        );
-
-        /** This will:
-         *   * create myimage-frameright-scaled.jpg
-         *   * create myimage-frameright-1980x1219.jpg for every container size
-         *     defined in the current WordPress template
-         *   * create a special `_wp_attachment_metadata` attachment meta
-         *     containing:
-         *       * info about all the generated scaled images
-         *       * some of the metadata extracted from the original image
-         */
-        $attachment_metadata = $this->global_functions->wp_generate_attachment_metadata(
-            $target_attachment_id,
-            $saved_file['path']
-        );
-        Debug\log(
-            'Generated WordPress metadata for attached image: ' .
-                print_r($attachment_metadata, true)
-        );
-
-        return $target_attachment_id;
-    }
-
-    /**
-     * Create hardcropped version of a given source image and store it in a new
-     * file on disk.
-     *
-     * @param string $source_image_path Absolute path to the source image.
-     * @param array  $image_region Cropping details.
-     * @return array Output of https://developer.wordpress.org/reference/classes/wp_image_editor/save/
-     */
-    private function create_hardcrop_on_disk(
-        $source_image_path,
-        $image_region
-    ) {
-        // Object for making changes to an image and saving these changes
-        // somewhere else:
-        $image_editor = $this->global_functions->wp_get_image_editor(
-            $source_image_path
-        );
-        Debug\assert_(
-            !$this->global_functions->is_wp_error($image_editor),
-            'Could not create image editor for cropping'
-        );
-
-        $absolute_image_region = $this->absolute($image_region);
-        $crop_result = $image_editor->crop(
-            $absolute_image_region['x'],
-            $absolute_image_region['y'],
-            $absolute_image_region['width'],
-            $absolute_image_region['height']
-        );
-        Debug\assert_(
-            !$this->global_functions->is_wp_error($crop_result),
-            'Could not crop image'
-        );
-
-        $target_basename_suffix = '-frameright';
-        if ($image_region['id']) {
-            $target_basename_suffix .= '-' . $image_region['id'];
-        }
-        $target_image_file = $this->filesystem->unique_target_file(
-            $source_image_path,
-            $target_basename_suffix
-        );
-        Debug\log('Saving to: ' . print_r($target_image_file, true));
-        $saved_file = $image_editor->save($target_image_file['path']);
-        Debug\assert_(
-            !$this->global_functions->is_wp_error($saved_file),
-            'Could not save file'
-        );
-        Debug\log('Saved to: ' . print_r($saved_file, true));
-        Debug\assert_(
-            $target_image_file['path'] === $saved_file['path'],
-            $target_image_file['path'] . ' !== ' . $saved_file['path']
-        );
-        Debug\assert_(
-            $target_image_file['basename'] === $saved_file['file'],
-            $target_image_file['basename'] . ' !== ' . $saved_file['file']
-        );
-
-        return $saved_file;
     }
 
     /**
@@ -331,69 +203,11 @@ class AdminPlugin {
     }
 
     /**
-     * Make sure the coordinate of an Image Region are absolute and not
-     * relative to the source image.
-     *
-     * @param array $wordpress_metadata_region Output of
-     *                                         read_rectangle_cropping_metadata().
-     * @return array Modified $wordpress_metadata_region .
-     */
-    private function absolute($wordpress_metadata_region) {
-        $unit = strtolower($wordpress_metadata_region['unit']);
-        if ('pixel' !== $unit) {
-            Debug\assert_(
-                'relative' === $unit,
-                'Unknown region unit: ' . $unit
-            );
-
-            $wordpress_metadata_region['x'] = (int) round(
-                $wordpress_metadata_region['x'] *
-                    $wordpress_metadata_region['imageWidth']
-            );
-            $wordpress_metadata_region['width'] = (int) round(
-                $wordpress_metadata_region['width'] *
-                    $wordpress_metadata_region['imageWidth']
-            );
-            $wordpress_metadata_region['y'] = (int) round(
-                $wordpress_metadata_region['y'] *
-                    $wordpress_metadata_region['imageHeight']
-            );
-            $wordpress_metadata_region['height'] = (int) round(
-                $wordpress_metadata_region['height'] *
-                    $wordpress_metadata_region['imageHeight']
-            );
-            $wordpress_metadata_region['unit'] = 'pixel';
-        }
-
-        Debug\assert_(
-            $wordpress_metadata_region['x'] +
-                $wordpress_metadata_region['width'] <=
-                $wordpress_metadata_region['imageWidth'],
-            'Cropping width overflow'
-        );
-        Debug\assert_(
-            $wordpress_metadata_region['y'] +
-                $wordpress_metadata_region['height'] <=
-                $wordpress_metadata_region['imageHeight'],
-            'Cropping height overflow'
-        );
-
-        return $wordpress_metadata_region;
-    }
-
-    /**
      * Mockable wrapper for calling global functions.
      *
      * @var GlobalFunctions
      */
     private $global_functions;
-
-    /**
-     * Collection of file-related helper functions.
-     *
-     * @var Filesystem
-     */
-    private $filesystem;
 
     /**
      * Collection of XMP-related helper functions.
