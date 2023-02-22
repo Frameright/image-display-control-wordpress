@@ -26,6 +26,7 @@ final class RenderPluginTest extends PHPUnit\Framework\TestCase {
                 'plugin_dir_url',
                 'wp_enqueue_script',
                 'wp_enqueue_style',
+                'wp_get_additional_image_sizes',
                 'wp_json_encode',
             ])
             ->getMock();
@@ -42,13 +43,115 @@ final class RenderPluginTest extends PHPUnit\Framework\TestCase {
             ->with('wp_enqueue_scripts');
 
         $this->global_functions_mock
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(3))
             ->method('add_filter')
-            ->withConsecutive(['wp_content_img_tag'], ['post_thumbnail_html']);
+            ->withConsecutive(
+                ['wp_get_attachment_metadata'],
+                ['wp_content_img_tag'],
+                ['post_thumbnail_html']
+            );
 
         new FramerightImageDisplayControl\Render\RenderPlugin(
             $this->global_functions_mock
         );
+    }
+
+    /**
+     * Test blocklist_hardcrops() .
+     */
+    public function test_blocklist_hardcrops() {
+        $input_data = [
+            'width' => 3000,
+            'height' => 2000,
+            'file' => '2022/11/myimage.jpg',
+            'sizes' => [
+                'medium' => [
+                    'file' => 'myimage-300x200.jpg',
+                    'width' => 300,
+                    'height' => 200,
+                ],
+                'medium_large' => [
+                    'file' => 'myimage-768x512.jpg',
+                    'width' => 768,
+                    'height' => 512,
+                ],
+                'large' => [
+                    'file' => 'myimage-1024x683.jpg',
+                    'width' => 1024,
+                    'height' => 683,
+                ],
+                'thumbnail' => [
+                    'file' => 'myimage-150x150.jpg',
+                    'width' => 150,
+                    'height' => 150,
+                ],
+                'mytheme-1000-1000' => [
+                    'file' => 'myimage-1000x1000.jpg',
+                    'width' => 1000,
+                    'height' => 1000,
+                ],
+                'mytheme-1000-auto' => [
+                    'file' => 'myimage-1000x667.jpg',
+                    'width' => 1000,
+                    'height' => 667,
+                ],
+            ],
+        ];
+        $input_attachment_id = 42;
+
+        $this->global_functions_mock
+            ->expects($this->once())
+            ->method('get_post_meta')
+            ->with(42, 'frameright_has_image_regions')
+            ->willReturn('an array of regions');
+
+        $this->global_functions_mock
+            ->expects($this->once())
+            ->method('wp_get_additional_image_sizes')
+            ->with()
+            ->willReturn([
+                'mytheme-1000-1000' => 'some data',
+                'mytheme-1000-auto' => 'some data',
+            ]);
+
+        $expected_data = [
+            'width' => 3000,
+            'height' => 2000,
+            'file' => '2022/11/myimage.jpg',
+            'sizes' => [
+                'medium' => [
+                    'file' => 'myimage-300x200.jpg',
+                    'width' => 300,
+                    'height' => 200,
+                ],
+                'medium_large' => [
+                    'file' => 'myimage-768x512.jpg',
+                    'width' => 768,
+                    'height' => 512,
+                ],
+                'large' => [
+                    'file' => 'myimage-1024x683.jpg',
+                    'width' => 1024,
+                    'height' => 683,
+                ],
+                'thumbnail' => [
+                    'file' => 'myimage-150x150.jpg',
+                    'width' => 150,
+                    'height' => 150,
+                ],
+                'mytheme-1000-auto' => [
+                    'file' => 'myimage-1000x667.jpg',
+                    'width' => 1000,
+                    'height' => 667,
+                ],
+            ],
+        ];
+
+        $filtered_data = (new FramerightImageDisplayControl\Render\RenderPlugin(
+            $this->global_functions_mock
+        ))->blocklist_hardcrops($input_data, $input_attachment_id);
+
+        $this->assertSame($expected_data, $filtered_data);
     }
 
     /**

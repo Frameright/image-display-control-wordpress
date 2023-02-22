@@ -34,11 +34,14 @@ class RenderPlugin {
          *   * render_block_core/image
          *   * render_block_core/post-featured-image
          *   * wp_img_tag_add_width_and_height_attr
+         *   * image_downsize
+         *   * wp_get_attachment_image_src
          *   * wp_get_attachment_metadata
          *   * wp_image_src_get_dimensions
          *   * wp_calculate_image_srcset_meta
          *   * wp_calculate_image_srcset
          *   * wp_calculate_image_sizes
+         *   * wp_get_attachment_image
          *   * wp_content_img_tag
          *   * post_thumbnail_html
          *
@@ -64,6 +67,11 @@ class RenderPlugin {
          *   * Sometimes wp_content_img_tag doesn't get called, for example
          *     when rendering the featured image of a post in some particular
          *     themes. In this case post_thumbnail_html is called instead.
+         *   * Some themes define special thumbnail sizes with different ratios,
+         *     leading to the creation of hardcrops. On such hardcrops, image
+         *     region coordinates are wrong. wp_get_attachment_metadata gives us
+         *     a chance to remove these hardcrops from the list of image sources
+         *     that can be rendered.
          */
 
         $this->global_functions->add_action('wp_enqueue_scripts', [
@@ -74,6 +82,13 @@ class RenderPlugin {
             $this,
             'serve_web_component_js',
         ]);
+
+        $this->global_functions->add_filter(
+            'wp_get_attachment_metadata',
+            [$this, 'blocklist_hardcrops'],
+            10, // default priority
+            2 // number of arguments
+        );
         $this->global_functions->add_filter(
             'wp_content_img_tag',
             [$this, 'tweak_img_tag'],
@@ -86,6 +101,89 @@ class RenderPlugin {
             10, // default priority
             5 // number of arguments
         );
+    }
+
+    /**
+     * Filter called when retrieving attachment metadata, giving us a chance to
+     * remove hardcrops from the list of image sources that can be rendered, so
+     * that image regions remain correct.
+     *
+     * See
+     * https://developer.wordpress.org/reference/hooks/wp_get_attachment_metadata/
+     *
+     * @param array $data Array of metadata for the given attachment.
+     * @param int   $attachment_id Attachment ID.
+     * @return array Filter input/output in which some hardcrops may have been
+     *               removed.
+     */
+    public function blocklist_hardcrops($data, $attachment_id) {
+        Debug\log(
+            "Maybe blocklisting hardcrops for attachment $attachment_id (" .
+                $data['file'] .
+                ')'
+        );
+
+        $regions = $this->global_functions->get_post_meta(
+            $attachment_id,
+            'frameright_has_image_regions',
+            true
+        );
+        if (!$regions) {
+            Debug\log('Image has no regions, skipping.');
+            return $data;
+        }
+
+        $original_image_ratio = self::image_ratio(
+            $data['width'],
+            $data['height']
+        );
+        Debug\log("Original image ratio: $original_image_ratio");
+
+        // Get the non-core image sizes, i.e. not 'thumbnail', 'medium',
+        // 'medium_large' or 'large'.
+        $additional_image_sizes = array_keys(
+            $this->global_functions->wp_get_additional_image_sizes()
+        );
+
+        Debug\log(
+            'Thumbnails before filtering: ' . print_r($data['sizes'], true)
+        );
+        foreach ($data['sizes'] as $thumbnail_name => $thumbnail_data) {
+            if (!in_array($thumbnail_name, $additional_image_sizes, true)) {
+                Debug\log(
+                    "Thumbnail $thumbnail_name is a core thumbnail, keeping."
+                );
+                continue;
+            }
+
+            $thumbnail_ratio = self::image_ratio(
+                $thumbnail_data['width'],
+                $thumbnail_data['height']
+            );
+            Debug\log(
+                "Thumbnail $thumbnail_name (" .
+                    $thumbnail_data['file'] .
+                    ") ratio: $thumbnail_ratio"
+            );
+
+            $ratio_diff = self::image_ratio_diff_factor(
+                $thumbnail_ratio,
+                $original_image_ratio
+            );
+            if ($ratio_diff > 1.05) {
+                Debug\log("Thumbnail $thumbnail_name is a hardcrop, removing.");
+                unset($data['sizes'][$thumbnail_name]);
+            } else {
+                Debug\log(
+                    "Thumbnail $thumbnail_name is not a hardcrop, keeping."
+                );
+            }
+        }
+        Debug\log(
+            'Thumbnails after filtering: ' . print_r($data['sizes'], true)
+        );
+
+        return $data;
     }
 
     /**
@@ -286,6 +384,42 @@ class RenderPlugin {
         );
         Debug\log("Resulting snippet: $img_idc_snippet");
         return $img_idc_snippet;
+    }
+
+    /**
+     * Calculates image ratio safely, i.e. by avoiding divisions by 0.
+     *
+     * @param int $width Image width in pixels.
+     * @param int $height Image height in pixels.
+     * @return float Image ratio.
+     */
+    private static function image_ratio($width, $height) {
+        return $width / max($height, 1);
+    }
+
+    /**
+     * Calculates the difference between two image ratios, expressed as the
+     * factor >= 1, so that one ratio multiplied by this factor gives the other
+     * ratio.
+     *
+     * @param float $first_ratio First image ratio.
+     * @param float $second_ratio Second image ratio.
+     * @return float Factor >= 1.
+     */
+    private static function image_ratio_diff_factor(
+        $first_ratio,
+        $second_ratio
+    ) {
+        // Avoid dividing by 0:
+        if (!$first_ratio || !$second_ratio) {
+            $first_ratio += 0.1;
+            $second_ratio += 0.1;
+        }
+
+        if ($first_ratio >= $second_ratio) {
+            return $first_ratio / $second_ratio;
+        }
+        return $second_ratio / $first_ratio;
     }
 
     /**
