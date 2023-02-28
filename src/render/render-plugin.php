@@ -64,6 +64,11 @@ class RenderPlugin {
          *   * Sometimes wp_content_img_tag doesn't get called, for example
          *     when rendering the featured image of a post in some particular
          *     themes. In this case post_thumbnail_html is called instead.
+         *   * Some themes define special thumbnail sizes with different ratios,
+         *     leading to the creation of hardcrops. On such hardcrops, image
+         *     region coordinates are wrong. wp_get_attachment_image_src gets
+         *     called when retrieving such a thumbnail. There we get a chance to
+         *     make sure we don't return such a hardcrop.
          */
 
         $this->global_functions->add_action('wp_enqueue_scripts', [
@@ -74,6 +79,14 @@ class RenderPlugin {
             $this,
             'serve_web_component_js',
         ]);
+
+        $this->global_functions->add_filter(
+            'wp_get_attachment_image_src',
+            [$this, 'tweak_img_src'],
+            10, // default priority
+            4 // number of arguments
+        );
+
         $this->global_functions->add_filter(
             'wp_content_img_tag',
             [$this, 'tweak_img_tag'],
@@ -86,6 +99,71 @@ class RenderPlugin {
             10, // default priority
             5 // number of arguments
         );
+    }
+
+    /**
+     * Filter called when fetching an image thumbnail, giving the opportunity
+     * to make sure we don't return a hardcrop.
+     *
+     * See
+     * https://developer.wordpress.org/reference/hooks/wp_get_attachment_image_src/
+     *
+     * @param array|false  $image Array of image data, or boolean false if
+     *                            no image is available. Items:
+     *                            * (string) Image source URL.
+     *                            * (int) Image width in pixels.
+     *                            * (int) Image height in pixels.
+     *                            * (bool) Whether the image is a resized image.
+     * @param int          $attachment_id Image attachment ID.
+     * @param string|int[] $size Requested image size.
+     * @param bool         $icon Whether the image should be treated as an icon.
+     * @return array|false Filter input/output in which the image source URL
+     *                     may have been replaced by a non-hardcrop URL.
+     */
+    public function tweak_img_src($image, $attachment_id, $size, $icon) {
+        Debug\log('Maybe swapping image source URL...');
+        if (!$image) {
+            Debug\log('No URL, skipping.');
+            return $image;
+        }
+        if (!$attachment_id) {
+            Debug\log("$image[0] has no attachment ID, skipping.");
+            return $image;
+        }
+        Debug\log("Image source URL: $image[0]");
+        Debug\log("Image attachment ID: $attachment_id");
+
+        if ($icon) {
+            Debug\log('Image is an icon, skipping.');
+            return $image;
+        }
+        if (!$image[3]) {
+            Debug\log('Image is not a resized image, skipping.');
+            return $image;
+        }
+
+        $regions = $this->global_functions->get_post_meta(
+            $attachment_id,
+            'frameright_has_image_regions',
+            true
+        );
+        if (!$regions) {
+            Debug\log('Image has no regions, skipping.');
+            return $image;
+        }
+
+        $main_url = $this->global_functions->wp_get_attachment_url(
+            $attachment_id
+        );
+        Debug\assert_(
+            $main_url,
+            "Could not determine main URL for attachment $attachment_id"
+        );
+        Debug\log("Swapping for main URL: $main_url");
+
+        $image[0] = $main_url;
+        $image[3] = false;
+        return $image;
     }
 
     /**
