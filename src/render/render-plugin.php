@@ -262,7 +262,7 @@ class RenderPlugin {
             // Dummy version added to URL for cache busting purposes. We follow
             // so far the version of
             // https://github.com/Frameright/image-display-control-web-component
-            '0.0.9'
+            '0.1.0'
         );
     }
 
@@ -290,7 +290,7 @@ class RenderPlugin {
             // Dummy version added to URL for cache busting purposes. We follow
             // so far the version of
             // https://github.com/Frameright/image-display-control-web-component
-            '0.0.9',
+            '0.1.0',
             true // put just before </body> instead of </head>
         );
     }
