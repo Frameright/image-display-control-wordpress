@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "dffc328f3d810d3c9dcc859ba1367a04",
+    "content-hash": "61684971e9665e2cc3f7ba8dccdca38c",
     "packages": [
         {
-            "name": "dchesterton/image",
+            "name": "frameright/image-metadata-parser",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/Frameright/image.git",
-                "reference": "b5b29fbf047d2eb195e5000f6c76167cbe90cafa"
+                "url": "https://github.com/Frameright/php-image-metadata-parser.git",
+                "reference": "5f5091c631dc763a74a8d1bfffc4999f8287c1e4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Frameright/image/zipball/b5b29fbf047d2eb195e5000f6c76167cbe90cafa",
-                "reference": "b5b29fbf047d2eb195e5000f6c76167cbe90cafa",
+                "url": "https://api.github.com/repos/Frameright/php-image-metadata-parser/zipball/5f5091c631dc763a74a8d1bfffc4999f8287c1e4",
+                "reference": "5f5091c631dc763a74a8d1bfffc4999f8287c1e4",
                 "shasum": ""
             },
             "require": {
@@ -48,6 +48,18 @@
             ],
             "authors": [
                 {
+                    "name": "Frameright (Coberg Ltd)",
+                    "email": "hello@frameright.io",
+                    "homepage": "https://frameright.io/",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Aurelien Lourot",
+                    "email": "software@lourot.dev",
+                    "homepage": "https://lourot.dev/",
+                    "role": "Developer"
+                },
+                {
                     "name": "Daniel Chesterton",
                     "email": "daniel@chestertondevelopment.com",
                     "homepage": "http://www.chestertondevelopment.com",
@@ -64,17 +76,17 @@
                 "XMP"
             ],
             "support": {
-                "source": "https://github.com/Frameright/image/tree/master",
-                "issues": "https://github.com/Frameright/image/issues"
+                "source": "https://github.com/Frameright/php-image-metadata-parser/tree/master",
+                "issues": "https://github.com/Frameright/php-image-metadata-parser/issues"
             },
-            "time": "2022-10-31T16:11:58+00:00"
+            "time": "2023-03-03T17:25:48+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "dchesterton/image": 20
+        "frameright/image-metadata-parser": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

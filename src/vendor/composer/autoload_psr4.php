@@ -6,5 +6,5 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'CSD\\Image\\' => array($vendorDir . '/dchesterton/image/src'),
+    'CSD\\Image\\' => array($vendorDir . '/frameright/image-metadata-parser/src'),
 );

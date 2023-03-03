@@ -45,7 +45,8 @@ class Xmp {
         try {
             // FIXME: the library relies on the file extension to determine the
             // file format. But in case there is no extension, WordPress still
-            // knows the format and could pass the invormation here.
+            // knows the format and could pass the information here. See
+            // https://github.com/Frameright/php-image-metadata-parser/issues/5
             $xmp_metadata = \CSD\Image\Image::fromFile($path)->getXmp();
 
             $result = $xmp_metadata->getImageRegions(

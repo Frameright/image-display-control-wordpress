@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit01fb3a7a2624f09b67dc6b2e300c3d7f
+class ComposerStaticInit4c62437a86880fb4b39369a93f2dec22
 {
     public static $prefixLengthsPsr4 = array (
         'C' => 
@@ -16,7 +16,7 @@ class ComposerStaticInit01fb3a7a2624f09b67dc6b2e300c3d7f
     public static $prefixDirsPsr4 = array (
         'CSD\\Image\\' => 
         array (
-            0 => __DIR__ . '/..' . '/dchesterton/image/src',
+            0 => __DIR__ . '/..' . '/frameright/image-metadata-parser/src',
         ),
     );
 
@@ -27,9 +27,9 @@ class ComposerStaticInit01fb3a7a2624f09b67dc6b2e300c3d7f
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit01fb3a7a2624f09b67dc6b2e300c3d7f::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit01fb3a7a2624f09b67dc6b2e300c3d7f::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit01fb3a7a2624f09b67dc6b2e300c3d7f::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit4c62437a86880fb4b39369a93f2dec22::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit4c62437a86880fb4b39369a93f2dec22::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit4c62437a86880fb4b39369a93f2dec22::$classMap;
 
         }, null, ClassLoader::class);
     }

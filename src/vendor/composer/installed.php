@@ -3,7 +3,7 @@
         'name' => '__root__',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => 'e9ed345aafab6c10325570bfdf4a09bef02548a9',
+        'reference' => '29c655b1b78a8792864dc3ae72cf2433ef994d11',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,18 +13,18 @@
         '__root__' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => 'e9ed345aafab6c10325570bfdf4a09bef02548a9',
+            'reference' => '29c655b1b78a8792864dc3ae72cf2433ef994d11',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-        'dchesterton/image' => array(
+        'frameright/image-metadata-parser' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => 'b5b29fbf047d2eb195e5000f6c76167cbe90cafa',
+            'reference' => '5f5091c631dc763a74a8d1bfffc4999f8287c1e4',
             'type' => 'library',
-            'install_path' => __DIR__ . '/../dchesterton/image',
+            'install_path' => __DIR__ . '/../frameright/image-metadata-parser',
             'aliases' => array(
                 0 => '9999999-dev',
             ),

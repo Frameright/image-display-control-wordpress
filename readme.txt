@@ -47,4 +47,4 @@ Please use the [GitHub repository](https://github.com/Frameright/image-display-c
 
 == Credits ==
 
-This plugin is based on [Frameright/image](https://github.com/Frameright/image), a fork of [dchesterton/image](https://github.com/dchesterton/image), an image metadata library. Many thanks to [dchesterton](https://github.com/dchesterton)!
+This plugin is based on [Frameright/php-image-metadata-parser](https://github.com/Frameright/php-image-metadata-parser), a fork of [dchesterton/image](https://github.com/dchesterton/image), an image metadata parsing library. Many thanks to [dchesterton](https://github.com/dchesterton)!

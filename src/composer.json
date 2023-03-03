@@ -3,10 +3,10 @@
   "repositories": [
     {
       "type": "vcs",
-      "url": "https://github.com/Frameright/image.git"
+      "url": "https://github.com/Frameright/php-image-metadata-parser.git"
     }
   ],
   "require": {
-    "dchesterton/image": "dev-master"
+    "frameright/image-metadata-parser": "dev-master"
   }
 }
