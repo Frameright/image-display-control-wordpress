@@ -23,6 +23,7 @@ final class RenderPluginTest extends PHPUnit\Framework\TestCase {
                 'add_filter',
                 'attachment_url_to_postid',
                 'get_post_meta',
+                'is_admin',
                 'plugin_dir_url',
                 'wp_enqueue_script',
                 'wp_enqueue_style',
@@ -98,6 +99,12 @@ final class RenderPluginTest extends PHPUnit\Framework\TestCase {
             ],
         ];
         $input_attachment_id = 42;
+
+        $this->global_functions_mock
+            ->expects($this->once())
+            ->method('is_admin')
+            ->with()
+            ->willReturn(false);
 
         $this->global_functions_mock
             ->expects($this->once())

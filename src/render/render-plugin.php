@@ -123,6 +123,14 @@ class RenderPlugin {
                 ')'
         );
 
+        if ($this->global_functions->is_admin()) {
+            // Blocklisting some hardcrops in the admin panel can be dangerous,
+            // e.g. when deleting an image from the media library the system
+            // will leave these hardcrops behind on disk.
+            Debug\log('Admin panel, skipping.');
+            return $data;
+        }
+
         $regions = $this->global_functions->get_post_meta(
             $attachment_id,
             'frameright_has_image_regions',
