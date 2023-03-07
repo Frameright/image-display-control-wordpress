@@ -202,7 +202,7 @@ Check out the repository:
 ```bash
 cd ../
 svn co https://plugins.svn.wordpress.org/image-display-control
-cd image-display-control/trunk/
+cd image-display-control/
 ```
 
 ### Commit to SVN
@@ -210,11 +210,14 @@ cd image-display-control/trunk/
 Replace the `trunk` files with the previously built archive:
 
 ```bash
-for i in $(find . -name "*"); do svn delete $i; done
-rm -rf *
+svn delete trunk
+mkdir trunk
+cd trunk/
 mv ../../image-display-control-wordpress/image-display-control.zip .
 unzip image-display-control.zip
-for i in $(find . -name "*"); do svn add $i; done
+rm image-display-control.zip
+cd ../
+svn add trunk
 svn status
 ```
 
