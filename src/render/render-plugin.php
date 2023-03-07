@@ -501,6 +501,8 @@ class RenderPlugin {
             'overflow-hidden'
         );
 
+        $img_element->setAttribute('data-avoid-no-region', 'off'); // LA_TEMP
+
         if (Debug\enabled()) {
             $img_element->setAttribute('data-loglevel', 'debug');
         }
