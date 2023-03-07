@@ -5,7 +5,7 @@
  * Description:       An easy way to leverage image cropping metadata on your site. Made by Frameright. Power to the pictures!
  * Author:            Frameright
  * Author URI:        https://frameright.io
- * Version:           0.0.5
+ * Version:           0.1.0
  * License:           GPL-3.0-or-later
  * License URI:       license.txt
  * Text Domain:       frameright

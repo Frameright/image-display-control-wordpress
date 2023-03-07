@@ -194,7 +194,8 @@ final class RenderPluginTest extends PHPUnit\Framework\TestCase {
             '<img width="2000" height="1000" src="' .
             $input_image_url .
             '" class="wp-post-image" is="image-display-control" ' .
-            'data-image-regions="a json-encoded array of regions">';
+            'data-image-regions="a json-encoded array of regions" ' .
+            'data-css-contain-fallback="overflow-hidden">';
 
         $actual_tag = (new FramerightImageDisplayControl\Render\RenderPlugin(
             $this->global_functions_mock
@@ -230,7 +231,8 @@ final class RenderPluginTest extends PHPUnit\Framework\TestCase {
             '<div class="thumbnail"><img width="2000" height="1000" src="' .
             $input_image_url .
             '" class="wp-post-image" is="image-display-control" ' .
-            'data-image-regions="a json-encoded array of regions"></div>';
+            'data-image-regions="a json-encoded array of regions" ' .
+            'data-css-contain-fallback="overflow-hidden"></div>';
 
         $actual_tag = (new FramerightImageDisplayControl\Render\RenderPlugin(
             $this->global_functions_mock

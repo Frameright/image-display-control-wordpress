@@ -493,6 +493,14 @@ class RenderPlugin {
     ) {
         $img_element->setAttribute('is', 'image-display-control');
         $img_element->setAttribute('data-image-regions', $regions);
+
+        // Useful for older browsers, see
+        // https://github.com/Frameright/image-display-control-web-component/blob/main/image-display-control/docs/reference/attributes.md#data-css-contain-fallback
+        $img_element->setAttribute(
+            'data-css-contain-fallback',
+            'overflow-hidden'
+        );
+
         if (Debug\enabled()) {
             $img_element->setAttribute('data-loglevel', 'debug');
         }
