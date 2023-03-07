@@ -224,7 +224,6 @@ svn status
 Commit the `trunk` changes and create a new tag:
 
 ```bash
-cd ../
 svn copy trunk tags/1.2.3
 svn commit -m "1.2.3" --username my-wordpress-username --password 'foo'
 ```
