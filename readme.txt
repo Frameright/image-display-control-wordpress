@@ -6,7 +6,7 @@ Tested up to: 6.1
 Requires PHP: 5.6
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.en.html
-Stable Tag: 0.1.0
+Stable Tag: 0.1.1
 
 An easy way to leverage image region metadata on your site. Made by Frameright. Power to the pictures!
 
@@ -22,6 +22,8 @@ The [Frameright app](https://frameright.app/) can be used to define such image r
 
 When rendering a post or a page, the plugin looks for images that have image region metadata and replaces them with a web component automatically zooming on the best suited image region, effectively doing better than a classical middle-crop.
 
+https://www.youtube.com/watch?v=vlyoAPku_NU
+
 == Frequently Asked Questions ==
 
 = I have an issue or I want to contribute code =
@@ -29,6 +31,9 @@ When rendering a post or a page, the plugin looks for images that have image reg
 Please use the [GitHub repository](https://github.com/Frameright/image-display-control-wordpress) to raise [issues](https://github.com/Frameright/image-display-control-wordpress/issues) about the plugin or submit pull requests.
 
 == Changelog ==
+
+= 0.1.1 (2023-03-07) =
+* Added tutorial video.
 
 = 0.1.0 (2023-03-07) =
 * Fixed web component sometimes not initializing properly.

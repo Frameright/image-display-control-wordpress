@@ -54,6 +54,8 @@ This WordPress plugin reads such _Image Regions_ in order to automatically crop
 images the best possible way, depending on which container they are being
 displayed in.
 
+[![Youtube](https://img.youtube.com/vi/vlyoAPku_NU/0.jpg)](https://www.youtube.com/watch?v=vlyoAPku_NU "Youtube")
+
 ## How does it work?
 
 When rendering a post or a page, the plugin looks for images that have _Image
