@@ -2,11 +2,11 @@
 Contributors: lourot, jarsta
 Tags: image, crop, cropping, image crop, image quality, image display control, frameright, responsive, design, layout, iptc, metadata
 Requires at least: 5.1
-Tested up to: 6.1
+Tested up to: 6.2
 Requires PHP: 5.6
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.en.html
-Stable Tag: 0.1.1
+Stable Tag: 0.1.2
 
 An easy way to leverage image region metadata on your site. Made by Frameright. Power to the pictures!
 
@@ -31,6 +31,9 @@ https://www.youtube.com/watch?v=vlyoAPku_NU
 Please use the [GitHub repository](https://github.com/Frameright/image-display-control-wordpress) to raise [issues](https://github.com/Frameright/image-display-control-wordpress/issues) about the plugin or submit pull requests.
 
 == Changelog ==
+
+= 0.1.2 (2023-04-03) =
+* Marked as validated with WordPress 6.2.
 
 = 0.1.1 (2023-03-07) =
 * Added tutorial video.
