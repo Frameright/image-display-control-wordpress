@@ -1,4 +1,4 @@
 /vendor/
 /wpcs/
 node_modules/
-.vscode/
+# LA_TODO .vscode/
