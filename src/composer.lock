@@ -4,23 +4,24 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "61684971e9665e2cc3f7ba8dccdca38c",
+    "content-hash": "ab752e1b0549856c0979b3087621ae75",
     "packages": [
         {
             "name": "frameright/image-metadata-parser",
-            "version": "dev-master",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Frameright/php-image-metadata-parser.git",
-                "reference": "5f5091c631dc763a74a8d1bfffc4999f8287c1e4"
+                "reference": "b7bad12ee278aa6d4dece393e71c1d2763b2bb8d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Frameright/php-image-metadata-parser/zipball/5f5091c631dc763a74a8d1bfffc4999f8287c1e4",
-                "reference": "5f5091c631dc763a74a8d1bfffc4999f8287c1e4",
+                "url": "https://api.github.com/repos/Frameright/php-image-metadata-parser/zipball/b7bad12ee278aa6d4dece393e71c1d2763b2bb8d",
+                "reference": "b7bad12ee278aa6d4dece393e71c1d2763b2bb8d",
                 "shasum": ""
             },
             "require": {
+                "ext-xml": "*",
                 "php": ">=5.5"
             },
             "require-dev": {
@@ -28,21 +29,13 @@
                 "phpcompatibility/php-compatibility": "^9.3.5",
                 "phpunit/phpunit": "^9.5.25"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
                     "CSD\\Image\\": "src/"
                 }
             },
-            "scripts": {
-                "lint": [
-                    "./vendor/bin/phpcs"
-                ],
-                "test": [
-                    "./vendor/bin/phpunit"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -66,28 +59,29 @@
                     "role": "Developer"
                 }
             ],
-            "description": "Image metadata library",
+            "description": "Image metadata parsing library",
             "keywords": [
-                "Exif",
+                "Frameright",
+                "IDC",
                 "IPTC",
-                "Image",
-                "Metadata",
-                "Photo",
-                "XMP"
+                "Image Display Control",
+                "exif",
+                "image",
+                "metadata",
+                "photo",
+                "xmp"
             ],
             "support": {
-                "source": "https://github.com/Frameright/php-image-metadata-parser/tree/master",
-                "issues": "https://github.com/Frameright/php-image-metadata-parser/issues"
+                "issues": "https://github.com/Frameright/php-image-metadata-parser/issues",
+                "source": "https://github.com/Frameright/php-image-metadata-parser/tree/1.0.0"
             },
-            "time": "2023-03-03T17:25:48+00:00"
+            "time": "2023-04-10T14:32:42+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
-    "minimum-stability": "dev",
-    "stability-flags": {
-        "frameright/image-metadata-parser": 20
-    },
+    "minimum-stability": "stable",
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

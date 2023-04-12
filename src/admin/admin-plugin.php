@@ -129,7 +129,7 @@ class AdminPlugin {
     ) {
         Debug\log("Parsing image regions of $source_image_path ...");
 
-        $image_regions = $this->read_rectangle_cropping_metadata(
+        $image_regions = $this->xmp->read_rectangle_cropping_metadata(
             $source_image_path
         );
         Debug\log(
@@ -146,60 +146,6 @@ class AdminPlugin {
         $this->pending_attachment_meta_to_be_set[$source_image_url] = [
             'frameright_has_image_regions' => $image_regions,
         ];
-    }
-
-    /**
-     * Reads the rectangle cropping XMP Image Region metadata from a given
-     * file. See
-     * https://iptc.org/std/photometadata/specification/IPTC-PhotoMetadata#image-region
-     *
-     * @param string $path Absolute path to the image.
-     * @return array XMP Image Region metadata structured in a way that can
-     *               directly be used as WordPress metadata.
-     */
-    private function read_rectangle_cropping_metadata($path) {
-        $wordpress_metadata = [];
-
-        $image_editor = $this->global_functions->wp_get_image_editor($path);
-        if ($this->global_functions->is_wp_error($image_editor)) {
-            Debug\log(
-                'Could not create image editor for reading image size of ' .
-                    $path .
-                    ': ' .
-                    $image_editor->get_error_message()
-            );
-            return $wordpress_metadata;
-        }
-
-        $image_size = $image_editor->get_size();
-
-        $regions = $this->xmp->read_rectangle_cropping_metadata($path);
-        Debug\log('Found relevant image regions: ' . print_r($regions, true));
-
-        foreach ($regions as $region) {
-            $wordpress_metadata_region = [
-                'id' => $region->id,
-                'names' => $region->names,
-                'shape' => $region->rbShape,
-
-                // Can be 'relative' or 'pixel', see
-                // https://iptc.org/std/photometadata/specification/IPTC-PhotoMetadata#boundary-measuring-unit
-                'unit' => $region->rbUnit,
-
-                // Useful when unit is 'pixel', see
-                // https://github.com/Frameright/image-display-control-web-component/blob/main/image-display-control/docs/reference/attributes.md
-                'imageWidth' => $image_size['width'],
-                'imageHeight' => $image_size['height'],
-
-                'x' => $region->rbXY->rbX,
-                'y' => $region->rbXY->rbY,
-                'height' => $region->rbH,
-                'width' => $region->rbW,
-            ];
-            array_push($wordpress_metadata, $wordpress_metadata_region);
-        }
-
-        return $wordpress_metadata;
     }
 
     /**

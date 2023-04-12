@@ -37,7 +37,8 @@ class Xmp {
      * https://iptc.org/std/photometadata/specification/IPTC-PhotoMetadata#image-region
      *
      * @param string $path Absolute path to the image.
-     * @return array XMP Image Region metadata.
+     * @return array XMP Image Region metadata structured in a way that can
+     *               directly be used as WordPress metadata.
      */
     public function read_rectangle_cropping_metadata($path) {
         $result = [];
@@ -47,9 +48,9 @@ class Xmp {
             // file format. But in case there is no extension, WordPress still
             // knows the format and could pass the information here. See
             // https://github.com/Frameright/php-image-metadata-parser/issues/5
-            $xmp_metadata = \CSD\Image\Image::fromFile($path)->getXmp();
+            $image = \CSD\Image\Image::fromFile($path);
 
-            $result = $xmp_metadata->getImageRegions(
+            $result = $image->getIDCMetadata(
                 \CSD\Image\Metadata\Xmp\ShapeFilter::RECTANGLE,
                 \CSD\Image\Metadata\Xmp\RoleFilter::CROP
             );
