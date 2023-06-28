@@ -13,7 +13,6 @@
     + [Setting up PHP_CodeSniffer](#setting-up-php_codesniffer)
     + [Running PHP_CodeSniffer](#running-php_codesniffer)
 - [:bookmark_tabs: Documenting](#bookmark_tabs-documenting)
-  * [Spellchecking the documentation](#spellchecking-the-documentation)
   * [(Re-)generating tables of contents](#re-generating-tables-of-contents)
 - [:gift: Releasing](#gift-releasing)
   * [Version number](#version-number)
