@@ -14,8 +14,6 @@ by [Frameright](https://frameright.io). Power to the pictures!
 
 - [Which image metadata?](#which-image-metadata)
 - [How does it work?](#how-does-it-work)
-- [Contributing](#contributing)
-- [Dependency tree / credits](#dependency-tree--credits)
 
 <!-- tocstop -->
 
@@ -66,27 +64,8 @@ doing better than a classical middle-crop.
 
 &emsp; :airplane: [Usage](docs/usage.md)
 
-## Contributing
-
-Run the unit tests with:
-
-```bash
-composer install
-composer test
-```
-
 &emsp; :wrench: [Contributing](docs/contributing.md)
 
-## Dependency tree / credits
+&emsp; 📝 [Changelog](docs/changelog.md)
 
-- [Frameright/php-image-metadata-parser](https://github.com/Frameright/php-image-metadata-parser),
-  based on [dchesterton/image](https://github.com/dchesterton/image), an image
-  metadata parsing library. Many thanks to
-  [dchesterton](https://github.com/dchesterton)!
-  - [`php-xml`](https://www.php.net/manual/en/book.dom.php)
-- PHP 5.6+
-- WordPress 5.1+
-- [Image Display Control Web Component](https://github.com/Frameright/image-display-control-web-component)
-  - [ungap/custom-elements](https://github.com/ungap/custom-elements), a
-    polyfill for web components on Safari. Many thanks to
-    [WebReflection](https://github.com/WebReflection)!
+&emsp; 🙏 [Dependency tree / credits](docs/credits.md)

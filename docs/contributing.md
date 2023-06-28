@@ -139,9 +139,12 @@ Choose the next version number according to the rules of
 
 ### Changelog
 
-Describe the changes made compared to the last released version in the
-[changelog](../readme.txt). Browse the git history to make sure nothing has
-been left out.
+Describe the changes made compared to the last released version in:
+
+* [the changelog served on the WordPress Plugin Directory](../readme.txt),
+* [the changelog in the documentation](../docs/changelog.md).
+
+Browse the git history to make sure nothing has been left out.
 
 ### Last tweaks and checks
 
