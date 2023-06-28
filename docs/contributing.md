@@ -12,8 +12,6 @@
   * [Validating against WordPress coding standards](#validating-against-wordpress-coding-standards)
     + [Setting up PHP_CodeSniffer](#setting-up-php_codesniffer)
     + [Running PHP_CodeSniffer](#running-php_codesniffer)
-- [:bookmark_tabs: Documenting](#bookmark_tabs-documenting)
-  * [(Re-)generating tables of contents](#re-generating-tables-of-contents)
 - [:gift: Releasing](#gift-releasing)
   * [Version number](#version-number)
   * [Changelog](#changelog)
@@ -109,18 +107,6 @@ Run PHP_CodeSniffer with:
 composer lint
 ```
 
-## :bookmark_tabs: Documenting
-
-### (Re-)generating tables of contents
-
-Pull and run [`markdown-toc`](https://github.com/jonschlinkert/markdown-toc)
-with:
-
-```bash
-npm install
-npm run gentoc
-```
-
 ## :gift: Releasing
 
 ### Version number
@@ -152,7 +138,6 @@ Format and validate the source one last time:
 
 ```bash
 npm run format
-npm run gentoc
 composer lint
 composer test
 ```

@@ -8,15 +8,6 @@
 An easy way to leverage image region metadata on your site. Made with :heart:
 by [Frameright](https://frameright.io). Power to the pictures!
 
-## Table of Contents
-
-<!-- toc -->
-
-- [Which image metadata?](#which-image-metadata)
-- [How does it work?](#how-does-it-work)
-
-<!-- tocstop -->
-
 ## Which image metadata?
 
 An image file (e.g. JPEG, PNG) contains metadata, i.e. information about the

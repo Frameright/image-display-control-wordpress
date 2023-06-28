@@ -5,7 +5,6 @@
     "markdown-toc": "^1.2.0"
   },
   "scripts": {
-    "format": "npx prettier --write .",
-    "gentoc": "./bin/gentoc.sh"
+    "format": "npx prettier --write ."
   }
 }
