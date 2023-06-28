@@ -6,7 +6,7 @@ Tested up to: 6.2
 Requires PHP: 5.6
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.en.html
-Stable Tag: 0.1.2
+Stable Tag: 1.0.0
 
 An easy way to leverage image region metadata on your site. Made by Frameright. Power to the pictures!
 
@@ -32,6 +32,9 @@ Please use the [GitHub repository](https://github.com/Frameright/image-display-c
 
 == Changelog ==
 
+= 1.0.0 (2023-06-28) =
+* Moved documentation to https://docs.frameright.io/wordpress
+
 = 0.1.2 (2023-04-03) =
 * Marked as validated with WordPress 6.2.
 
@@ -40,7 +43,7 @@ Please use the [GitHub repository](https://github.com/Frameright/image-display-c
 
 = 0.1.0 (2023-03-07) =
 * Fixed web component sometimes not initializing properly.
-* Added support for older browsers. See [here](https://github.com/Frameright/image-display-control-web-component/blob/main/image-display-control/docs/explanation/browsers.md) for more details.
+* Added support for older browsers. See [here](https://docs.frameright.io/web-component/browsers) for more details.
 * Improved resolution of images having an `srcset=` HTML attribute when zooming in on a region.
 * Now forcing the web component to select a region and zoom in on it, instead of rendering the full original image.
 * Fixed crash when uploading non-image files.
@@ -49,7 +52,7 @@ Please use the [GitHub repository](https://github.com/Frameright/image-display-c
 * Stopped generating hardcrops in the media library.
 
 = 0.0.5 (2023-01-26) =
-* Switched to rendering a [web component](https://github.com/Frameright/image-display-control-web-component) on the front-end.
+* Switched to rendering a [web component](https://docs.frameright.io/web-component) on the front-end.
 
 = 0.0.4 (2022-11-05) =
 * Improved documentation.

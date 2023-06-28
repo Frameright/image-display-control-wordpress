@@ -1,6 +1,6 @@
 /**
  * See
- * https://github.com/Frameright/image-display-control-web-component/blob/main/image-display-control/docs/explanation/browsers.md
+ * https://docs.frameright.io/web-component/browsers
  *
  * @package FramerightImageDisplayControl\Assets
  */

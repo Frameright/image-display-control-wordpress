@@ -3,6 +3,14 @@
 
 [<img src="https://avatars.githubusercontent.com/u/35964478?s=200&v=4" align="left" width="64" height="64">](https://frameright.io)
 
+<!--
+WARNING: Bits of information here are duplicated in several places:
+  * https://docs.frameright.io/wordpress
+  * https://github.com/Frameright/image-display-control-wordpress
+  * https://github.com/Frameright/image-display-control-wordpress/blob/master/readme.txt
+Make sure to keep them in sync.
+-->
+
 # Image Display Control WordPress Plugin
 
 An easy way to leverage image region metadata on your site. Made with :heart:
@@ -53,10 +61,8 @@ Region_ metadata and replaces them on the front-end with a
 automatically zooming on the best suited _Image Region_, effectively
 doing better than a classical middle-crop.
 
-&emsp; :airplane: [Usage](docs/usage.md)
+&emsp; :wrench: [Contributing](https://docs.frameright.io/wordpress/contributing)
 
-&emsp; :wrench: [Contributing](docs/contributing.md)
+&emsp; 📝 [Changelog](https://docs.frameright.io/wordpress/changelog)
 
-&emsp; 📝 [Changelog](docs/changelog.md)
-
-&emsp; 🙏 [Dependency tree / credits](docs/credits.md)
+&emsp; 🙏 [Dependency tree / credits](https://docs.frameright.io/wordpress/credits)

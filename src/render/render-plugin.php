@@ -269,7 +269,7 @@ class RenderPlugin {
             [], // deps
             // Dummy version added to URL for cache busting purposes. We follow
             // so far the version of
-            // https://github.com/Frameright/image-display-control-web-component
+            // https://docs.frameright.io/web-component/changelog
             '0.1.0'
         );
     }
@@ -297,7 +297,7 @@ class RenderPlugin {
             [], // deps
             // Dummy version added to URL for cache busting purposes. We follow
             // so far the version of
-            // https://github.com/Frameright/image-display-control-web-component
+            // https://docs.frameright.io/web-component/changelog
             '0.1.0',
             true // put just before </body> instead of </head>
         );
@@ -495,7 +495,7 @@ class RenderPlugin {
         $img_element->setAttribute('data-image-regions', $regions);
 
         // Useful for older browsers, see
-        // https://github.com/Frameright/image-display-control-web-component/blob/main/image-display-control/docs/reference/attributes.md#data-css-contain-fallback
+        // https://docs.frameright.io/web-component/attribute-ref
         $img_element->setAttribute(
             'data-css-contain-fallback',
             'overflow-hidden'
