@@ -112,16 +112,6 @@ composer lint
 
 ## :bookmark_tabs: Documenting
 
-### Spellchecking the documentation
-
-Pull and run [`mdspell`](https://github.com/lukeapage/node-markdown-spellcheck)
-with:
-
-```bash
-npm install
-npm run spellcheck
-```
-
 ### (Re-)generating tables of contents
 
 Pull and run [`markdown-toc`](https://github.com/jonschlinkert/markdown-toc)
@@ -161,7 +151,6 @@ Format and validate the source one last time:
 ```bash
 npm run format
 npm run gentoc
-npm run spellcheck
 composer lint
 composer test
 ```

@@ -1,6 +1,5 @@
 /.git*                            export-ignore
 /.prettier*                       export-ignore
-/.spelling                        export-ignore
 /bin/                             export-ignore
 /docs/                            export-ignore
 /intelephense.php                 export-ignore
