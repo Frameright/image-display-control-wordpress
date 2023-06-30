@@ -13,6 +13,8 @@ Make sure to keep them in sync.
 
 # Image Display Control WordPress Plugin
 
+> **➡️ See this document rendered at [docs.frameright.io/wordpress](https://docs.frameright.io/wordpress)**
+
 An easy way to leverage image region metadata on your site. Made with :heart:
 by [Frameright](https://frameright.io). Power to the pictures!
 
