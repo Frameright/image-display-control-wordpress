@@ -42,7 +42,7 @@ Please use the [GitHub repository](https://github.com/Frameright/image-display-c
 * Added tutorial video.
 
 = 0.1.0 (2023-03-07) =
-* Fixed web component sometimes not initializing properly.
+* Fixed [web component](https://docs.frameright.io/web-component) sometimes not initializing properly.
 * Added support for older browsers. See [here](https://docs.frameright.io/web-component/browsers) for more details.
 * Improved resolution of images having an `srcset=` HTML attribute when zooming in on a region.
 * Now forcing the web component to select a region and zoom in on it, instead of rendering the full original image.
