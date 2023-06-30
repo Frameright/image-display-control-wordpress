@@ -44,7 +44,7 @@ has defined a standard for storing
 in XMP. _Image Regions_ are useful for describing specific areas of the image
 (e.g. objects, people) or for indicating how the image should be cropped or
 rotated to best fit a given container. The
-[Frameright app](https://frameright.app/) can be used to define such _Image
+[Frameright webapp](https://frameright.app/) can be used to define such _Image
 Regions_ and insert them in the metadata of a picture.
 
 This WordPress plugin reads such _Image Regions_ in order to automatically crop

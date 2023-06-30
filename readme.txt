@@ -16,7 +16,7 @@ An image file (e.g. JPEG, PNG) contains metadata, i.e. information about the ima
 
 This WordPress plugin reads such image regions in order to automatically crop images the best possible way, depending on which container they are being displayed in.
 
-The [Frameright app](https://frameright.app/) can be used to define such image regions and insert them in the metadata of a picture.
+The [Frameright webapp](https://frameright.app/) can be used to define such image regions and insert them in the metadata of a picture.
 
 = How does it work? =
 
