@@ -6,7 +6,7 @@ updates:
   - package-ecosystem: 'npm'
     directory: '/'
     schedule:
-      interval: 'daily'
+      interval: 'weekly'
 
     # Do not get one pull request per version bump. Instead get one pull request
     # bumping several dependency versions at once:
@@ -18,7 +18,7 @@ updates:
   - package-ecosystem: 'npm'
     directory: '/src/assets/js'
     schedule:
-      interval: 'daily'
+      interval: 'weekly'
 
     # Do not get one pull request per version bump. Instead get one pull request
     # bumping several dependency versions at once:
@@ -30,7 +30,7 @@ updates:
   - package-ecosystem: 'composer'
     directory: '/'
     schedule:
-      interval: 'daily'
+      interval: 'weekly'
 
     # Do not get one pull request per version bump. Instead get one pull request
     # bumping several dependency versions at once:
@@ -42,7 +42,7 @@ updates:
   - package-ecosystem: 'composer'
     directory: '/src'
     schedule:
-      interval: 'daily'
+      interval: 'weekly'
 
     # Do not get one pull request per version bump. Instead get one pull request
     # bumping several dependency versions at once:
