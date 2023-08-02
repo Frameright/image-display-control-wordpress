@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "frameright/image-metadata-parser",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Frameright/php-image-metadata-parser.git",
-                "reference": "b7bad12ee278aa6d4dece393e71c1d2763b2bb8d"
+                "reference": "a01307aeb5b1b622c73d51772b9eb8ca71e95905"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Frameright/php-image-metadata-parser/zipball/b7bad12ee278aa6d4dece393e71c1d2763b2bb8d",
-                "reference": "b7bad12ee278aa6d4dece393e71c1d2763b2bb8d",
+                "url": "https://api.github.com/repos/Frameright/php-image-metadata-parser/zipball/a01307aeb5b1b622c73d51772b9eb8ca71e95905",
+                "reference": "a01307aeb5b1b622c73d51772b9eb8ca71e95905",
                 "shasum": ""
             },
             "require": {
@@ -73,9 +73,9 @@
             ],
             "support": {
                 "issues": "https://github.com/Frameright/php-image-metadata-parser/issues",
-                "source": "https://github.com/Frameright/php-image-metadata-parser/tree/1.0.0"
+                "source": "https://github.com/Frameright/php-image-metadata-parser/tree/1.0.1"
             },
-            "time": "2023-04-10T14:32:42+00:00"
+            "time": "2023-06-28T15:59:10+00:00"
         }
     ],
     "packages-dev": [],
