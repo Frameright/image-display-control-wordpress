@@ -7,6 +7,8 @@ updates:
     directory: '/'
     schedule:
       interval: 'weekly'
+    commit-message:
+      prefix: 'chore: '
 
     # Do not get one pull request per version bump. Instead get one pull request
     # bumping several dependency versions at once:
@@ -19,6 +21,8 @@ updates:
     directory: '/src/assets/js'
     schedule:
       interval: 'weekly'
+    commit-message:
+      prefix: 'chore: '
 
     # Do not get one pull request per version bump. Instead get one pull request
     # bumping several dependency versions at once:
@@ -31,6 +35,8 @@ updates:
     directory: '/'
     schedule:
       interval: 'weekly'
+    commit-message:
+      prefix: 'chore: '
 
     # Do not get one pull request per version bump. Instead get one pull request
     # bumping several dependency versions at once:
@@ -43,6 +49,8 @@ updates:
     directory: '/src'
     schedule:
       interval: 'weekly'
+    commit-message:
+      prefix: 'chore: '
 
     # Do not get one pull request per version bump. Instead get one pull request
     # bumping several dependency versions at once:
