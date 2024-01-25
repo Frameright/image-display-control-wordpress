@@ -18,18 +18,6 @@ jobs:
           command: require --dev wp-coding-standards/wpcs dealerdirect/phpcodesniffer-composer-installer phpcompatibility/phpcompatibility-wp
       - run: ./vendor/bin/phpcs
 
-  unit-tests-php73:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: php-actions/composer@v6
-        with:
-          php_version: '7.3'
-      - uses: php-actions/composer@v6
-        with:
-          php_version: '7.3'
-          command: test
-
   unit-tests-php74:
     runs-on: ubuntu-latest
     steps:
