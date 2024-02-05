@@ -1,5 +1,5 @@
 {
-  "dependencies": {
+  "devDependencies": {
     "@prettier/plugin-php": "^0.22.2",
     "prettier": "^3.2.5",
     "markdown-toc": "^1.2.0"
