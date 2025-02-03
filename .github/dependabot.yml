@@ -37,6 +37,10 @@ updates:
       interval: 'weekly'
     commit-message:
       prefix: 'chore: '
+    ignore:
+      # Staying on phpunit < 11 in order to keep supporting PHP 7.
+      - dependency-name: 'phpunit/phpunit'
+        update-types: ['version-update:semver-major']
 
     # Do not get one pull request per version bump. Instead get one pull request
     # bumping several dependency versions at once:
