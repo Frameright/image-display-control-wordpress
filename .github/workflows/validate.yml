@@ -64,7 +64,7 @@ jobs:
       - run: npm install
       - run: npm update
       - run: npx rollup -c
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: rollup-output
           path: src/assets/js/build/index.js
